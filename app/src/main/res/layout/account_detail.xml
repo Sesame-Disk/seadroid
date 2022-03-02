@@ -51,7 +51,7 @@
                 android:hint="@string/email_hint"
                 android:layout_height="wrap_content">
 
-                <com.seafile.seadroid2.ui.EmailAutoCompleteTextView
+                <com.nihaoconsult.app.ui.EmailAutoCompleteTextView
                     android:id="@+id/email_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

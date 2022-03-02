@@ -10,16 +10,16 @@
         layout="@layout/toolbar_actionbar"/>
 
 
-    <com.seafile.seadroid2.editor.widget.HorizontalEditScrollView
+    <com.nihaoconsult.app.editor.widget.HorizontalEditScrollView
         android:id="@+id/scroll_edit"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_below="@id/editor_toolbar"
         >
-    </com.seafile.seadroid2.editor.widget.HorizontalEditScrollView>
+    </com.nihaoconsult.app.editor.widget.HorizontalEditScrollView>
 
 
-    <com.seafile.seadroid2.editor.widget.EditScrollView
+    <com.nihaoconsult.app.editor.widget.EditScrollView
         android:id="@+id/edit_scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -36,7 +36,7 @@
             android:gravity="left|top"
             android:padding="16dp"
             android:textColor="@color/white"/>
-    </com.seafile.seadroid2.editor.widget.EditScrollView>
+    </com.nihaoconsult.app.editor.widget.EditScrollView>
 
 
 </RelativeLayout>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.seafile.seadroid2">
+    package="com.nihaoconsult.app">
 
     <uses-sdk
         tools:overrideLibrary="us.feras.mdv" />
@@ -42,7 +42,7 @@
 
     <application
         android:allowBackup="true"
-        android:name="com.seafile.seadroid2.SeadroidApplication"
+        android:name=".SeadroidApplication"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
         android:requestLegacyExternalStorage="true"
@@ -50,10 +50,10 @@
         android:networkSecurityConfig="@xml/network_security_config">
 
         <meta-data
-            android:name="com.seafile.seadroid2.util.GlideCache"
+            android:name="com.nihaoconsult.app.util.GlideCache"
             android:value="AppGlideModule"></meta-data>
 
-        <activity android:name="com.seafile.seadroid2.ui.activity.AccountsActivity"
+        <activity android:name=".ui.activity.AccountsActivity"
                   android:launchMode="singleTop"
                   android:label="@string/app_name">
         </activity>
@@ -66,15 +66,15 @@
                   android:label="@string/app_name">
         </activity>
 
-        <activity android:name="com.seafile.seadroid2.ui.activity.SettingsActivity"
+        <activity android:name=".ui.activity.SettingsActivity"
                   android:label="@string/app_name">
         </activity>
 
-        <activity android:name="com.seafile.seadroid2.ui.activity.PrivacyPolicyActivity"
+        <activity android:name=".ui.activity.PrivacyPolicyActivity"
                   android:label="@string/app_name">
         </activity>
 
-        <activity android:name="com.seafile.seadroid2.ui.activity.BrowserActivity"
+        <activity android:name=".ui.activity.BrowserActivity"
                   android:label="@string/app_name"
                   android:configChanges="orientation"
                   android:launchMode="singleTop">
@@ -85,17 +85,17 @@
         </activity>
 
         <activity
-            android:name="com.seafile.seadroid2.ui.activity.UnlockGesturePasswordActivity"
+            android:name=".ui.activity.UnlockGesturePasswordActivity"
             android:screenOrientation="portrait"
             android:label="@string/app_name" />
 
         <activity
-            android:name="com.seafile.seadroid2.ui.activity.CreateGesturePasswordActivity"
+            android:name=".ui.activity.CreateGesturePasswordActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
 
-        <activity android:name="com.seafile.seadroid2.ui.activity.MarkdownActivity"
+        <activity android:name=".ui.activity.MarkdownActivity"
                   android:label="@string/app_name">
         </activity>
 
@@ -106,12 +106,12 @@
 
         <!-- MultipleImageSelectionActivity uses the default theme, instead of
              ActionBarSherlock -->
-        <activity android:name="com.seafile.seadroid2.gallery.MultipleImageSelectionActivity"
+        <activity android:name=".gallery.MultipleImageSelectionActivity"
                   android:theme="@style/AppTheme.Multiple"
                   android:label="@string/app_name">
         </activity>
 
-        <activity android:name="com.seafile.seadroid2.ui.activity.ShareToSeafileActivity"
+        <activity android:name=".ui.activity.ShareToSeafileActivity"
                   android:excludeFromRecents="true"
                   android:label="@string/app_name">
             <intent-filter>
@@ -126,11 +126,11 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.seafile.seadroid2.ui.activity.SeafilePathChooserActivity"
+        <activity android:name=".ui.activity.SeafilePathChooserActivity"
                   android:label="@string/app_name">
         </activity>
 
-        <activity android:name="com.seafile.seadroid2.ui.activity.FileActivity"
+        <activity android:name=".ui.activity.FileActivity"
                   android:label="@string/app_name">
         </activity>
 
@@ -142,22 +142,22 @@
                 android:value=".ui.activity.AccountsActivity" />
         </activity>
 
-        <activity android:name="com.seafile.seadroid2.fileschooser.MultiFileChooserActivity"
+        <activity android:name=".fileschooser.MultiFileChooserActivity"
                   android:label="@string/app_name">
         </activity>
 
-        <activity android:name="com.seafile.seadroid2.ui.activity.TransferActivity"
+        <activity android:name=".ui.activity.TransferActivity"
                   android:label="@string/app_name">
         </activity>
 
-        <activity android:name="com.seafile.seadroid2.ui.activity.SearchActivity"
+        <activity android:name=".ui.activity.SearchActivity"
                   android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
         </activity>
 
-        <activity android:name="com.seafile.seadroid2.cameraupload.CameraUploadConfigActivity"
+        <activity android:name=".cameraupload.CameraUploadConfigActivity"
                   android:label="@string/app_name">
         </activity>
         <!--<activity android:name="com.seafile.seadroid2.cameraupload.ContactsUploadConfigActivity"-->
@@ -182,7 +182,7 @@
         </activity>
 
         <provider
-            android:name="com.seafile.seadroid2.provider.SeafileProvider"
+            android:name=".provider.SeafileProvider"
             android:authorities="${applicationId}.documents"
             android:exported="true"
             android:grantUriPermissions="true"
@@ -192,8 +192,8 @@
                 <action android:name="android.content.action.DOCUMENTS_PROVIDER" />
             </intent-filter>
         </provider>
-        <service android:name="com.seafile.seadroid2.transfer.TransferService" > </service>
-        <service android:name="com.seafile.seadroid2.monitor.FileMonitorService" > </service>
+        <service android:name=".transfer.TransferService" > </service>
+        <service android:name=".monitor.FileMonitorService" > </service>
         <service android:name=".cameraupload.MediaObserverService" />
 
         <provider
@@ -234,7 +234,7 @@
             android:name=".cameraupload.MediaSchedulerService"
             android:permission="android.permission.BIND_JOB_SERVICE"/>
 
-        <receiver android:name="com.seafile.seadroid2.BootAutostart">
+        <receiver android:name=".BootAutostart">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
