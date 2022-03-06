@@ -115,9 +115,9 @@
 }
 -dontwarn com.google.**
 
--keep class com.nihaoconsult.app.**
--keepclassmembers class com.nihaoconsult.app.** { *; }
--keepclassmembers class com.nihaoconsult.app.** { public <init>(...); }
+-keep class com.nihaoconsult.nihao.**
+-keepclassmembers class com.nihaoconsult.nihao.** { *; }
+-keepclassmembers class com.nihaoconsult.nihao.** { public <init>(...); }
 -keepclassmembers class * extends com.actionbarsherlock.ActionBarSherlock { public <init>(...); }
 
 -keep class tv.danmaku.ijk.** { *; }

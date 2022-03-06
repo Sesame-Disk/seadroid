@@ -51,7 +51,7 @@
                 android:hint="@string/email_hint"
                 android:layout_height="wrap_content">
 
-                <com.nihaoconsult.app.ui.EmailAutoCompleteTextView
+                <com.nihaoconsult.nihao.ui.EmailAutoCompleteTextView
                     android:id="@+id/email_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
