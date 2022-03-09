@@ -5,7 +5,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 
 import com.nihaoconsult.nihao.R;
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 import com.nihaoconsult.nihao.transfer.DownloadTaskInfo;
 import com.nihaoconsult.nihao.transfer.DownloadTaskManager;
 import com.nihaoconsult.nihao.transfer.TaskState;
@@ -36,9 +36,9 @@ public class DownloadNotificationProvider extends BaseNotificationProvider {
         // failed or cancelled tasks won`t be shown in notification state
         // but failed or cancelled detailed info can be viewed in TransferList
         if (getState().equals(NotificationState.NOTIFICATION_STATE_COMPLETED_WITH_ERRORS))
-            progressStatus = SeadroidApplication.getAppContext().getString(R.string.notification_download_completed);
+            progressStatus = NihaoApplication.getAppContext().getString(R.string.notification_download_completed);
         else if (getState().equals(NotificationState.NOTIFICATION_STATE_COMPLETED))
-            progressStatus = SeadroidApplication.getAppContext().getString(R.string.notification_download_completed);
+            progressStatus = NihaoApplication.getAppContext().getString(R.string.notification_download_completed);
         else if (getState().equals(NotificationState.NOTIFICATION_STATE_PROGRESS)) {
             int downloadingCount = 0;
             List<DownloadTaskInfo> infos = txService.getAllDownloadTaskInfos();
@@ -48,7 +48,7 @@ public class DownloadNotificationProvider extends BaseNotificationProvider {
                     downloadingCount++;
             }
             if (downloadingCount != 0)
-                progressStatus = SeadroidApplication.getAppContext().getResources().
+                progressStatus = NihaoApplication.getAppContext().getResources().
                         getQuantityString(R.plurals.notification_download_info,
                                 downloadingCount,
                                 downloadingCount,
@@ -93,27 +93,27 @@ public class DownloadNotificationProvider extends BaseNotificationProvider {
 
     @Override
     protected String getNotificationTitle() {
-        return SeadroidApplication.getAppContext().getString(R.string.notification_download_started_title);
+        return NihaoApplication.getAppContext().getString(R.string.notification_download_started_title);
     }
 
     @Override
     public void notifyStarted() {
-        Intent dIntent = new Intent(SeadroidApplication.getAppContext(), TransferActivity.class);
+        Intent dIntent = new Intent(NihaoApplication.getAppContext(), TransferActivity.class);
         dIntent.putExtra(NOTIFICATION_MESSAGE_KEY, NOTIFICATION_OPEN_DOWNLOAD_TAB);
         dIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        PendingIntent dPendingIntent = PendingIntent.getActivity(SeadroidApplication.getAppContext(),
+        PendingIntent dPendingIntent = PendingIntent.getActivity(NihaoApplication.getAppContext(),
                 (int) System.currentTimeMillis(),
                 dIntent,
                 0);
-        mNotifBuilder = CustomNotificationBuilder.getNotificationBuilder(SeadroidApplication.getAppContext(),
+        mNotifBuilder = CustomNotificationBuilder.getNotificationBuilder(NihaoApplication.getAppContext(),
                 CustomNotificationBuilder.CHANNEL_ID_DOWNLOAD)
                 .setSmallIcon(R.drawable.icon)
                 .setOnlyAlertOnce(true)
                 .setDefaults(Notification.DEFAULT_VIBRATE)
-                .setContentTitle(SeadroidApplication.getAppContext().getString(R.string.notification_download_started_title))
+                .setContentTitle(NihaoApplication.getAppContext().getString(R.string.notification_download_started_title))
                 .setOngoing(true)
-                .setContentText(SeadroidApplication.getAppContext().getString(R.string.notification_download_started_title))
+                .setContentText(NihaoApplication.getAppContext().getString(R.string.notification_download_started_title))
                 .setContentIntent(dPendingIntent)
                 .setProgress(100, 0, false);
 

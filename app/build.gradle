@@ -11,8 +11,8 @@ android {
         versionName "1.0.0"
         multiDexEnabled true
         resValue "string", "authorities", applicationId + '.cameraupload.provider'
-        resValue "string", "account_type", "com.seafile.seadroid2.account.api2"
-        buildConfigField "String", "ACCOUNT_TYPE", '"com.seafile.seadroid2.account.api2"'
+        resValue "string", "account_type", "com.nihaoconsult.nihao.api"
+        buildConfigField "String", "ACCOUNT_TYPE", '"com.nihaoconsult.nihao.api"'
         ndk {
             abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64', 'x86'
         }
@@ -59,8 +59,8 @@ android {
             debuggable true
             applicationIdSuffix ".debug"
             resValue "string", "authorities", defaultConfig.applicationId + '.debug.cameraupload.provider'
-            resValue "string", "account_type", "com.seafile.seadroid2.debug.account.api2"
-            buildConfigField "String", "ACCOUNT_TYPE", '"com.seafile.seadroid2.debug.account.api2"'
+            resValue "string", "account_type", "com.nihaoconsult.nihao.debug.account.api"
+            buildConfigField "String", "ACCOUNT_TYPE", '"com.nihaoconsult.nihao.debug.account.api"'
             signingConfig signingConfigs.debug
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-project.txt'
@@ -68,7 +68,7 @@ android {
                 variant.outputs.all { output ->
                     if (output.outputFile != null && output.outputFile.name.endsWith('.apk')) {
                         if (variant.name == "debug")
-                            outputFileName = "seafile-debug-" + defaultConfig.versionName + ".apk"
+                            outputFileName = "nihao-debug-" + defaultConfig.versionName + ".apk"
                     }
                 }
             }
@@ -81,7 +81,7 @@ android {
                 variant.outputs.all { output ->
                     if (output.outputFile != null && output.outputFile.name.endsWith('.apk')) {
                         if (variant.name == "release") {
-                            outputFileName = "seafile-" + defaultConfig.versionName + ".apk"
+                            outputFileName = "nihao-" + defaultConfig.versionName + ".apk"
                         }
                     }
                 }

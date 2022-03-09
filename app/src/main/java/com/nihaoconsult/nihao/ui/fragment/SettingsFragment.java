@@ -22,7 +22,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.common.collect.Maps;
 import com.nihaoconsult.nihao.R;
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 import com.nihaoconsult.nihao.SeafException;
 import com.nihaoconsult.nihao.SettingsManager;
 import com.nihaoconsult.nihao.account.Account;
@@ -675,7 +675,7 @@ public class SettingsFragment extends CustomPreferenceFragment {
                 // refresh cache size
                 calculateCacheSize();
                 //clear Glide cache
-                Glide.get(SeadroidApplication.getAppContext()).clearMemory();
+                Glide.get(NihaoApplication.getAppContext()).clearMemory();
                 Toast.makeText(mActivity, getString(R.string.settings_clear_cache_success), Toast.LENGTH_SHORT).show();
             }
 

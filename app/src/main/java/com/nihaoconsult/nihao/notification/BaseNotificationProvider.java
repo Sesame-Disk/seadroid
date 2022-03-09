@@ -3,7 +3,7 @@ package com.nihaoconsult.nihao.notification;
 import android.app.NotificationManager;
 import android.support.v4.app.NotificationCompat;
 import com.nihaoconsult.nihao.R;
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 import com.nihaoconsult.nihao.transfer.TransferManager;
 import com.nihaoconsult.nihao.transfer.TransferService;
 
@@ -19,8 +19,8 @@ public abstract class BaseNotificationProvider {
 
     protected NotificationCompat.Builder mNotifBuilder;
 
-    protected NotificationManager mNotifMgr = (NotificationManager) SeadroidApplication.getAppContext().
-            getSystemService(SeadroidApplication.getAppContext().NOTIFICATION_SERVICE);
+    protected NotificationManager mNotifMgr = (NotificationManager) NihaoApplication.getAppContext().
+            getSystemService(NihaoApplication.getAppContext().NOTIFICATION_SERVICE);
 
     public static final String NOTIFICATION_MESSAGE_KEY = "notification message key";
     /** Creates an explicit flag for opening @{link com.seafile.seadroid2.ui.fragment.DownloadTaskFragment}

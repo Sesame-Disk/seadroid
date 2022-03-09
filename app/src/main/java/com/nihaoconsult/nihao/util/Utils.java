@@ -35,7 +35,7 @@ import android.webkit.MimeTypeMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nihaoconsult.nihao.R;
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 import com.nihaoconsult.nihao.SettingsManager;
 import com.nihaoconsult.nihao.cameraupload.MediaSchedulerService;
 import com.nihaoconsult.nihao.data.SeafRepo;
@@ -347,7 +347,7 @@ public class Utils {
 
     public static boolean isNetworkOn() {
         ConnectivityManager connMgr = (ConnectivityManager)
-                SeadroidApplication.getAppContext().getSystemService(
+                NihaoApplication.getAppContext().getSystemService(
                         Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo == null) {
@@ -367,7 +367,7 @@ public class Utils {
 
     public static boolean isWiFiOn() {
         ConnectivityManager connMgr = (ConnectivityManager)
-                SeadroidApplication.getAppContext().getSystemService(
+                NihaoApplication.getAppContext().getSystemService(
                         Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo wifi = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
@@ -422,7 +422,7 @@ public class Utils {
     public static String translateCommitTime(long timestampInMillis) {
         long now = Calendar.getInstance().getTimeInMillis();
         if (now <= timestampInMillis) {
-            return SeadroidApplication.getAppContext().getString(R.string.just_now);
+            return NihaoApplication.getAppContext().getString(R.string.just_now);
         }
 
         long delta = (now - timestampInMillis) / 1000;
@@ -437,17 +437,17 @@ public class Utils {
             SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
             return fmt.format(d);
         } else if (days > 0) {
-            return SeadroidApplication.getAppContext().getString(R.string.days_ago, days);
+            return NihaoApplication.getAppContext().getString(R.string.days_ago, days);
         } else if (seconds >= 60 * 60) {
             long hours = seconds / 3600;
-            return SeadroidApplication.getAppContext().getString(R.string.hours_ago, hours);
+            return NihaoApplication.getAppContext().getString(R.string.hours_ago, hours);
         } else if (seconds >= 60) {
             long minutes = seconds / 60;
-            return SeadroidApplication.getAppContext().getString(R.string.minutes_ago, minutes);
+            return NihaoApplication.getAppContext().getString(R.string.minutes_ago, minutes);
         } else if (seconds > 0) {
-            return SeadroidApplication.getAppContext().getString(R.string.seconds_ago, seconds);
+            return NihaoApplication.getAppContext().getString(R.string.seconds_ago, seconds);
         } else {
-            return SeadroidApplication.getAppContext().getString(R.string.just_now);
+            return NihaoApplication.getAppContext().getString(R.string.just_now);
         }
     }
 
@@ -681,7 +681,7 @@ public class Utils {
     public static void hideSoftKeyboard(View view) {
         if (view == null)
             return;
-        ((InputMethodManager) SeadroidApplication.getAppContext().getSystemService(
+        ((InputMethodManager) NihaoApplication.getAppContext().getSystemService(
                 Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(
                 view.getWindowToken(), 0);
     }
@@ -700,7 +700,7 @@ public class Utils {
     }
 
     public static ResolveInfo getWeChatIntent(Intent intent) {
-        PackageManager pm = SeadroidApplication.getAppContext().getPackageManager();
+        PackageManager pm = NihaoApplication.getAppContext().getPackageManager();
         List<ResolveInfo> infos = pm.queryIntentActivities(intent, 0);
 
         ResolveInfo info = null;
@@ -729,11 +729,11 @@ public class Utils {
         return TextUtils.equals("CN",language)||TextUtils.equals("TW",language);
     }
     public static List<ResolveInfo> getAppsByIntent(Intent intent) {
-        PackageManager pm = SeadroidApplication.getAppContext().getPackageManager();
+        PackageManager pm = NihaoApplication.getAppContext().getPackageManager();
         List<ResolveInfo> infos = pm.queryIntentActivities(intent, 0);
 
         // Remove seafile app from the list
-        String seadroidPackageName = SeadroidApplication.getAppContext().getPackageName();
+        String seadroidPackageName = NihaoApplication.getAppContext().getPackageName();
         ResolveInfo info;
         Iterator<ResolveInfo> iter = infos.iterator();
         while (iter.hasNext()) {
@@ -880,7 +880,7 @@ public class Utils {
     }
 
     public static int getThumbnailWidth() {
-        return (int) SeadroidApplication.getAppContext().getResources().getDimension(R.dimen.gallery_icon_show);
+        return (int) NihaoApplication.getAppContext().getResources().getDimension(R.dimen.gallery_icon_show);
     }
 
     public static boolean isServiceRunning(Context context, String ServiceName) {
@@ -920,9 +920,9 @@ public class Utils {
 
     public static String getUploadStateShow(Context context) {
         String results = null;
-        int scanUploadStatus = SeadroidApplication.getInstance().getScanUploadStatus();
-        int waitingNumber = SeadroidApplication.getInstance().getWaitingNumber();
-        int totalNumber = SeadroidApplication.getInstance().getTotalNumber();
+        int scanUploadStatus = NihaoApplication.getInstance().getScanUploadStatus();
+        int waitingNumber = NihaoApplication.getInstance().getWaitingNumber();
+        int totalNumber = NihaoApplication.getInstance().getTotalNumber();
         switch (scanUploadStatus) {
             case CameraSyncStatus.SCANNING:
                 results = context.getString(R.string.is_scanning);

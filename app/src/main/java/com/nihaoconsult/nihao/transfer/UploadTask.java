@@ -4,7 +4,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.nihaoconsult.nihao.R;
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 import com.nihaoconsult.nihao.SeafException;
 import com.nihaoconsult.nihao.SettingsManager;
 import com.nihaoconsult.nihao.account.Account;
@@ -119,7 +119,7 @@ public class UploadTask extends TransferTask {
             else {
                 if (err.getCode() == HTTP_ABOVE_QUOTA) {
 
-                    Toast.makeText(SeadroidApplication.getAppContext(), R.string.above_quota, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NihaoApplication.getAppContext(), R.string.above_quota, Toast.LENGTH_SHORT).show();
                 }
                 uploadStateListener.onFileUploadFailed(taskID);
             }

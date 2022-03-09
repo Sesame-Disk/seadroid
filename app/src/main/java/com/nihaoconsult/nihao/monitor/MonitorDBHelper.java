@@ -9,7 +9,7 @@ import android.util.Log;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 import com.nihaoconsult.nihao.account.Account;
 import com.nihaoconsult.nihao.account.AccountManager;
 
@@ -73,7 +73,7 @@ public class MonitorDBHelper extends SQLiteOpenHelper {
     }
 
     private static class SingletonHolder {
-        private static MonitorDBHelper SINGLETON = new MonitorDBHelper(SeadroidApplication.getAppContext());
+        private static MonitorDBHelper SINGLETON = new MonitorDBHelper(NihaoApplication.getAppContext());
     }
 
     private MonitorDBHelper(Context context) {
@@ -165,7 +165,7 @@ public class MonitorDBHelper extends SQLiteOpenHelper {
     }
 
     private Map<String, Account> getAllAccounts() {
-        AccountManager accountMgr = new AccountManager(SeadroidApplication.getAppContext());
+        AccountManager accountMgr = new AccountManager(NihaoApplication.getAppContext());
         Map<String, Account> accounts = Maps.newHashMap();
         for (Account account : accountMgr.getAccountList()) {
             accounts.put(account.getSignature(), account);

@@ -24,9 +24,9 @@ public final class SettingsManager {
     private static SharedPreferences.Editor editor;
 
     private SettingsManager() {
-        if (SeadroidApplication.getAppContext() != null) {
-            settingsSharedPref = PreferenceManager.getDefaultSharedPreferences(SeadroidApplication.getAppContext());
-            sharedPref = SeadroidApplication.getAppContext().getSharedPreferences(AccountManager.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        if (NihaoApplication.getAppContext() != null) {
+            settingsSharedPref = PreferenceManager.getDefaultSharedPreferences(NihaoApplication.getAppContext());
+            sharedPref = NihaoApplication.getAppContext().getSharedPreferences(AccountManager.SHARED_PREF_NAME, Context.MODE_PRIVATE);
             editor = sharedPref.edit();
         }
     }
@@ -117,10 +117,10 @@ public final class SettingsManager {
         }
 
         if (settingsSharedPref == null) {
-            settingsSharedPref = PreferenceManager.getDefaultSharedPreferences(SeadroidApplication.getAppContext());
+            settingsSharedPref = PreferenceManager.getDefaultSharedPreferences(NihaoApplication.getAppContext());
         }
         if (sharedPref == null) {
-            sharedPref = SeadroidApplication.getAppContext().getSharedPreferences(AccountManager.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+            sharedPref = NihaoApplication.getAppContext().getSharedPreferences(AccountManager.SHARED_PREF_NAME, Context.MODE_PRIVATE);
             editor = sharedPref.edit();
         }
         return instance;
@@ -188,7 +188,7 @@ public final class SettingsManager {
         if (!isGestureLockEnabled()) {
             return false;
         }
-        LockPatternUtils mLockPatternUtils = new LockPatternUtils(SeadroidApplication.getAppContext());
+        LockPatternUtils mLockPatternUtils = new LockPatternUtils(NihaoApplication.getAppContext());
         if (!mLockPatternUtils.savedPatternExists()) {
             return false;
         }

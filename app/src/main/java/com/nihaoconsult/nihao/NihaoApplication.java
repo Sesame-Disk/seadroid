@@ -9,25 +9,25 @@ import android.os.Build;
 
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.MaterialCommunityModule;
-import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
-import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nihaoconsult.nihao.avatar.AuthImageDownloader;
 import com.nihaoconsult.nihao.data.StorageManager;
 import com.nihaoconsult.nihao.gesturelock.AppLockManager;
 import com.nihaoconsult.nihao.ui.CustomNotificationBuilder;
 import com.nihaoconsult.nihao.util.Utils;
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
+import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
 import java.io.File;
 
-public class SeadroidApplication extends Application {
+public class NihaoApplication extends Application {
     private static Context context;
     private int waitingNumber;
     private int totalNumber;
     private int scanUploadStatus;
-    private static SeadroidApplication instance;
+    private static NihaoApplication instance;
 
     public void onCreate() {
         super.onCreate();
@@ -47,14 +47,14 @@ public class SeadroidApplication extends Application {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        SeadroidApplication.context = this;
+        NihaoApplication.context = this;
     }
 
     public static Context getAppContext() {
-        return SeadroidApplication.context;
+        return NihaoApplication.context;
     }
 
-    public static SeadroidApplication getInstance() {
+    public static NihaoApplication getInstance() {
         return instance;
     }
 
@@ -81,18 +81,18 @@ public class SeadroidApplication extends Application {
 
     private void initNotificationChannel() {
         String channelName = getString(R.string.channel_name_error);
-        createNotificationChannel(CustomNotificationBuilder.CHANNEL_ID_ERROR, channelName, NotificationManager.IMPORTANCE_DEFAULT,false,true);
+        createNotificationChannel(CustomNotificationBuilder.CHANNEL_ID_ERROR, channelName, NotificationManager.IMPORTANCE_DEFAULT, false, true);
 
         channelName = getString(R.string.channel_name_upload);
-        createNotificationChannel(CustomNotificationBuilder.CHANNEL_ID_UPLOAD, channelName, NotificationManager.IMPORTANCE_LOW,false,false);
+        createNotificationChannel(CustomNotificationBuilder.CHANNEL_ID_UPLOAD, channelName, NotificationManager.IMPORTANCE_LOW, false, false);
 
         channelName = getString(R.string.channel_name_download);
-        createNotificationChannel(CustomNotificationBuilder.CHANNEL_ID_DOWNLOAD, channelName, NotificationManager.IMPORTANCE_LOW,false,false);
+        createNotificationChannel(CustomNotificationBuilder.CHANNEL_ID_DOWNLOAD, channelName, NotificationManager.IMPORTANCE_LOW, false, false);
 
     }
 
     @TargetApi(Build.VERSION_CODES.O)
-    private void createNotificationChannel(String channelId, String channelName, int importance,boolean isVibrate, boolean hasSound ) {
+    private void createNotificationChannel(String channelId, String channelName, int importance, boolean isVibrate, boolean hasSound) {
         NotificationChannel channel = new NotificationChannel(channelId, channelName, importance);
         channel.setShowBadge(true);
         channel.enableVibration(isVibrate);

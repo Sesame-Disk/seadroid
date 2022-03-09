@@ -7,7 +7,7 @@ import android.util.Pair;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nihaoconsult.nihao.R;
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 import com.nihaoconsult.nihao.SeafConnection;
 import com.nihaoconsult.nihao.SeafException;
 import com.nihaoconsult.nihao.account.Account;
@@ -1121,10 +1121,10 @@ public class DataManager {
             return null;
         }
         StringBuilder sb = new StringBuilder();
-        sb.append(SeadroidApplication.getAppContext().getString(R.string.pull_to_refresh_last_update));
+        sb.append(NihaoApplication.getAppContext().getString(R.string.pull_to_refresh_last_update));
 
         if (seconds < 60) {
-            sb.append(SeadroidApplication.getAppContext().getString(R.string.pull_to_refresh_last_update_seconds_ago, seconds));
+            sb.append(NihaoApplication.getAppContext().getString(R.string.pull_to_refresh_last_update_seconds_ago, seconds));
         } else {
             int minutes = (seconds / 60);
             if (minutes > 60) {
@@ -1133,11 +1133,11 @@ public class DataManager {
                     Date date = new Date(lastUpdate);
                     sb.append(ptrDataFormat.format(date));
                 } else {
-                    sb.append(SeadroidApplication.getAppContext().getString(R.string.pull_to_refresh_last_update_hours_ago, hours));
+                    sb.append(NihaoApplication.getAppContext().getString(R.string.pull_to_refresh_last_update_hours_ago, hours));
                 }
 
             } else {
-                sb.append(SeadroidApplication.getAppContext().getString(R.string.pull_to_refresh_last_update_minutes_ago, minutes));
+                sb.append(NihaoApplication.getAppContext().getString(R.string.pull_to_refresh_last_update_minutes_ago, minutes));
             }
         }
         return sb.toString();

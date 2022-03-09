@@ -3,7 +3,7 @@ package com.nihaoconsult.nihao.transfer;
 import android.util.Log;
 
 import com.google.common.collect.Lists;
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 import com.nihaoconsult.nihao.data.CameraSyncEvent;
 import com.nihaoconsult.nihao.util.CameraSyncStatus;
 import com.nihaoconsult.nihao.util.ConcurrentAsyncTask;
@@ -97,8 +97,8 @@ public abstract class TransferManager {
 
             TransferTask task = waitingList.remove(0);
             transferringList.add(task);
-            SeadroidApplication.getInstance().setCameraUploadNumber(waitingList.size(), allTaskList.size());
-            SeadroidApplication.getInstance().setScanUploadStatus(CameraSyncStatus.UPLOADING);
+            NihaoApplication.getInstance().setCameraUploadNumber(waitingList.size(), allTaskList.size());
+            NihaoApplication.getInstance().setScanUploadStatus(CameraSyncStatus.UPLOADING);
             EventBus.getDefault().post(new CameraSyncEvent("upload"));
             ConcurrentAsyncTask.execute(task);
         }

@@ -11,7 +11,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.google.common.collect.Lists;
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 import com.nihaoconsult.nihao.account.Account;
 
 import java.io.File;
@@ -112,7 +112,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static synchronized DatabaseHelper getDatabaseHelper() {
         if (dbHelper != null)
             return dbHelper;
-        dbHelper = new DatabaseHelper(SeadroidApplication.getAppContext());
+        dbHelper = new DatabaseHelper(NihaoApplication.getAppContext());
         dbHelper.database = dbHelper.getWritableDatabase();
         return dbHelper;
     }

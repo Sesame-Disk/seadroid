@@ -22,7 +22,7 @@ import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.ObjectKey;
 import com.google.common.collect.Lists;
 import com.nihaoconsult.nihao.R;
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 import com.nihaoconsult.nihao.data.DataManager;
 import com.nihaoconsult.nihao.data.SeafCachedFile;
 import com.nihaoconsult.nihao.data.SeafDirent;
@@ -568,7 +568,7 @@ public class SeafItemAdapter extends BaseAdapter {
     }
 
     private int getThumbnailWidth() {
-        return (int) SeadroidApplication.getAppContext().getResources().getDimension(R.dimen.lv_icon_width);
+        return (int) NihaoApplication.getAppContext().getResources().getDimension(R.dimen.lv_icon_width);
     }
 
     public void setEncryptedRepo(boolean encrypted) {

@@ -1,19 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2012 Jake Wharton
-
-     Licensed under the Apache License, Version 2.0 (the "License");
-     you may not use this file except in compliance with the License.
-     You may obtain a copy of the License at
-
-          http://www.apache.org/licenses/LICENSE-2.0
-
-     Unless required by applicable law or agreed to in writing, software
-     distributed under the License is distributed on an "AS IS" BASIS,
-     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     See the License for the specific language governing permissions and
-     limitations under the License.
--->
-
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Base application theme. -->
@@ -35,9 +20,12 @@
         <item name="android:homeAsUpIndicator">@drawable/home_up_btn</item>
         <item name="homeAsUpIndicator">@drawable/home_up_btn</item>
         <item name="android:textColorHighlight">@color/fancy_gray</item>
-        <item name="android:textSelectHandleLeft">@drawable/fancy_orange_text_select_handle_left</item>
-        <item name="android:textSelectHandleRight">@drawable/fancy_orange_text_select_handle_right</item>
-        <item name="android:textSelectHandle">@drawable/fancy_orange_text_select_handle_middle</item>
+        <item name="android:textSelectHandleLeft">@drawable/fancy_orange_text_select_handle_left
+        </item>
+        <item name="android:textSelectHandleRight">@drawable/fancy_orange_text_select_handle_right
+        </item>
+        <item name="android:textSelectHandle">@drawable/fancy_orange_text_select_handle_middle
+        </item>
         <item name="android:colorButtonNormal">@color/fancy_orange</item>
         <item name="colorButtonNormal">@color/fancy_orange</item>
         <item name="alertDialogTheme">@style/AppCompatAlertDialogStyle</item>
@@ -126,6 +114,7 @@
         <!-- <item name="android:colorPressedHighlight">@color/black</item> -->
         <!-- <item name="android:colorLongPressedHighlight">@color/black</item> -->
     </style>
+
     <style name="CustomCheckboxTheme" parent="@android:style/Widget.CompoundButton.CheckBox">
         <item name="android:button">@drawable/checkbox_btn_holo_light</item>
     </style>
@@ -139,14 +128,13 @@
     </style>
 
     <!-- Notifications -->
-    <style name="NotificationTitle"
-           parent="@android:style/TextAppearance">
+    <style name="NotificationTitle" parent="@android:style/TextAppearance">
         <item name="android:textColor">#ff000000</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
     </style>
-    <style name="NotificationContent"
-           parent="@android:style/TextAppearance">
+
+    <style name="NotificationContent" parent="@android:style/TextAppearance">
         <item name="android:textColor">#ff000000</item>
         <item name="android:textSize">14sp</item>
     </style>

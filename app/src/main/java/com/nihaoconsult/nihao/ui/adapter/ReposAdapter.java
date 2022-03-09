@@ -7,7 +7,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.google.common.collect.Lists;
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 import com.nihaoconsult.nihao.data.SeafRepo;
 
 import java.util.List;
@@ -75,7 +75,7 @@ public abstract class ReposAdapter extends BaseAdapter {
         SeafRepo repo = getChildSeafRepo(position);
 
         if (convertView == null) {
-            view = LayoutInflater.from(SeadroidApplication.getAppContext())
+            view = LayoutInflater.from(NihaoApplication.getAppContext())
                     .inflate(getChildLayout(), null);
             TextView title = (TextView) view.findViewById(getChildTitleId());
             TextView subtitle = (TextView) view.findViewById(getChildSubTitleId());

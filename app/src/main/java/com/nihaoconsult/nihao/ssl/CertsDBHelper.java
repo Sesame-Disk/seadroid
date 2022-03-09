@@ -14,7 +14,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Base64;
 
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 
 public class CertsDBHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
@@ -35,7 +35,7 @@ public class CertsDBHelper extends SQLiteOpenHelper {
     public static synchronized CertsDBHelper getDatabaseHelper() {
         if (dbHelper != null)
             return dbHelper;
-        dbHelper = new CertsDBHelper(SeadroidApplication.getAppContext());
+        dbHelper = new CertsDBHelper(NihaoApplication.getAppContext());
         dbHelper.database = dbHelper.getWritableDatabase();
         return dbHelper;
     }

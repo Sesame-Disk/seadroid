@@ -6,9 +6,9 @@ import com.nihaoconsult.nihao.R;
 /**
  * Adapter for showing account in a list view.
  */
-public class SeafAccountAdapter extends AccountAdapter {
+public class NihaoAccountAdapter extends AccountAdapter {
 
-    public SeafAccountAdapter(Context context) {
+    public NihaoAccountAdapter(Context context) {
         super(context);
     }
 

@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.google.common.collect.Lists;
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 import com.nihaoconsult.nihao.account.Account;
 import com.nihaoconsult.nihao.notification.UploadNotificationProvider;
 
@@ -99,7 +99,7 @@ public class UploadTaskManager extends TransferManager implements UploadStateLis
     public void onFileUploadProgress(int taskID) {
         Intent localIntent = new Intent(BROADCAST_ACTION).putExtra("type",
                 BROADCAST_FILE_UPLOAD_PROGRESS).putExtra("taskID", taskID);
-        LocalBroadcastManager.getInstance(SeadroidApplication.getAppContext()).sendBroadcast(localIntent);
+        LocalBroadcastManager.getInstance(NihaoApplication.getAppContext()).sendBroadcast(localIntent);
         notifyProgress(taskID);
     }
 
@@ -109,7 +109,7 @@ public class UploadTaskManager extends TransferManager implements UploadStateLis
         doNext();
         Intent localIntent = new Intent(BROADCAST_ACTION).putExtra("type",
                 BROADCAST_FILE_UPLOAD_SUCCESS).putExtra("taskID", taskID);
-        LocalBroadcastManager.getInstance(SeadroidApplication.getAppContext()).sendBroadcast(localIntent);
+        LocalBroadcastManager.getInstance(NihaoApplication.getAppContext()).sendBroadcast(localIntent);
         notifyProgress(taskID);
     }
 
@@ -117,7 +117,7 @@ public class UploadTaskManager extends TransferManager implements UploadStateLis
     public void onFileUploadCancelled(int taskID) {
         Intent localIntent = new Intent(BROADCAST_ACTION).putExtra("type",
                 BROADCAST_FILE_UPLOAD_CANCELLED).putExtra("taskID", taskID);
-        LocalBroadcastManager.getInstance(SeadroidApplication.getAppContext()).sendBroadcast(localIntent);
+        LocalBroadcastManager.getInstance(NihaoApplication.getAppContext()).sendBroadcast(localIntent);
         notifyProgress(taskID);
     }
 
@@ -127,7 +127,7 @@ public class UploadTaskManager extends TransferManager implements UploadStateLis
         doNext();
         Intent localIntent = new Intent(BROADCAST_ACTION).putExtra("type",
                 BROADCAST_FILE_UPLOAD_FAILED).putExtra("taskID", taskID);
-        LocalBroadcastManager.getInstance(SeadroidApplication.getAppContext()).sendBroadcast(localIntent);
+        LocalBroadcastManager.getInstance(NihaoApplication.getAppContext()).sendBroadcast(localIntent);
         notifyProgress(taskID);
     }
 

@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nihaoconsult.nihao.R;
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 import com.nihaoconsult.nihao.account.Account;
 import com.nihaoconsult.nihao.ui.activity.BaseActivity;
 import com.nihaoconsult.nihao.ui.activity.BrowserActivity;
@@ -282,7 +282,7 @@ public class WidgetUtils {
     }
 
     public static int getThumbnailWidth() {
-        return (int) SeadroidApplication.getAppContext().getResources().getDimension(R.dimen.lv_icon_width);
+        return (int) NihaoApplication.getAppContext().getResources().getDimension(R.dimen.lv_icon_width);
     }
 
     public static DisplayImageOptions iconOptions = new DisplayImageOptions.Builder()

@@ -184,7 +184,7 @@ public class SeafConnection {
             req.form("password", passwd);
 
             String appVersion = "";
-            Context context = SeadroidApplication.getAppContext();
+            Context context = NihaoApplication.getAppContext();
             try {
                 PackageInfo pInfo = context.getPackageManager().
                         getPackageInfo(context.getPackageName(), 0);

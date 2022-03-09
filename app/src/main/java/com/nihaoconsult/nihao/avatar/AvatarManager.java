@@ -2,7 +2,7 @@ package com.nihaoconsult.nihao.avatar;
 
 import java.util.*;
 
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 import com.nihaoconsult.nihao.account.AccountManager;
 import org.json.JSONObject;
 
@@ -23,7 +23,7 @@ public class AvatarManager {
 
     public AvatarManager() {
         this.avatars = Lists.newArrayList();
-        this.accountMgr = new AccountManager(SeadroidApplication.getAppContext());
+        this.accountMgr = new AccountManager(NihaoApplication.getAppContext());
     }
 
     /**

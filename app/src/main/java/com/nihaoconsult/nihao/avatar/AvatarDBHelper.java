@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.google.common.collect.Lists;
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 import com.nihaoconsult.nihao.account.Account;
 
 public class AvatarDBHelper extends SQLiteOpenHelper {
@@ -54,7 +54,7 @@ public class AvatarDBHelper extends SQLiteOpenHelper {
     public static synchronized AvatarDBHelper getAvatarDbHelper() {
         if (dbHelper != null)
             return dbHelper;
-        dbHelper = new AvatarDBHelper(SeadroidApplication.getAppContext());
+        dbHelper = new AvatarDBHelper(NihaoApplication.getAppContext());
         dbHelper.database = dbHelper.getWritableDatabase();
         return dbHelper;
     }

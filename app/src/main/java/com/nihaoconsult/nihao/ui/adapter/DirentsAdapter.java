@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.google.common.collect.Lists;
 import com.nihaoconsult.nihao.R;
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 import com.nihaoconsult.nihao.data.SeafDirent;
 
 import java.util.Collections;
@@ -114,7 +114,7 @@ public class DirentsAdapter extends BaseAdapter {
         SeafDirent dirent = dirents.get(position);
 
         if (convertView == null) {
-            view = LayoutInflater.from(SeadroidApplication.getAppContext()).
+            view = LayoutInflater.from(NihaoApplication.getAppContext()).
                     inflate(R.layout.list_item_entry, null);
             TextView title = (TextView) view.findViewById(R.id.list_item_title);
             TextView subtitle = (TextView) view.findViewById(R.id.list_item_subtitle);

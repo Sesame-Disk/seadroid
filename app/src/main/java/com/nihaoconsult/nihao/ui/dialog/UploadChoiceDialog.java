@@ -9,14 +9,14 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
 import com.nihaoconsult.nihao.R;
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 import com.nihaoconsult.nihao.fileschooser.MultiFileChooserActivity;
 import com.nihaoconsult.nihao.gallery.MultipleImageSelectionActivity;
 import com.nihaoconsult.nihao.ui.activity.BrowserActivity;
 import com.nihaoconsult.nihao.util.Utils;
 
 public class UploadChoiceDialog extends DialogFragment {
-    private Context ctx = SeadroidApplication.getAppContext();
+    private Context ctx = NihaoApplication.getAppContext();
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

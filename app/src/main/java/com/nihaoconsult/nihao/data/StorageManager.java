@@ -10,7 +10,7 @@ import android.text.format.Formatter;
 import android.util.Log;
 
 import com.nihaoconsult.nihao.R;
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 import com.nihaoconsult.nihao.SettingsManager;
 import com.nihaoconsult.nihao.account.Account;
 import com.nihaoconsult.nihao.account.AccountManager;
@@ -94,7 +94,7 @@ public abstract class StorageManager implements MediaScannerConnection.OnScanCom
     private Location buildClassicLocation() {
         Location classic = new Location();
         classic.id = -1; // Android IDs start at 0. so "-1" is safe for us
-        File[] externalMediaDirs = SeadroidApplication.getAppContext().getExternalMediaDirs();
+        File[] externalMediaDirs = NihaoApplication.getAppContext().getExternalMediaDirs();
         String rootPath = externalMediaDirs[0].getAbsolutePath();
 //        String rootPath = SeadroidApplication.getAppContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath();
 //        classic.mediaPath = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Seafile/");
@@ -373,7 +373,7 @@ public abstract class StorageManager implements MediaScannerConnection.OnScanCom
     }
 
     protected final Context getContext() {
-        return SeadroidApplication.getAppContext();
+        return NihaoApplication.getAppContext();
     }
 
     /**

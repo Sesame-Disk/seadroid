@@ -12,7 +12,7 @@ import android.provider.MediaStore.Images;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 import com.nihaoconsult.nihao.util.Utils;
 
 import java.io.File;
@@ -130,7 +130,7 @@ public class ImageManager {
 
         List<String> pathList = Lists.newArrayList();
         for (String path : paths) {
-            File[] externalMediaDirs = SeadroidApplication.getAppContext().getExternalMediaDirs();
+            File[] externalMediaDirs = NihaoApplication.getAppContext().getExternalMediaDirs();
             String rootPath = externalMediaDirs[0].getAbsolutePath();
 //            String rootPath = SeadroidApplication.getAppContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath();
 //            String fullPath = Utils.pathJoin(Environment.getExternalStorageDirectory().getAbsolutePath(), path);

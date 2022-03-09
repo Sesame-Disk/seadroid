@@ -3,7 +3,7 @@ package com.nihaoconsult.nihao.notification;
 import android.app.PendingIntent;
 import android.content.Intent;
 import com.nihaoconsult.nihao.R;
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 import com.nihaoconsult.nihao.transfer.TaskState;
 import com.nihaoconsult.nihao.transfer.TransferService;
 import com.nihaoconsult.nihao.transfer.UploadTaskInfo;
@@ -35,9 +35,9 @@ public class UploadNotificationProvider extends BaseNotificationProvider {
         // failed or cancelled tasks won`t be shown in notification state
         // but failed or cancelled detailed info can be viewed in TransferList
         if (getState().equals(NotificationState.NOTIFICATION_STATE_COMPLETED_WITH_ERRORS))
-            progressStatus = SeadroidApplication.getAppContext().getString(R.string.notification_upload_completed);
+            progressStatus = NihaoApplication.getAppContext().getString(R.string.notification_upload_completed);
         else if (getState().equals(NotificationState.NOTIFICATION_STATE_COMPLETED))
-            progressStatus = SeadroidApplication.getAppContext().getString(R.string.notification_upload_completed);
+            progressStatus = NihaoApplication.getAppContext().getString(R.string.notification_upload_completed);
         else if (getState().equals(NotificationState.NOTIFICATION_STATE_PROGRESS)) {
             int uploadingCount = 0;
             List<UploadTaskInfo> infos = txService.getNoneCameraUploadTaskInfos();
@@ -48,7 +48,7 @@ public class UploadNotificationProvider extends BaseNotificationProvider {
             }
 
             if (uploadingCount != 0)
-                progressStatus = SeadroidApplication.getAppContext().getResources().
+                progressStatus = NihaoApplication.getAppContext().getResources().
                                 getQuantityString(R.plurals.notification_upload_info,
                                         uploadingCount,
                                         uploadingCount,
@@ -59,21 +59,21 @@ public class UploadNotificationProvider extends BaseNotificationProvider {
 
     @Override
     protected void notifyStarted() {
-        Intent dIntent = new Intent(SeadroidApplication.getAppContext(), TransferActivity.class);
+        Intent dIntent = new Intent(NihaoApplication.getAppContext(), TransferActivity.class);
         dIntent.putExtra(NOTIFICATION_MESSAGE_KEY, NOTIFICATION_OPEN_UPLOAD_TAB);
         dIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        PendingIntent uPendingIntent = PendingIntent.getActivity(SeadroidApplication.getAppContext(),
+        PendingIntent uPendingIntent = PendingIntent.getActivity(NihaoApplication.getAppContext(),
                 (int) System.currentTimeMillis(),
                 dIntent,
                 0);
-        mNotifBuilder = CustomNotificationBuilder.getNotificationBuilder(SeadroidApplication.getAppContext(),
+        mNotifBuilder = CustomNotificationBuilder.getNotificationBuilder(NihaoApplication.getAppContext(),
                 CustomNotificationBuilder.CHANNEL_ID_UPLOAD)
                 .setSmallIcon(R.drawable.icon)
                 .setOnlyAlertOnce(true)
-                .setContentTitle(SeadroidApplication.getAppContext().getString(R.string.notification_upload_started_title))
+                .setContentTitle(NihaoApplication.getAppContext().getString(R.string.notification_upload_started_title))
                 .setOngoing(true)
-                .setContentText(SeadroidApplication.getAppContext().getString(R.string.notification_upload_started_title))
+                .setContentText(NihaoApplication.getAppContext().getString(R.string.notification_upload_started_title))
                 .setContentIntent(uPendingIntent)
                 .setProgress(100, 0, false);
 
@@ -139,7 +139,7 @@ public class UploadNotificationProvider extends BaseNotificationProvider {
 
     @Override
     protected String getNotificationTitle() {
-        return SeadroidApplication.getAppContext().getString(R.string.notification_upload_started_title);
+        return NihaoApplication.getAppContext().getString(R.string.notification_upload_started_title);
     }
 
 }

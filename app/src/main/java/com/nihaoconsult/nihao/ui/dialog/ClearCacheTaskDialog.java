@@ -7,7 +7,7 @@ import android.view.View;
 
 import com.bumptech.glide.Glide;
 import com.nihaoconsult.nihao.R;
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 import com.nihaoconsult.nihao.data.DatabaseHelper;
 import com.nihaoconsult.nihao.data.StorageManager;
 
@@ -23,7 +23,7 @@ class ClearCacheTask extends TaskDialog.Task {
         dbHelper.delCaches();
 
         //clear Glide cache
-        Glide.get(SeadroidApplication.getAppContext()).clearDiskCache();
+        Glide.get(NihaoApplication.getAppContext()).clearDiskCache();
     }
 }
 

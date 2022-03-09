@@ -14,7 +14,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.nihaoconsult.nihao.R;
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 import com.nihaoconsult.nihao.account.Account;
 import com.nihaoconsult.nihao.cameraupload.CameraUploadManager;
 import com.nihaoconsult.nihao.data.StorageManager;
@@ -31,8 +31,8 @@ class SwitchStorageTask extends TaskDialog.Task {
     private StorageManager.Location location = null;
 
     SwitchStorageTask() {
-        Intent bIntent = new Intent(SeadroidApplication.getAppContext(), TransferService.class);
-        SeadroidApplication.getAppContext().bindService(bIntent, mConnection, Context.BIND_AUTO_CREATE);
+        Intent bIntent = new Intent(NihaoApplication.getAppContext(), TransferService.class);
+        NihaoApplication.getAppContext().bindService(bIntent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
     public void setNewLocation(StorageManager.Location loc) {
@@ -65,7 +65,7 @@ class SwitchStorageTask extends TaskDialog.Task {
             return;
         }
 
-        Context context = SeadroidApplication.getAppContext();
+        Context context = NihaoApplication.getAppContext();
 
         CameraUploadManager camera = new CameraUploadManager(context);
         Account camAccount = camera.getCameraAccount();

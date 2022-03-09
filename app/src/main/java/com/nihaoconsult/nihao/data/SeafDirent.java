@@ -3,7 +3,7 @@ package com.nihaoconsult.nihao.data;
 import android.util.Log;
 
 import com.nihaoconsult.nihao.R;
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 import com.nihaoconsult.nihao.util.PinyinUtils;
 import com.nihaoconsult.nihao.util.Utils;
 
@@ -108,8 +108,8 @@ public class SeafDirent implements SeafItem, Serializable {
 
             // both are Chinese words
             if ((19968 < unicodeA && unicodeA < 40869) && (19968 < unicodeB && unicodeB < 40869)) {
-                strA = PinyinUtils.toPinyin(SeadroidApplication.getAppContext(), itemA.name).toLowerCase();
-                strB = PinyinUtils.toPinyin(SeadroidApplication.getAppContext(), itemB.name).toLowerCase();
+                strA = PinyinUtils.toPinyin(NihaoApplication.getAppContext(), itemA.name).toLowerCase();
+                strB = PinyinUtils.toPinyin(NihaoApplication.getAppContext(), itemB.name).toLowerCase();
             } else if ((19968 < unicodeA && unicodeA < 40869) && !(19968 < unicodeB && unicodeB < 40869)) {
                 // itemA is Chinese and itemB is English
                 return 1;

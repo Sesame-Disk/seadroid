@@ -3,7 +3,7 @@ package com.nihaoconsult.nihao.util;
 import android.content.Context;
 import android.util.Log;
 
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -95,7 +95,7 @@ public class SeafileLog {
         String needWriteMessage = myLogSdf.format(nowtime) + "    " + mylogtype + "    " + tag + "    " + text;
 //        File dirsFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Seafile/");
 //        String rootPath = SeadroidApplication.getAppContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath();
-        File[] externalMediaDirs = SeadroidApplication.getAppContext().getExternalMediaDirs();
+        File[] externalMediaDirs = NihaoApplication.getAppContext().getExternalMediaDirs();
         String rootPath = externalMediaDirs[0].getAbsolutePath();
         File dirsFile = new File(rootPath + "/Seafile/");
         if (!dirsFile.exists()) {
@@ -126,7 +126,7 @@ public class SeafileLog {
      */
     public static void delFile() {
         String needDelFiel = logfile.format(getDateBefore());
-        File[] externalMediaDirs = SeadroidApplication.getAppContext().getExternalMediaDirs();
+        File[] externalMediaDirs = NihaoApplication.getAppContext().getExternalMediaDirs();
         String rootPath = externalMediaDirs[0].getAbsolutePath();
 //        String rootPath = SeadroidApplication.getAppContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath();
 //        File dirPath = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Seafile/");

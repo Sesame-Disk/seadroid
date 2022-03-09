@@ -30,7 +30,7 @@ import com.nihaoconsult.nihao.data.SeafRepo;
 import com.nihaoconsult.nihao.ui.NavContext;
 import com.nihaoconsult.nihao.ui.adapter.AccountAdapter;
 import com.nihaoconsult.nihao.ui.adapter.DirentsAdapter;
-import com.nihaoconsult.nihao.ui.adapter.SeafAccountAdapter;
+import com.nihaoconsult.nihao.ui.adapter.NihaoAccountAdapter;
 import com.nihaoconsult.nihao.ui.adapter.SeafReposAdapter;
 import com.nihaoconsult.nihao.ui.dialog.NewDirDialog;
 import com.nihaoconsult.nihao.ui.dialog.PasswordDialog;
@@ -641,7 +641,7 @@ public class SeafilePathChooserActivity extends BaseActivity implements Toolbar.
 
     private AccountAdapter getAccountAdapter() {
         if (mAccountAdapter == null) {
-            mAccountAdapter = new SeafAccountAdapter(this);
+            mAccountAdapter = new NihaoAccountAdapter(this);
         }
 
         return mAccountAdapter;

@@ -43,7 +43,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nihaoconsult.nihao.BuildConfig;
 import com.nihaoconsult.nihao.R;
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 import com.nihaoconsult.nihao.SeafException;
 import com.nihaoconsult.nihao.account.Account;
 import com.nihaoconsult.nihao.account.AccountManager;
@@ -118,7 +118,7 @@ public class SeafileProvider extends DocumentsProvider {
     private OnAccountsUpdateListener accountListener = new OnAccountsUpdateListener() {
         @Override
         public void onAccountsUpdated(android.accounts.Account[] accounts) {
-            Context c = SeadroidApplication.getAppContext();
+            Context c = NihaoApplication.getAppContext();
             c.getContentResolver().notifyChange(NOTIFICATION_URI, null);
         }
     };
@@ -480,21 +480,21 @@ public class SeafileProvider extends DocumentsProvider {
 
             List<SeafDirent> list = dm.getDirentsFromServer(repoId, parentPath);
             if (list == null) {
-                throw new SeafException(0, SeadroidApplication.getAppContext().getString(R.string.saf_write_diretory_exception));
+                throw new SeafException(0, NihaoApplication.getAppContext().getString(R.string.saf_write_diretory_exception));
             }
 
             // first check if target already exist. if yes, abort
             for (SeafDirent e: list) {
                 if (e.getTitle().equals(displayName)) {
-                    throw new SeafException(0, SeadroidApplication.getAppContext().getString(R.string.saf_file_exist));
+                    throw new SeafException(0, NihaoApplication.getAppContext().getString(R.string.saf_file_exist));
                 }
             }
 
             if (repo == null || !repo.hasWritePermission()) {
-                throw new SeafException(0, SeadroidApplication.getAppContext().getString(R.string.saf_write_diretory_exception));
+                throw new SeafException(0, NihaoApplication.getAppContext().getString(R.string.saf_write_diretory_exception));
             } else if (mimeType == null) {
                 // bad mime type given by caller
-                throw new SeafException(0, SeadroidApplication.getAppContext().getString(R.string.saf_bad_mime_type));
+                throw new SeafException(0, NihaoApplication.getAppContext().getString(R.string.saf_bad_mime_type));
             } else if (mimeType.equals(Document.MIME_TYPE_DIR)) {
                 dm.createNewDir(repoId, parentPath, displayName);
             } else {
@@ -708,7 +708,7 @@ public class SeafileProvider extends DocumentsProvider {
         final MatrixCursor.RowBuilder row = result.newRow();
         row.add(Document.COLUMN_DOCUMENT_ID, docId);
 
-        row.add(Document.COLUMN_DISPLAY_NAME,SeadroidApplication.getAppContext()
+        row.add(Document.COLUMN_DISPLAY_NAME, NihaoApplication.getAppContext()
                 .getResources().getString(R.string.tabs_starred));
         row.add(Document.COLUMN_ICON, R.drawable.star_normal);
         row.add(Document.COLUMN_FLAGS, 0);

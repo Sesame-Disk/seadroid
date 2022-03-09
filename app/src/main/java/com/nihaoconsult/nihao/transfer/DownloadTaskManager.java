@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.google.common.collect.Lists;
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 import com.nihaoconsult.nihao.account.Account;
 import com.nihaoconsult.nihao.notification.DownloadNotificationProvider;
 import com.nihaoconsult.nihao.util.ConcurrentAsyncTask;
@@ -157,7 +157,7 @@ public class DownloadTaskManager extends TransferManager implements DownloadStat
     public void onFileDownloadProgress(int taskID) {
         Intent localIntent = new Intent(BROADCAST_ACTION).putExtra("type",
                 BROADCAST_FILE_DOWNLOAD_PROGRESS).putExtra("taskID", taskID);
-        LocalBroadcastManager.getInstance(SeadroidApplication.getAppContext()).sendBroadcast(localIntent);
+        LocalBroadcastManager.getInstance(NihaoApplication.getAppContext()).sendBroadcast(localIntent);
         notifyProgress(taskID);
     }
 
@@ -167,7 +167,7 @@ public class DownloadTaskManager extends TransferManager implements DownloadStat
         doNext();
         Intent localIntent = new Intent(BROADCAST_ACTION).putExtra("type",
                 BROADCAST_FILE_DOWNLOAD_SUCCESS).putExtra("taskID", taskID);
-        LocalBroadcastManager.getInstance(SeadroidApplication.getAppContext()).sendBroadcast(localIntent);
+        LocalBroadcastManager.getInstance(NihaoApplication.getAppContext()).sendBroadcast(localIntent);
         notifyProgress(taskID);
     }
 
@@ -177,7 +177,7 @@ public class DownloadTaskManager extends TransferManager implements DownloadStat
         doNext();
         Intent localIntent = new Intent(BROADCAST_ACTION).putExtra("type",
                 BROADCAST_FILE_DOWNLOAD_FAILED).putExtra("taskID", taskID);
-        LocalBroadcastManager.getInstance(SeadroidApplication.getAppContext()).sendBroadcast(localIntent);
+        LocalBroadcastManager.getInstance(NihaoApplication.getAppContext()).sendBroadcast(localIntent);
         notifyProgress(taskID);
     }
 }

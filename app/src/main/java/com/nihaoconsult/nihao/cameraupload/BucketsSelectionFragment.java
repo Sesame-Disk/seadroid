@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nihaoconsult.nihao.R;
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 import com.nihaoconsult.nihao.SettingsManager;
 import com.nihaoconsult.nihao.util.GlideApp;
 import com.nihaoconsult.nihao.util.Utils;
@@ -62,11 +62,11 @@ public class BucketsSelectionFragment extends Fragment {
                 GalleryBucketUtils.Bucket b = this.buckets.get(i);
                 if (b.isImages != null && b.isImages.equals(GalleryBucketUtils.IMAGES)) {
                     Uri image_uri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, b.imageId);
-                    String image_path = Utils.getRealPathFromURI(SeadroidApplication.getAppContext(), image_uri, "images");
+                    String image_path = Utils.getRealPathFromURI(NihaoApplication.getAppContext(), image_uri, "images");
                     b.imagePath = image_path;
                 } else {
                     Uri video_uri = Uri.withAppendedPath(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, b.videoId);
-                    String videoPath = Utils.getRealPathFromURI(SeadroidApplication.getAppContext(), video_uri, "video");
+                    String videoPath = Utils.getRealPathFromURI(NihaoApplication.getAppContext(), video_uri, "video");
                     b.videoPath = videoPath;
                 }
 

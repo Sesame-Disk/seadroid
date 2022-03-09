@@ -21,7 +21,7 @@ import android.util.Log;
 
 import com.google.common.base.Joiner;
 import com.nihaoconsult.nihao.R;
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 import com.nihaoconsult.nihao.SeafException;
 import com.nihaoconsult.nihao.SettingsManager;
 import com.nihaoconsult.nihao.account.Account;
@@ -229,7 +229,7 @@ public class CameraSyncAdapter extends AbstractThreadedSyncAdapter {
         synchronized (this) {
             cancelled = false;
         }
-        SeadroidApplication.getInstance().setScanUploadStatus(CameraSyncStatus.SCANNING);
+        NihaoApplication.getInstance().setScanUploadStatus(CameraSyncStatus.SCANNING);
         EventBus.getDefault().post(new CameraSyncEvent("start"));
         /*Log.i(DEBUG_TAG, "Syncing images and video to " + account);
 
@@ -252,7 +252,7 @@ public class CameraSyncAdapter extends AbstractThreadedSyncAdapter {
             // Log.d(DEBUG_TAG, "Not syncing because of data plan restriction.");
             // treat dataPlan abort the same way as a network connection error
             syncResult.stats.numIoExceptions++;
-            SeadroidApplication.getInstance().setScanUploadStatus(CameraSyncStatus.NETWORK_UNAVAILABLE);
+            NihaoApplication.getInstance().setScanUploadStatus(CameraSyncStatus.NETWORK_UNAVAILABLE);
             EventBus.getDefault().post(new CameraSyncEvent("noNetwork"));
             return;
         }
@@ -363,7 +363,7 @@ public class CameraSyncAdapter extends AbstractThreadedSyncAdapter {
                 txService = null;
             }
         }
-        SeadroidApplication.getInstance().setScanUploadStatus(CameraSyncStatus.SCAN_END);
+        NihaoApplication.getInstance().setScanUploadStatus(CameraSyncStatus.SCAN_END);
         SettingsManager.instance().saveUploadCompletedTime(Utils.getSyncCompletedTime());
         EventBus.getDefault().post(new CameraSyncEvent("end"));
     }
@@ -379,7 +379,7 @@ public class CameraSyncAdapter extends AbstractThreadedSyncAdapter {
         if (bucketList.size() > 0) {
             selectedBuckets = bucketList;
         } else {
-            List<GalleryBucketUtils.Bucket> allBuckets = GalleryBucketUtils.getMediaBuckets(SeadroidApplication.getAppContext());
+            List<GalleryBucketUtils.Bucket> allBuckets = GalleryBucketUtils.getMediaBuckets(NihaoApplication.getAppContext());
             for (GalleryBucketUtils.Bucket bucket : allBuckets) {
                 if (bucket.isCameraBucket)
                     selectedBuckets.add(bucket.id);
@@ -438,7 +438,7 @@ public class CameraSyncAdapter extends AbstractThreadedSyncAdapter {
         if (bucketList.size() > 0) {
             selectedBuckets = bucketList;
         } else {
-            List<GalleryBucketUtils.Bucket> allBuckets = GalleryBucketUtils.getMediaBuckets(SeadroidApplication.getAppContext());
+            List<GalleryBucketUtils.Bucket> allBuckets = GalleryBucketUtils.getMediaBuckets(NihaoApplication.getAppContext());
             for (GalleryBucketUtils.Bucket bucket : allBuckets) {
                 if (bucket.isCameraBucket)
                     selectedBuckets.add(bucket.id);
@@ -515,7 +515,7 @@ public class CameraSyncAdapter extends AbstractThreadedSyncAdapter {
                         syncResult.stats.numSkippedEntries++;
                         continue;
                     }
-                    file = new File(Utils.getRealPathFromURI(SeadroidApplication.getAppContext(), image_uri, media));
+                    file = new File(Utils.getRealPathFromURI(NihaoApplication.getAppContext(), image_uri, media));
                 } else {
                     String video_id = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID));
                     Uri video_uri = Uri.withAppendedPath(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, video_id);
@@ -523,7 +523,7 @@ public class CameraSyncAdapter extends AbstractThreadedSyncAdapter {
                         syncResult.stats.numSkippedEntries++;
                         continue;
                     }
-                    file = new File(Utils.getRealPathFromURI(SeadroidApplication.getAppContext(), video_uri, media));
+                    file = new File(Utils.getRealPathFromURI(NihaoApplication.getAppContext(), video_uri, media));
                 }
             } else {
                 int dataColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);

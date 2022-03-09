@@ -8,7 +8,7 @@ import org.apache.commons.io.monitor.FileAlterationMonitor;
 import android.util.Log;
 
 import com.google.common.collect.Maps;
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 import com.nihaoconsult.nihao.account.Account;
 import com.nihaoconsult.nihao.account.AccountManager;
 
@@ -77,7 +77,7 @@ public class SeafileMonitor {
      */
     public synchronized void monitorAllAccounts() {
         List<Account> accounts =
-                new AccountManager(SeadroidApplication.getAppContext()).getAccountList();
+                new AccountManager(NihaoApplication.getAppContext()).getAccountList();
 
         for (Account account : accounts) {
             monitorFilesForAccount(account);

@@ -9,7 +9,7 @@ import android.os.StatFs;
 import android.provider.MediaStore;
 import android.util.Log;
 
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 import com.nihaoconsult.nihao.util.Utils;
 
 import java.io.File;
@@ -75,7 +75,7 @@ public class StorageManagerKitKat extends StorageManager {
          * which works as advertised. So this workaround is only necessary on API levels 19 and 20.
          */
         if (uri != null && uri.getPath().startsWith("/external/file")) {
-            ContentResolver contentResolver = SeadroidApplication.getAppContext().getContentResolver();
+            ContentResolver contentResolver = NihaoApplication.getAppContext().getContentResolver();
             // if a files has just been added as a generic "file", fix the MediaStore and change the
             // file type to image or video.
 

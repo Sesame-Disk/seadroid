@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.nihaoconsult.nihao.SeadroidApplication;
+import com.nihaoconsult.nihao.NihaoApplication;
 
 import java.io.File;
 
@@ -40,7 +40,7 @@ public class CameraUploadDBHelper extends SQLiteOpenHelper {
 
     public static synchronized CameraUploadDBHelper getInstance() {
         if (dbHelper == null) {
-            dbHelper = new CameraUploadDBHelper(SeadroidApplication.getAppContext());
+            dbHelper = new CameraUploadDBHelper(NihaoApplication.getAppContext());
             dbHelper.database = dbHelper.getWritableDatabase();
         }
 
