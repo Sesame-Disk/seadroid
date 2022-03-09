@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="welcome_to_seafile">Velkomin í Seafile</string>
+  <string name="welcome_to_nihao">Velkomin í NiHao</string>
   <string name="select_account">Veldu reikning til að byrja</string>
   <string name="edit_account">Breyta</string>
   <string name="delete_account">Eyða</string>
@@ -29,7 +29,7 @@
     <item>Myndir/Vídeó</item>
     <item>Annað</item>
   </string-array>
-  <string name="choose_server">Veldu Seafile Þjón</string>
+  <string name="choose_server">Veldu NiHao Þjón</string>
   <string name="network_down">Engin nettenging</string>
   <string name="unknow_error">Óþekkt villa</string>
   <string name="invalid_server_address">Rangt vistfang</string>
@@ -93,13 +93,13 @@
   <string name="dir_empty">Þetta skráasafn er tómt</string>
   <string name="no_repo">Þú átt enn engin söfn</string>
   <string name="no_app_available">Það fannst ekkert app</string>
-  <string name="add_to_seafile">Bæta við Seafile</string>
+  <string name="add_to_nihao">Bæta við NiHao</string>
   <string name="ok">Í lagi</string>
-  <string name="no_account">Vinsamlegast settu upp reikning í Seafile fyrst</string>
+  <string name="no_account">Vinsamlegast settu upp reikning í NiHao fyrst</string>
   <string name="choose_an_account">Veldu reikning</string>
   <string name="choose_a_library">Veldu safn</string>
   <string name="choose_a_folder">Veldu möppu</string>
-  <string name="load_accounts_fail">Mistókst að hlaða inn Seafile reikningum</string>
+  <string name="load_accounts_fail">Mistókst að hlaða inn NiHao reikningum</string>
   <string name="load_libraries_fail">Mistókst að hlaða inn söfnum</string>
   <string name="load_dir_fail">Mistókst að hlaða inn efni þessa skráasafns</string>
   <string name="not_supported_share">Þessi gerð af deilingu er ekki studd</string>
@@ -295,7 +295,7 @@
   <string name="camera_sync_notification_title_failed">Upphleðsla mynda mistókst</string>
   <string name="camera_sync_notification_repo_missing_failed">Vantar geymslu á þjóni.</string>
   <string name="camera_sync_notification_auth_error_failed">Auðkenningarvilla.</string>
-  <string name="camera_sync_rename_file">%s (endurnefnt af Seafile)</string>
+  <string name="camera_sync_rename_file">%s (endurnefnt af NiHao)</string>
   <string name="settings_about_title">UM</string>
   <string name="settings_about_version_title">App Útgáfa</string>
   <string name="settings_cache_title">Flýtiminnisstærð</string>
@@ -319,7 +319,7 @@
   <string name="saf_thumbnail_not_found_exception">Gat ekki fundið/opnað smámyndina %s.</string>
   <string name="saf_file_not_downloaded_exception">Gat ekki halað niður skránni %s af þjóni.</string>
   <string name="saf_write_diretory_exception">Get ekki opnað skráasafn fyrir lestur/skrif.</string>
-  <string name="saf_account_not_found_exception">Finn ekki Seafile reikning.</string>
+  <string name="saf_account_not_found_exception">Finn ekki NiHao reikning.</string>
   <string name="saf_upload_path_not_available">Gat ekki hlaðið upp, engin slóð tiltæk</string>
   <string name="saf_failed_to_create_directory">Gat ekki búið til skráasafnið %s</string>
   <string name="saf_bad_mime_type">Slæm beiðnagerð</string>

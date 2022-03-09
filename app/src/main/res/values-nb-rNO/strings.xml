@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="welcome_to_seafile">Velkommen til Seafile</string>
+  <string name="welcome_to_nihao">Velkommen til NiHao</string>
   <string name="select_account">Velg en konto for å starte</string>
   <string name="edit_account">Redigere</string>
   <string name="delete_account">Slette</string>
@@ -29,7 +29,7 @@
     <item>Bilder/Videoer</item>
     <item>Annet</item>
   </string-array>
-  <string name="choose_server">Velg en Seafile-server</string>
+  <string name="choose_server">Velg en NiHao-server</string>
   <string name="network_down">Ingen nettverkstilkobling</string>
   <string name="unknow_error">Ukjent feil</string>
   <string name="invalid_server_address">Ugyldig serveradresse</string>
@@ -91,12 +91,12 @@
   <string name="dir_empty">Denne mappen er tom</string>
   <string name="no_repo">Du har ingen biblioteker enda</string>
   <string name="no_app_available">Ingen app finnes</string>
-  <string name="add_to_seafile">Legg til i Seafile</string>
+  <string name="add_to_nihao">Legg til i NiHao</string>
   <string name="ok">OK</string>
-  <string name="no_account">Vennligst opprett en konto i Seafile først.</string>
+  <string name="no_account">Vennligst opprett en konto i NiHao først.</string>
   <string name="choose_an_account">Velg en konto</string>
   <string name="choose_a_library">Velg et bibliotek</string>
-  <string name="load_accounts_fail">Klarte ikke å laste inn Seafilekontoene</string>
+  <string name="load_accounts_fail">Klarte ikke å laste inn NiHaokontoene</string>
   <string name="load_libraries_fail">Klarte ikke å laste inn bibliotekene</string>
   <string name="load_dir_fail">Klarte ikke å laste inn innholdet i denne mappen</string>
   <string name="not_supported_share">Denne typen delt resurss er ikke støttet</string>
@@ -302,7 +302,7 @@
   <string name="saf_thumbnail_not_found_exception">Kunne ikke finne/ åpne miniatyrbilde %s.</string>
   <string name="saf_file_not_downloaded_exception">Kunne ikke laste ned filen %s fra serveren.</string>
   <string name="saf_write_diretory_exception">Kunne ikke åpne mappen for lesing/ skriving.</string>
-  <string name="saf_account_not_found_exception">Kunne ikke fille Seafile konto.</string>
+  <string name="saf_account_not_found_exception">Kunne ikke fille NiHao konto.</string>
   <string name="saf_upload_path_not_available">Klarte ikke å laste opp. Ingen tilgjengelig sti.</string>
   <string name="saf_failed_to_create_directory">Kunne ikke opprette mappe %s</string>
   <string name="saf_bad_mime_type">Feil forespørselstype</string>

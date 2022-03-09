@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="welcome_to_seafile">Welkom bij Seafile</string>
+  <string name="welcome_to_nihao">Welkom bij Seafile</string>
   <string name="select_account">Kies een account om te beginnen</string>
   <string name="edit_account">Bewerken</string>
   <string name="delete_account">Verwijderen</string>
@@ -109,7 +109,7 @@
   <string name="dir_empty">Deze map is leeg</string>
   <string name="no_repo">Je hebt nog geen bibliotheken</string>
   <string name="no_app_available">Geen app gevonden</string>
-  <string name="add_to_seafile">Toevoegen aan Seafile</string>
+  <string name="add_to_nihao">Toevoegen aan Seafile</string>
   <string name="ok">Ok</string>
   <string name="no_account">Gelieve eerste een Seafile account aan te maken</string>
   <string name="choose_an_account">Kies een account</string>

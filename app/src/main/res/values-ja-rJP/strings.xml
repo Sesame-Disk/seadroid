@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="welcome_to_seafile">Seafile にようこそ</string>
+  <string name="welcome_to_nihao">NiHao にようこそ</string>
   <string name="select_account">アカウントを選択して始めましょう</string>
   <string name="edit_account">編集</string>
   <string name="delete_account">削除</string>
@@ -46,10 +46,10 @@
     <item>写真/ビデオ</item>
     <item>その他</item>
   </string-array>
-  <string name="choose_server">Seafile サーバーを選択</string>
+  <string name="choose_server">NiHao サーバーを選択</string>
   <string-array name="choose_server_array">
     <item>シングルサインオン</item>
-    <item>他の Seafile サーバー</item>
+    <item>他の NiHao サーバー</item>
   </string-array>
   <string name="network_down">ネットワーク接続がありません</string>
   <string name="unknow_error">不明なエラー</string>
@@ -125,13 +125,13 @@
   <string name="dir_empty">このフォルダーは空です</string>
   <string name="no_repo">まだライブラリーはありません</string>
   <string name="no_app_available">アプリが見つかりません</string>
-  <string name="add_to_seafile">Seafile に追加</string>
+  <string name="add_to_nihao">NiHao に追加</string>
   <string name="ok">OK</string>
-  <string name="no_account">最初に Seafile にアカウントを設定してください</string>
+  <string name="no_account">最初に NiHao にアカウントを設定してください</string>
   <string name="choose_an_account">アカウントを選択</string>
   <string name="choose_a_library">ライブラリーを選択</string>
   <string name="choose_a_folder">フォルダーを選択</string>
-  <string name="load_accounts_fail">Seafile アカウントの読み込みに失敗しました</string>
+  <string name="load_accounts_fail">NiHao アカウントの読み込みに失敗しました</string>
   <string name="load_libraries_fail">ライブラリーの読み込みに失敗しました</string>
   <string name="load_dir_fail">このフォルダーの内容の読み込みに失敗しました</string>
   <string name="not_supported_share">このタイプの共有はサポートされていません</string>
@@ -355,7 +355,7 @@
   <string name="settings_cuc_pick_albums">マイ フォトアルバムを選択しましょう</string>
   <string name="settings_cuc_remote_lib_hint">お好みのアカウントとライブラリーを選択してください。 \nこのオプションは後で設定から変更することができます。</string>
   <string name="settings_cuc_finish_title">完了</string>
-  <string name="settings_cuc_ready">下で確認した後 Seafile は選択したフォルダーからファイルをアップロードします。 \nこの処理の間、アプリを自由に閉じることができます。</string>
+  <string name="settings_cuc_ready">下で確認した後 NiHao は選択したフォルダーからファイルをアップロードします。 \nこの処理の間、アプリを自由に閉じることができます。</string>
   <string name="settings_cuc_swipe_left">左にスワイプすると続行します。</string>
   <string name="settings_cuc_click_btn">クリックすると設定ヘルパーを閉じます。</string>
   <string name="settings_cuc_loading">読み込み中…</string>
@@ -364,22 +364,22 @@
   <string name="camera_sync_notification_title_failed">カメラのアップロードに失敗しました</string>
   <string name="camera_sync_notification_repo_missing_failed">サーバーのリポジトリが見つかりません。</string>
   <string name="camera_sync_notification_auth_error_failed">認証エラー。</string>
-  <string name="camera_sync_rename_file">%s (Seafile によって名前の変更)</string>
+  <string name="camera_sync_rename_file">%s (NiHao によって名前の変更)</string>
   <string name="settings_about_title">アプリについて</string>
   <string name="settings_about_version_title">アプリ バージョン</string>
   <string name="settings_about_author_title">作者について</string>
   <string name="settings_about_author_info">
         <![CDATA[
-        <h5>Seafile Android クライアント</h5>
+        <h5>NiHao Android クライアント</h5>
         <p>%s</p>
         <h5>連絡先</h5>
         <p>
-            Twitter: Seafile<br>
-            メール: support@seafile.com<br>
+            Twitter: NiHao<br>
+            メール: support@NiHao.com<br>
         </p>
         <h5>貢献</h5>
         <p>https://github.com/haiwen/seadroid.git</P>
-        <h5>Copyright ©2013-2018 Seafile Ltd.</h5>
+        <h5>Copyright ©2013-2018 NiHao Ltd.</h5>
         ]]>
     </string>
   <string name="settings_advance_feature_title">高度な機能</string>
@@ -411,7 +411,7 @@
   <string name="saf_thumbnail_not_found_exception">サムネイル %s を見つける/開くことができません。</string>
   <string name="saf_file_not_downloaded_exception">サーバーからファイル %s をダウンロードできません。</string>
   <string name="saf_write_diretory_exception">ディレクトリーを読み込み/書き込みで開くことができません。</string>
-  <string name="saf_account_not_found_exception">Seafile アカウントを見つけることができません。</string>
+  <string name="saf_account_not_found_exception">NiHao アカウントを見つけることができません。</string>
   <string name="saf_upload_path_not_available">アップロードできません。パスが利用可能ではありません</string>
   <string name="saf_failed_to_create_directory">ディレクトリー %s を作成できません</string>
   <string name="saf_file_exist">ファイルはすでに存在します</string>

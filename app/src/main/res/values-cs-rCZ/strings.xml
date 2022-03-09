@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="welcome_to_seafile">Vítejte v Seafile</string>
+  <string name="welcome_to_nihao">Vítejte v NiHao</string>
   <string name="select_account">Nejprve vyberte svůj účet</string>
   <string name="edit_account">Upravit</string>
   <string name="delete_account">Smazat</string>
@@ -46,7 +46,7 @@
     <item>Fotky/Videa</item>
     <item>Ostatní</item>
   </string-array>
-  <string name="choose_server">Vyberte Seafile server</string>
+  <string name="choose_server">Vyberte NiHao server</string>
   <string name="network_down">Nejste připojen k síti</string>
   <string name="unknow_error">Neznámá chyba</string>
   <string name="invalid_server_address">Špatná adresa serveru</string>
@@ -101,12 +101,12 @@
   <string name="dir_empty">Tato složka je prázdná</string>
   <string name="no_repo">Zatím nemáte žádné knihovny</string>
   <string name="no_app_available">Není nalezena žádná aplikace</string>
-  <string name="add_to_seafile">Přidat do Seafile</string>
+  <string name="add_to_nihao">Přidat do NiHao</string>
   <string name="ok">OK</string>
   <string name="no_account">Prosím, nejprve nastavte účet</string>
   <string name="choose_an_account">Vyberte účet</string>
   <string name="choose_a_library">Vyberte knihovnu</string>
-  <string name="load_accounts_fail">Chyba při načítání Seafile účtů</string>
+  <string name="load_accounts_fail">Chyba při načítání NiHao účtů</string>
   <string name="load_libraries_fail">Chyba při načítání knihoven</string>
   <string name="load_dir_fail">Chyba při načítání obsahu této složky</string>
   <string name="not_supported_share">Tento druh sdílení není podporován</string>
@@ -256,7 +256,7 @@
   <string name="saf_thumbnail_not_found_exception">Nelze najít/otevřít miniaturu %s.</string>
   <string name="saf_file_not_downloaded_exception">Nelze stáhnout soubor %s ze serveru.</string>
   <string name="saf_write_diretory_exception">Nelze otevřít složku pro čtení/zápis.</string>
-  <string name="saf_account_not_found_exception">Nelze nalézt Seafile účet.</string>
+  <string name="saf_account_not_found_exception">Nelze nalézt NiHao účet.</string>
   <!--Single Sign-On  SSO-->
   <string name="shib_server_url_empty">Zadejte adresu serveru!</string>
   <string name="shib_load_page_error">Chyba:</string>

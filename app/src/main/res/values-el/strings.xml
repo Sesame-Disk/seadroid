@@ -1,13 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="welcome_to_seafile">Καλωσήρθατε στο Seafile</string>
+  <string name="welcome_to_nihao">Καλωσήρθατε στο NiHao</string>
   <string name="select_account">Επιλέξτε ένα λογαριασμό για να ξεκινήσετε</string>
   <string name="edit_account">Επεξεργασία</string>
   <string name="delete_account">Διαγραφή</string>
   <string name="delete">Διαγραφή</string>
   <string name="delete_file_f">Διαγραφή αρχείου</string>
   <string name="delete_dir">Διαγραφή φακέλου</string>
-  <string name="server_hint">Διακομιστής, όπως cloud.seafile.com</string>
+  <string name="server_hint">Διακομιστής, όπως cloud.NiHao.com</string>
   <string name="passwd_hint">Κωδικός</string>
   <string name="open_file">Άνοιγμα</string>
   <string name="download_file">Λήψη</string>
@@ -29,7 +29,7 @@
     <item>Φωτογραφίες/Βίντεο</item>
     <item>Άλλο</item>
   </string-array>
-  <string name="choose_server">Επιλέξτε διακομιστή Seafile</string>
+  <string name="choose_server">Επιλέξτε διακομιστή NiHao</string>
   <string name="network_down">Δεν υπάρχει σύνδεση στο διαδίκτυο</string>
   <string name="unknow_error">Άγνωστο σφάλμα</string>
   <string name="invalid_server_address">Εσφαλμένη διεύθυνση διακομιστή</string>
@@ -79,12 +79,12 @@
   <string name="dir_empty">Αυτός ο φάκελος είναι κενός</string>
   <string name="no_repo">Δεν έχετε ακόμα βιβλιοθήκες</string>
   <string name="no_app_available">Δεν μπορεί να βρέθει καμιά εφαρμογή</string>
-  <string name="add_to_seafile">Προσθήκη στο Seafile</string>
+  <string name="add_to_nihao">Προσθήκη στο NiHao</string>
   <string name="ok">OK</string>
-  <string name="no_account">Παρακαλώ δημιουργήστε έναν λογαριασμό στο Seafile πρώτα</string>
+  <string name="no_account">Παρακαλώ δημιουργήστε έναν λογαριασμό στο NiHao πρώτα</string>
   <string name="choose_an_account">Επιλέξτε ένα λογαριασμό</string>
   <string name="choose_a_library">Επιλέξτε μία βιβλιοθήκη</string>
-  <string name="load_accounts_fail">Αποτυχία φόρτωσης λογαριασμών Seafile</string>
+  <string name="load_accounts_fail">Αποτυχία φόρτωσης λογαριασμών NiHao</string>
   <string name="load_libraries_fail">Αποτυχία φόρτωσης βιβλιοθηκών</string>
   <string name="load_dir_fail">Αποτυχία φόρτωσης των περιεχομένων αυτού του φακέλου</string>
   <string name="not_supported_share">Αυτός ο τύπος κοινόχρηστου στοιχείου δεν είναι διαθέσιμος</string>

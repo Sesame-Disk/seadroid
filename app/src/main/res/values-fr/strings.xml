@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="welcome_to_seafile">Bienvenue sur Seafile</string>
+  <string name="welcome_to_nihao">Bienvenue sur NiHao</string>
   <string name="select_account">Sélectionnez un compte pour démarrer</string>
   <string name="edit_account">Modifier</string>
   <string name="delete_account">Effacer</string>
@@ -18,7 +18,7 @@
   <string name="move_folder">Déplacer le dossier</string>
   <string name="delete_dir">Effacer le dossier</string>
   <string name="name_hint">Nom</string>
-  <string name="server_hint">Serveur, par exemple cloud.seafile.com</string>
+  <string name="server_hint">Serveur, par exemple cloud.NiHao.com</string>
   <string name="email_hint">E-mail ou nom d\'utilisateur</string>
   <string name="passwd_hint">Mot de passe</string>
   <string name="passwd_min_len_limit_hint">Mot de passe (au moins %d caractères)</string>
@@ -46,10 +46,10 @@
     <item>Photos/Vidéos</item>
     <item>Autres</item>
   </string-array>
-  <string name="choose_server">Choisir un serveur Seafile</string>
+  <string name="choose_server">Choisir un serveur NiHao</string>
   <string-array name="choose_server_array">
     <item>Authentification unique</item>
-    <item>Autre serveur Seafile</item>
+    <item>Autre serveur NiHao</item>
   </string-array>
   <string name="network_down">Absence de connexion réseau</string>
   <string name="unknow_error">Erreur inconnue</string>
@@ -126,13 +126,13 @@
   <string name="dir_empty">Ce dossier est vide</string>
   <string name="no_repo">Vous n\'avez pas encore de bibliothèque</string>
   <string name="no_app_available">Aucune application disponible</string>
-  <string name="add_to_seafile">Ajouter à Seafile</string>
+  <string name="add_to_nihao">Ajouter à NiHao</string>
   <string name="ok">OK</string>
-  <string name="no_account">Veuillez d\'abord créer un compte sur Seafile</string>
+  <string name="no_account">Veuillez d\'abord créer un compte sur NiHao</string>
   <string name="choose_an_account">Choisir un compte</string>
   <string name="choose_a_library">Choisir une bibliothèque</string>
   <string name="choose_a_folder">Choisissez un dossier</string>
-  <string name="load_accounts_fail">Échec du chargement des comptes seafile</string>
+  <string name="load_accounts_fail">Échec du chargement des comptes NiHao</string>
   <string name="load_libraries_fail">Échec du chargement des bibliothèques</string>
   <string name="load_dir_fail">Échec du chargement du contenu de ce dossier</string>
   <string name="not_supported_share">Ce type de partage n\'est pas supporté</string>
@@ -360,7 +360,7 @@
   <string name="settings_cuc_pick_albums">Laissez-moi choisir mon album photos</string>
   <string name="settings_cuc_remote_lib_hint">Choisissez votre compte et bibliothèque préférée. \nVous pourrez changer ces options plus tard dans \"Paramètres\".</string>
   <string name="settings_cuc_finish_title">Terminer</string>
-  <string name="settings_cuc_ready">Seafile commencera l\'envoi des fichiers depuis le dossier sélectionné après confirmation ci-dessous.\nVous pouvez fermer l\'application durant la procédure.</string>
+  <string name="settings_cuc_ready">NiHao commencera l\'envoi des fichiers depuis le dossier sélectionné après confirmation ci-dessous.\nVous pouvez fermer l\'application durant la procédure.</string>
   <string name="settings_cuc_swipe_left">Glisser vers la gauche pour continuer</string>
   <string name="settings_cuc_click_btn">Cliquez pour fermer l\'aide à la configuration.</string>
   <string name="settings_cuc_loading">Chargement...</string>
@@ -369,22 +369,22 @@
   <string name="camera_sync_notification_title_failed">Échec d\'envoi de appareil photo</string>
   <string name="camera_sync_notification_repo_missing_failed">Le dépôt sur le serveur n’existe pas</string>
   <string name="camera_sync_notification_auth_error_failed">Erreur d\'authentification.</string>
-  <string name="camera_sync_rename_file">%s (renommé par Seafile)</string>
+  <string name="camera_sync_rename_file">%s (renommé par NiHao)</string>
   <string name="settings_about_title">À PROPOS</string>
   <string name="settings_about_version_title">Version</string>
   <string name="settings_about_author_title">À propos de l\'auteur</string>
   <string name="settings_about_author_info">
 <![CDATA[
-<h5>Seafile client pour Android</h5>
+<h5>NiHao client pour Android</h5>
 <p>%s</p>
 <h5>Contactez-nous</h5>
 <p>
-Twitter : Seafile<br>
-E-mail : support@seafile.com<br>
+Twitter : NiHao<br>
+E-mail : support@NiHao.com<br>
 </p>
 <h5>Contributions</h5>
 <p>https://github.com/haiwen/seadroid.git</P>
-<h5>Copyright ©2013-2018 Seafile Ltd.</h5>
+<h5>Copyright ©2013-2018 NiHao Ltd.</h5>
 ]]></string>
   <string name="settings_advance_feature_title">Fonctionnalités avancées</string>
   <string name="settings_storage_title">Stockage du cache</string>
@@ -415,7 +415,7 @@ E-mail : support@seafile.com<br>
   <string name="saf_thumbnail_not_found_exception">Impossible de trouver/ouvrir la vignette %s</string>
   <string name="saf_file_not_downloaded_exception">Impossible de télécharger le fichier %s depuis le serveur.</string>
   <string name="saf_write_diretory_exception">Impossible d\'ouvrir le répertoire en lecture/écriture.</string>
-  <string name="saf_account_not_found_exception">Impossible de trouver un compte Seafile.</string>
+  <string name="saf_account_not_found_exception">Impossible de trouver un compte NiHao.</string>
   <string name="saf_upload_path_not_available">Envoi impossible, aucun chemin disponible</string>
   <string name="saf_failed_to_create_directory">Impossible de créer le répertoire %s</string>
   <string name="saf_file_exist">Ce fichier existe déjà.</string>

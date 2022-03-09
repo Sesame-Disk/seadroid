@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="welcome_to_seafile">Tervetuloa Seafileen</string>
+  <string name="welcome_to_nihao">Tervetuloa NiHaoen</string>
   <string name="select_account">Valitse tili aloittaaksesi</string>
   <string name="edit_account">Muokkaa</string>
   <string name="delete_account">Poista</string>
@@ -40,10 +40,10 @@
     <item>Kuvat/Videot</item>
     <item>Muut</item>
   </string-array>
-  <string name="choose_server">Valitse Seafile Palvelin</string>
+  <string name="choose_server">Valitse NiHao Palvelin</string>
   <string-array name="choose_server_array">
     <item>Kertakirjautuminen</item>
-    <item>Muu Seafile palvelin</item>
+    <item>Muu NiHao palvelin</item>
   </string-array>
   <string name="network_down">Ei verkkoyhteyttä</string>
   <string name="unknow_error">Tuntematon virhe</string>
@@ -119,13 +119,13 @@
   <string name="dir_empty">Tämä kansio on tyhjä</string>
   <string name="no_repo">Sinulla ei ole vielä kirjastoja</string>
   <string name="no_app_available">Sovellusta ei löydy</string>
-  <string name="add_to_seafile">Lisää Seafileen</string>
+  <string name="add_to_nihao">Lisää NiHaoen</string>
   <string name="ok">OK</string>
-  <string name="no_account">Ole hyvä ja luo ensin tili Seafileen</string>
+  <string name="no_account">Ole hyvä ja luo ensin tili NiHaoen</string>
   <string name="choose_an_account">Valitse tili</string>
   <string name="choose_a_library">Valitse kirjasto</string>
   <string name="choose_a_folder">Valitse kansio</string>
-  <string name="load_accounts_fail">Seafile tilien lataus epäonnistui</string>
+  <string name="load_accounts_fail">NiHao tilien lataus epäonnistui</string>
   <string name="load_libraries_fail">Kirjastojen lataus epäonnistui</string>
   <string name="load_dir_fail">Tämän kansio sisällön lataus epäonnistui</string>
   <string name="not_supported_share">Tämän tyyppistä jakoa ei tueta</string>
@@ -347,7 +347,7 @@
   <string name="settings_cuc_pick_albums">Anna minun valita omat valokuva albumit</string>
   <string name="settings_cuc_remote_lib_hint">Valitse ensisijainen tili ja kirjasto. \n Voit muuttaa näitä valintoja myöhemmin Asetuksista.</string>
   <string name="settings_cuc_finish_title">Loppu</string>
-  <string name="settings_cuc_ready">Seafile aloittaa tiedostojen lähettyksen valitsemistasi kansioista kunhan olet hyväksynyt tämän alla. \n Voit sulkea sovelluksen prosessin aikana.</string>
+  <string name="settings_cuc_ready">NiHao aloittaa tiedostojen lähettyksen valitsemistasi kansioista kunhan olet hyväksynyt tämän alla. \n Voit sulkea sovelluksen prosessin aikana.</string>
   <string name="settings_cuc_swipe_left">Pyyhkäise vasemmalle jatkaaksesi.</string>
   <string name="settings_cuc_click_btn">Napauta sulkeaksesi  asetusten avustajan.</string>
   <string name="settings_cuc_loading">Ladataan...</string>
@@ -356,22 +356,22 @@
   <string name="camera_sync_notification_title_failed">Kamerasta lähetys epäonnistui</string>
   <string name="camera_sync_notification_repo_missing_failed">Palvelimen säilö puuttuu.</string>
   <string name="camera_sync_notification_auth_error_failed">Todennusvirhe.</string>
-  <string name="camera_sync_rename_file">%s (Seafilen uudelleennimeämä)</string>
+  <string name="camera_sync_rename_file">%s (NiHaon uudelleennimeämä)</string>
   <string name="settings_about_title">TIETOA</string>
   <string name="settings_about_version_title">Sovellusversio</string>
   <string name="settings_about_author_title">Tietoa tekijästä</string>
   <string name="settings_about_author_info">
 <![CDATA[
-<h5>Seafile Android Asiakasohjelma</h5>
+<h5>NiHao Android Asiakasohjelma</h5>
 <p>%s</p>
 <h5>Ota Yhteyttä</h5>
 <p>
-Twitter: Seafile<br>
-Sähköposti: support@seafile.com<br>
+Twitter: NiHao<br>
+Sähköposti: support@NiHao.com<br>
 </p>
 <h5>Osallistumiset</h5>
 <p>https://github.com/haiwen/seadroid.git</P>
-<h5>Copyright ©2013-2018 Seafile Ltd</h5>
+<h5>Copyright ©2013-2018 NiHao Ltd</h5>
 ]]></string>
   <string name="settings_advance_feature_title">EDISTYNEET OMINAISUUDET</string>
   <string name="settings_storage_title">VÄLIMUISTIN TALLENNUSTILA</string>
@@ -402,7 +402,7 @@ Sähköposti: support@seafile.com<br>
   <string name="saf_thumbnail_not_found_exception">Ei voitu avata/löytää kirjanmerikkiä %s.</string>
   <string name="saf_file_not_downloaded_exception">Ei voinut ladata tiedostoa %s palvelimelta.</string>
   <string name="saf_write_diretory_exception">Hakemistoa ei voi avata lukemista/kirjoittamista varten.</string>
-  <string name="saf_account_not_found_exception">Ei löytynyt Seafile tiliä.</string>
+  <string name="saf_account_not_found_exception">Ei löytynyt NiHao tiliä.</string>
   <string name="saf_upload_path_not_available">Ei voida lähettää, polkua ei saatavissa</string>
   <string name="saf_failed_to_create_directory">Ei voinut luoda hakemistoa %s</string>
   <string name="saf_file_exist">Tiedosto on jo olemassa</string>

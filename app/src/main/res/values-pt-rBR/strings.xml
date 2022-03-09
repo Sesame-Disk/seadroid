@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="welcome_to_seafile">Bem vindo ao Seafile</string>
+  <string name="welcome_to_nihao">Bem vindo ao NiHao</string>
   <string name="select_account">Escolha uma conta para começar</string>
   <string name="edit_account">Editar</string>
   <string name="delete_account">Deletar</string>
@@ -29,7 +29,7 @@
     <item>Fotos/Videos</item>
     <item>Outros</item>
   </string-array>
-  <string name="choose_server">Escolha o Servidor Seafile</string>
+  <string name="choose_server">Escolha o Servidor NiHao</string>
   <string name="network_down">Sem conexão com a internet</string>
   <string name="unknow_error">Erro desconhecido</string>
   <string name="invalid_server_address">Endereço do servidor invalido</string>
@@ -87,12 +87,12 @@
   <string name="dir_empty">A pasta esta vazia</string>
   <string name="no_repo">Você não tem bibliotecas ainda</string>
   <string name="no_app_available">Nenhum app pôde ser encontrado</string>
-  <string name="add_to_seafile">Adicionar ao Seafile</string>
+  <string name="add_to_nihao">Adicionar ao NiHao</string>
   <string name="ok">OK</string>
-  <string name="no_account">Por favor configure uma conta Seafile primeiro</string>
+  <string name="no_account">Por favor configure uma conta NiHao primeiro</string>
   <string name="choose_an_account">Escolha sua Conta</string>
   <string name="choose_a_library">Escolha a Biblioteca</string>
-  <string name="load_accounts_fail">Falha ao carregar  as contas Seafile</string>
+  <string name="load_accounts_fail">Falha ao carregar  as contas NiHao</string>
   <string name="load_libraries_fail">Falha ao carregar as bibliotecas</string>
   <string name="load_dir_fail">Falha ao carregar o conteúdo desta pasta</string>
   <string name="not_supported_share">Este tipo de ação não é suportada</string>
@@ -268,7 +268,7 @@
   <string name="saf_thumbnail_not_found_exception">Não foi possivel localizar/abrir  miniatura %s</string>
   <string name="saf_file_not_downloaded_exception">Não é possivel baixar o arquivo %s do servidor</string>
   <string name="saf_write_diretory_exception">Não é possivel abrir o diretório  para leitura / escrita.</string>
-  <string name="saf_account_not_found_exception">Conta Seafile  não encontrada</string>
+  <string name="saf_account_not_found_exception">Conta NiHao  não encontrada</string>
   <string name="saf_upload_path_not_available">Não é possível carregar, nenhum caminho disponível</string>
   <string name="saf_failed_to_create_directory">Não foi possível criar o diretório %s</string>
   <string name="saf_bad_mime_type">Tipo de requisição invalido</string>

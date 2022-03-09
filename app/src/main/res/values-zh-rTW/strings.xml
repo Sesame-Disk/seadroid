@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="welcome_to_seafile">歡迎使用Seafile</string>
+  <string name="welcome_to_nihao">歡迎使用NiHao</string>
   <string name="select_account">請選擇一個帳戶開始使用</string>
   <string name="edit_account">編輯帳戶</string>
   <string name="delete_account">刪除帳戶</string>
@@ -12,7 +12,7 @@
   <string name="delete_file_f">刪除文件</string>
   <string name="delete_dir">刪除文件夾</string>
   <string name="name_hint">名稱</string>
-  <string name="server_hint">Seafile伺服器位址</string>
+  <string name="server_hint">NiHao伺服器位址</string>
   <string name="email_hint">郵箱或帳號</string>
   <string name="passwd_hint">密碼</string>
   <string name="passwd_min_len_limit_hint">密碼 (最少 %d 字元)</string>
@@ -40,7 +40,7 @@
     <item>圖片/視頻</item>
     <item>其他</item>
   </string-array>
-  <string name="choose_server">請選擇一個Seafile伺服器</string>
+  <string name="choose_server">請選擇一個NiHao伺服器</string>
   <string name="network_down">無網絡連接</string>
   <string name="unknow_error">未知錯誤</string>
   <string name="invalid_server_address">無效的伺服器地址</string>
@@ -113,13 +113,13 @@
   <string name="dir_empty">此文件夾是空的</string>
   <string name="no_repo">無資料庫</string>
   <string name="no_app_available">沒有找到應用</string>
-  <string name="add_to_seafile">添加到Seafile中</string>
+  <string name="add_to_nihao">添加到NiHao中</string>
   <string name="ok">確定</string>
-  <string name="no_account">首先請在Seafile上創建一個帳戶</string>
+  <string name="no_account">首先請在NiHao上創建一個帳戶</string>
   <string name="choose_an_account">請選擇一個帳戶</string>
   <string name="choose_a_library">請選擇一個資料庫</string>
   <string name="choose_a_folder">請選擇一個文件夾</string>
-  <string name="load_accounts_fail">加載Seafile帳戶失敗</string>
+  <string name="load_accounts_fail">加載NiHao帳戶失敗</string>
   <string name="load_libraries_fail">加載資料庫失敗</string>
   <string name="load_dir_fail">加載此文件夾的內容失敗</string>
   <string name="not_supported_share">不支持此類分享</string>
@@ -321,7 +321,7 @@
   <string name="settings_cuc_pick_albums">選擇備份相冊</string>
   <string name="settings_cuc_remote_lib_hint">選擇你要配置的選項，這些設置以後可以在設置菜單里修改。</string>
   <string name="settings_cuc_finish_title">完成</string>
-  <string name="settings_cuc_ready">Seafile將會從你指定的文件夾上傳文件，在這個過程中你可以隨時關閉該應用</string>
+  <string name="settings_cuc_ready">NiHao將會從你指定的文件夾上傳文件，在這個過程中你可以隨時關閉該應用</string>
   <string name="settings_cuc_swipe_left">向左滑進入下一步</string>
   <string name="settings_cuc_click_btn">點擊按鈕關閉配置助手</string>
   <string name="settings_cuc_loading">加載中...</string>
@@ -330,22 +330,22 @@
   <string name="camera_sync_notification_title_failed">照片上傳失敗</string>
   <string name="camera_sync_notification_repo_missing_failed">伺服器上不存在該資料庫</string>
   <string name="camera_sync_notification_auth_error_failed">授權失敗</string>
-  <string name="camera_sync_rename_file"> (由Seafile重命名為)%s</string>
+  <string name="camera_sync_rename_file"> (由NiHao重命名為)%s</string>
   <string name="settings_about_title">關於</string>
   <string name="settings_about_version_title">應用版本號</string>
   <string name="settings_about_author_title">關於我們</string>
   <string name="settings_about_author_info">
         <![CDATA[
-        <h5>Seafile安卓客戶端</h5>
+        <h5>NiHao安卓客戶端</h5>
         <p>%s</p>
         <h5>聯繫我們</h5>
         <p>
-            Twitter: Seafile<br>
-            郵箱: support@seafile.com<br>
+            Twitter: NiHao<br>
+            郵箱: support@NiHao.com<br>
         </p>
         <h5>貢獻代碼</h5>
         <p>https://github.com/haiwen/seadroid.git</P>
-        <h5>版權 ©2013-2018 Seafile Ltd.</h5>
+        <h5>版權 ©2013-2018 NiHao Ltd.</h5>
         ]]>
     </string>
   <string name="settings_advance_feature_title">高級特性</string>
@@ -377,7 +377,7 @@
   <string name="saf_thumbnail_not_found_exception">找不到（或）打不開縮略圖%s</string>
   <string name="saf_file_not_downloaded_exception">不能從伺服器下載%s</string>
   <string name="saf_write_diretory_exception">不能進入目錄進行讀取（或）寫入</string>
-  <string name="saf_account_not_found_exception">無法找到Seafile帳戶</string>
+  <string name="saf_account_not_found_exception">無法找到NiHao帳戶</string>
   <string name="saf_upload_path_not_available">無效路徑，無法上傳</string>
   <string name="saf_failed_to_create_directory">無法創建目錄%s</string>
   <string name="saf_file_exist">該文件已存在</string>

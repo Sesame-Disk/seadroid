@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="welcome_to_seafile">Seafile\'a Hoşgeldiniz</string>
+  <string name="welcome_to_nihao">NiHao\'a Hoşgeldiniz</string>
   <string name="select_account">Başlamak için bir hesap seçin</string>
   <string name="edit_account">Düzenle</string>
   <string name="delete_account">Sil</string>
@@ -27,7 +27,7 @@
     <item>Fotoğraflar/Videolar</item>
     <item>Diğer</item>
   </string-array>
-  <string name="choose_server">Bir Seafile Sunucusu Seçin</string>
+  <string name="choose_server">Bir NiHao Sunucusu Seçin</string>
   <string name="network_down">Ağ bağlantısı yok</string>
   <string name="unknow_error">Bilinmeyen hata</string>
   <string name="invalid_server_address">Geçersiz sunucu adresi</string>
@@ -65,7 +65,7 @@
   <string name="dir_empty">Bu klasör boş</string>
   <string name="no_repo">Henüz bir kütüphaneniz yok</string>
   <string name="no_app_available">Uygulama bulunamıyor</string>
-  <string name="add_to_seafile">Seafile\'a ekle</string>
+  <string name="add_to_nihao">NiHao\'a ekle</string>
   <string name="ok">Tamam</string>
   <string name="choose_an_account">Hesap seç</string>
   <string name="choose_a_library">Kütüphane seç</string>

@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="welcome_to_seafile">Добро пожаловать в Seafile</string>
+  <string name="welcome_to_nihao">Добро пожаловать в NiHao</string>
   <string name="select_account">Чтобы начать, выберите аккаунт</string>
   <string name="edit_account">Редактировать</string>
   <string name="delete_account">Удалить</string>
@@ -46,10 +46,10 @@
     <item>Фото/Видео</item>
     <item>Другое</item>
   </string-array>
-  <string name="choose_server">Выберите сервер Seafile</string>
+  <string name="choose_server">Выберите сервер NiHao</string>
   <string-array name="choose_server_array">
     <item>Единая точка входа</item>
-    <item>Другой Seafile сервер</item>
+    <item>Другой NiHao сервер</item>
   </string-array>
   <string name="network_down">Нет соединения с сетью</string>
   <string name="unknow_error">Неизвестная ошибка</string>
@@ -128,13 +128,13 @@
   <string name="dir_empty">Эта папка пуста</string>
   <string name="no_repo">У вас еще нет библиотек</string>
   <string name="no_app_available">Не найдено ни одно приложение</string>
-  <string name="add_to_seafile">Добавить в Seafile</string>
+  <string name="add_to_nihao">Добавить в NiHao</string>
   <string name="ok">ОК</string>
-  <string name="no_account">Пожалуйста, сначала добавьте аккаунт в Seafile</string>
+  <string name="no_account">Пожалуйста, сначала добавьте аккаунт в NiHao</string>
   <string name="choose_an_account">Выберите аккаунт</string>
   <string name="choose_a_library">Выберите библиотеку</string>
   <string name="choose_a_folder">Выбрать папку</string>
-  <string name="load_accounts_fail">Не удалось загрузить аккаунты Seafile</string>
+  <string name="load_accounts_fail">Не удалось загрузить аккаунты NiHao</string>
   <string name="load_libraries_fail">Не удалось загрузить библиотеки</string>
   <string name="load_dir_fail">Не удалось загрузить содержимое этой папки</string>
   <string name="not_supported_share">Этот тип обмена не поддерживается</string>
@@ -370,7 +370,7 @@
   <string name="settings_cuc_pick_albums">Позволить мне выбрать мои фотоальбомы</string>
   <string name="settings_cuc_remote_lib_hint">Выберите нужный аккаунт и библиотеку. \nВы можете изменить эти параметры позже в меню Настройки.</string>
   <string name="settings_cuc_finish_title">Завершить</string>
-  <string name="settings_cuc_ready">Seafile начнет загрузку файлов из выбранных вами папок после подтверждения.\nВо время этого вы можете закрыть приложение.</string>
+  <string name="settings_cuc_ready">NiHao начнет загрузку файлов из выбранных вами папок после подтверждения.\nВо время этого вы можете закрыть приложение.</string>
   <string name="settings_cuc_swipe_left">Проведите влево, чтобы продолжить.</string>
   <string name="settings_cuc_click_btn">Щелкните, чтобы закрыть помощник.</string>
   <string name="settings_cuc_loading">загрузка...</string>
@@ -379,22 +379,22 @@
   <string name="camera_sync_notification_title_failed">Загрузка с камеры не удалась</string>
   <string name="camera_sync_notification_repo_missing_failed">Репозиторий на сервере отсутствует</string>
   <string name="camera_sync_notification_auth_error_failed">Ошибка аутентификации.</string>
-  <string name="camera_sync_rename_file">%s (переименовано Seafile)</string>
+  <string name="camera_sync_rename_file">%s (переименовано NiHao)</string>
   <string name="settings_about_title">О ПРИЛОЖЕНИИ</string>
   <string name="settings_about_version_title">Версия</string>
   <string name="settings_about_author_title">Об авторе</string>
   <string name="settings_about_author_info">
         <![CDATA[
-        <h5>Seafile Android Client</h5>
+        <h5>NiHao Android Client</h5>
         <p>%s</p>
         <h5>Связь с нами</h5>
         <p>
-            Twitter: Seafile<br>
-            Email: support@seafile.com<br>
+            Twitter: NiHao<br>
+            Email: support@NiHao.com<br>
         </p>
         <h5>Внести свой вклад</h5>
         <p>https://github.com/haiwen/seadroid.git</P>
-        <h5>Copyright ©2013-2018 Seafile Ltd.</h5>
+        <h5>Copyright ©2013-2018 NiHao Ltd.</h5>
         ]]>
     </string>
   <string name="settings_advance_feature_title">ДОПОЛНИТЕЛЬНЫЕ ФУНКЦИИ</string>
@@ -426,7 +426,7 @@
   <string name="saf_thumbnail_not_found_exception">Невозможно найти/открыть миниатюру файла %s.</string>
   <string name="saf_file_not_downloaded_exception">Невозможно скачать с сервера файл %s.</string>
   <string name="saf_write_diretory_exception">Невозможно открыть папку для чтения/записи.</string>
-  <string name="saf_account_not_found_exception">Невозможно найти аккаунт Seafile.</string>
+  <string name="saf_account_not_found_exception">Невозможно найти аккаунт NiHao.</string>
   <string name="saf_upload_path_not_available">Невозможно загрузить, нет доступного пути</string>
   <string name="saf_failed_to_create_directory">Не возможно создать папку %s</string>
   <string name="saf_file_exist">Файл уже существует</string>

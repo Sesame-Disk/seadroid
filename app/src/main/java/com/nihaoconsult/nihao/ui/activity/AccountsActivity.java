@@ -51,7 +51,6 @@ public class AccountsActivity extends BaseActivity implements Toolbar.OnMenuItem
     public static final int DETAIL_ACTIVITY_REQUEST = 1;
 
     private ListView accountsView;
-
     private android.accounts.AccountManager mAccountManager;
     private AccountManager accountManager;
     private AvatarManager avatarManager;

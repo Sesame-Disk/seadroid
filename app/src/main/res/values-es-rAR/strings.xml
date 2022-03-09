@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="welcome_to_seafile">Bienvenido a Seafile</string>
+  <string name="welcome_to_nihao">Bienvenido a NiHao</string>
   <string name="select_account">Elija una cuenta para comenzar</string>
   <string name="edit_account">Editar</string>
   <string name="delete_account">Borrar</string>
@@ -46,10 +46,10 @@
     <item>Fotos/Videos</item>
     <item>Otro</item>
   </string-array>
-  <string name="choose_server">Elija un Servidor Seafile</string>
+  <string name="choose_server">Elija un Servidor NiHao</string>
   <string-array name="choose_server_array">
     <item>Inicio de Sesión único</item>
-    <item>Otro Servidor Seafile</item>
+    <item>Otro Servidor NiHao</item>
   </string-array>
   <string name="network_down">Sin conexión de red</string>
   <string name="unknow_error">Error desconocido</string>
@@ -126,13 +126,13 @@
   <string name="dir_empty">Esta carpeta está vacía</string>
   <string name="no_repo">Aún no tiene bibliotecas</string>
   <string name="no_app_available">No se encuentra ninguna app</string>
-  <string name="add_to_seafile">Agregar a Seafile</string>
+  <string name="add_to_nihao">Agregar a NiHao</string>
   <string name="ok">OK</string>
-  <string name="no_account">Por favor, primero configure una cuenta en Seafile</string>
+  <string name="no_account">Por favor, primero configure una cuenta en NiHao</string>
   <string name="choose_an_account">Elija una cuenta</string>
   <string name="choose_a_library">Elija una biblioteca</string>
   <string name="choose_a_folder">Elija una carpeta</string>
-  <string name="load_accounts_fail">Falla al cargar cuentas de Seafile</string>
+  <string name="load_accounts_fail">Falla al cargar cuentas de NiHao</string>
   <string name="load_libraries_fail">Falla al cargar bibliotecas</string>
   <string name="load_dir_fail">Falla al cargar el contenido de esta carpeta</string>
   <string name="not_supported_share">Este tipo de recurso compartido no es compatible</string>
@@ -360,7 +360,7 @@
   <string name="settings_cuc_pick_albums">Permitirme elegir los álbumes de fotos</string>
   <string name="settings_cuc_remote_lib_hint">Escoja su cuenta y biblioteca preferidas. \nLuego puede cambiar estas opciones en Configuración.</string>
   <string name="settings_cuc_finish_title">Terminar</string>
-  <string name="settings_cuc_ready">Seafile comenzará a subir los archivos de las carpetas seleccionadas después de su confirmación.\nPuede cerrar la app durante este proceso.</string>
+  <string name="settings_cuc_ready">NiHao comenzará a subir los archivos de las carpetas seleccionadas después de su confirmación.\nPuede cerrar la app durante este proceso.</string>
   <string name="settings_cuc_swipe_left">Deslice a la izquierda para continuar.</string>
   <string name="settings_cuc_click_btn">Click para cerrar la ayuda de configuración.</string>
   <string name="settings_cuc_loading">cargando...</string>
@@ -369,22 +369,22 @@
   <string name="camera_sync_notification_title_failed">Subida de cámara falló</string>
   <string name="camera_sync_notification_repo_missing_failed">No se encuentra el repositorio en el servidor.</string>
   <string name="camera_sync_notification_auth_error_failed">Error de autenticación.</string>
-  <string name="camera_sync_rename_file">%s (renombrado por Seafile)</string>
+  <string name="camera_sync_rename_file">%s (renombrado por NiHao)</string>
   <string name="settings_about_title">ACERCA DE</string>
   <string name="settings_about_version_title">App Version</string>
   <string name="settings_about_author_title">Acerca del Autor</string>
   <string name="settings_about_author_info">
         <![CDATA[
-        <h5>Cliente Seafile para Android</h5>
+        <h5>Cliente NiHao para Android</h5>
         <p>%s</p>
         <h5>Contáctenos</h5>
         <p>
-            Twitter: Seafile<br>
-            Email: support@seafile.com<br>
+            Twitter: NiHao<br>
+            Email: support@NiHao.com<br>
         </p>
         <h5>Contribuir</h5>
         <p>https://github.com/haiwen/seadroid.git</P>
-        <h5>Copyright ©2013-2018 Seafile Ltd.</h5>
+        <h5>Copyright ©2013-2018 NiHao Ltd.</h5>
         ]]>
     </string>
   <string name="settings_advance_feature_title">FUNCIONES AVANZADAS</string>
@@ -416,7 +416,7 @@
   <string name="saf_thumbnail_not_found_exception">No se pudo hallar/abrir la imagen en miniatura %s.</string>
   <string name="saf_file_not_downloaded_exception">No se pudo descargar el archivo %s desde el servidor.</string>
   <string name="saf_write_diretory_exception">No se puede abrir la carpeta para leer/escribir.</string>
-  <string name="saf_account_not_found_exception">No se pudo hallar la cuenta de Seafile.</string>
+  <string name="saf_account_not_found_exception">No se pudo hallar la cuenta de NiHao.</string>
   <string name="saf_upload_path_not_available">No es posible subir, no hay ruta disponible</string>
   <string name="saf_failed_to_create_directory">No se pudo crear la carpeta %s</string>
   <string name="saf_file_exist">Ese archivo ya existe</string>
