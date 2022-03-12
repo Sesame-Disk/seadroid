@@ -1,7 +1,9 @@
 package com.nihaoconsult.nihao.account;
 
-import android.accounts.*;
+import android.accounts.AbstractAccountAuthenticator;
+import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
+import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,10 +23,8 @@ import java.net.HttpURLConnection;
  *
  */
 public class Authenticator extends AbstractAccountAuthenticator {
-
-    private String DEBUG_TAG = "SeafileAuthenticator";
+    private final String DEBUG_TAG = "SeafileAuthenticator";
     private final Context context;
-
     private com.nihaoconsult.nihao.account.AccountManager manager;
 
     /**
@@ -67,19 +67,17 @@ public class Authenticator extends AbstractAccountAuthenticator {
 
     public Authenticator(Context context) {
         super(context);
-        Log.d(DEBUG_TAG, "SeafileAuthenticator created.");
         this.context = context;
         this.manager = new com.nihaoconsult.nihao.account.AccountManager(context);
+        Log.d(DEBUG_TAG, "SeafileAuthenticator created.");
     }
 
     /**
      * We have no properties.
      */
     @Override
-    public Bundle editProperties(
-            AccountAuthenticatorResponse r, String s) {
+    public Bundle editProperties(AccountAuthenticatorResponse r, String s) {
         Log.d(DEBUG_TAG, "editProperties");
-
         throw new UnsupportedOperationException();
     }
 
@@ -90,8 +88,7 @@ public class Authenticator extends AbstractAccountAuthenticator {
                              String[] requiredFeatures,
                              Bundle options) throws NetworkErrorException {
 
-        Log.d(DEBUG_TAG, "addAccount of type "+accountType);
-
+        Log.d(DEBUG_TAG, "addAccount of type " + accountType);
         if (authTokenType != null && !authTokenType.equals(Authenticator.AUTHTOKEN_TYPE)) {
             Bundle result = new Bundle();
             result.putBoolean(AccountManager.KEY_BOOLEAN_RESULT, false);
@@ -103,7 +100,6 @@ public class Authenticator extends AbstractAccountAuthenticator {
         intent.putExtra(SeafileAuthenticatorActivity.ARG_ACCOUNT_TYPE, accountType);
         intent.putExtra(SeafileAuthenticatorActivity.ARG_IS_EDITING, false);
         intent.putExtra(android.accounts.AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
-
         final Bundle bundle = new Bundle();
         bundle.putParcelable(android.accounts.AccountManager.KEY_INTENT, intent);
         return bundle;
@@ -137,7 +133,6 @@ public class Authenticator extends AbstractAccountAuthenticator {
         } catch (JSONException e) {
             throw new NetworkErrorException(e);
         }
-
         // token is valid
         Bundle result = new Bundle();
         result.putBoolean(AccountManager.KEY_BOOLEAN_RESULT, true);
@@ -168,9 +163,7 @@ public class Authenticator extends AbstractAccountAuthenticator {
             result.putString(AccountManager.KEY_AUTHTOKEN, authToken);
             return result;
         }
-
         // there is no auth token -> the account is signed-out.
-
         final Bundle result = new Bundle();
         result.putBoolean(AccountManager.KEY_BOOLEAN_RESULT, false);
         result.putInt(AccountManager.KEY_ERROR_CODE, AccountManager.ERROR_CODE_BAD_REQUEST);
@@ -185,8 +178,8 @@ public class Authenticator extends AbstractAccountAuthenticator {
 
     @Override
     public Bundle updateCredentials(AccountAuthenticatorResponse response,
-            android.accounts.Account account,
-            String authTokenType, Bundle options) throws NetworkErrorException {
+                                    android.accounts.Account account,
+                                    String authTokenType, Bundle options) throws NetworkErrorException {
         Log.d(DEBUG_TAG, "updateCredentials");
 
         if (authTokenType != null && !authTokenType.equals(Authenticator.AUTHTOKEN_TYPE)) {
@@ -212,9 +205,9 @@ public class Authenticator extends AbstractAccountAuthenticator {
 
     @Override
     public Bundle hasFeatures(AccountAuthenticatorResponse r,
-            android.accounts.Account account, String[] strings) throws NetworkErrorException {
+                              android.accounts.Account account,
+                              String[] strings) throws NetworkErrorException {
         Log.d(DEBUG_TAG, "hasFeatures");
-
         final Bundle result = new Bundle();
         result.putBoolean(android.accounts.AccountManager.KEY_BOOLEAN_RESULT, true);
         return result;

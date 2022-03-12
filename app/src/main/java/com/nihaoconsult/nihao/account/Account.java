@@ -15,15 +15,11 @@ public class Account implements Parcelable, Comparable<Account> {
      * Type of the account (currently there is only one type)
      */
     public final static String ACCOUNT_TYPE = BuildConfig.ACCOUNT_TYPE;
-
     // The full URL of the server, like 'http://gonggeng.org/seahub/' or 'http://gonggeng.org/'
     public final String server;
     public final String name;
-
     public final String email;
-
     public final Boolean is_shib;
-
     public String token;
     public String sessionKey;
 
@@ -62,9 +58,10 @@ public class Account implements Parcelable, Comparable<Account> {
         return email;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
+
     public String getServer() {
         return server;
     }
@@ -109,7 +106,7 @@ public class Account implements Parcelable, Comparable<Account> {
             return false;
 
         Account a = (Account) obj;
-        if (a.server == null || a.email == null || a.token == null )
+        if (a.server == null || a.email == null || a.token == null)
             return false;
 
         return a.server.equals(this.server) && a.email.equals(this.email);
@@ -166,8 +163,7 @@ public class Account implements Parcelable, Comparable<Account> {
         this.token = in.readString();
         this.sessionKey = in.readString();
         this.is_shib = (Boolean) in.readValue(Boolean.class.getClassLoader());
-
-       // Log.d(DEBUG_TAG, String.format("%s %s %s %b", server, email, token ,is_shib));
+        // Log.d(DEBUG_TAG, String.format("%s %s %s %b", server, email, token ,is_shib));
     }
 
     @Override

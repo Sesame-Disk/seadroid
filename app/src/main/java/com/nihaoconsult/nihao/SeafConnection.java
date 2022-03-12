@@ -1,5 +1,15 @@
 package com.nihaoconsult.nihao;
 
+import static com.nihaoconsult.nihao.httputils.ApiService.ACCOUNT_INFO;
+import static com.nihaoconsult.nihao.httputils.ApiService.ACTIVITIES;
+import static com.nihaoconsult.nihao.httputils.ApiService.AUTH_TOKEN;
+import static com.nihaoconsult.nihao.httputils.ApiService.EVENT;
+import static com.nihaoconsult.nihao.httputils.ApiService.REPOS;
+import static com.nihaoconsult.nihao.httputils.ApiService.REPO_HISTORY_CHANGE;
+import static com.nihaoconsult.nihao.httputils.ApiService.SERVER_INFO;
+import static com.nihaoconsult.nihao.httputils.ApiService.STARRED_ITEM;
+
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -35,6 +45,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +61,7 @@ import okhttp3.Response;
 
 /**
  * SeafConnection encapsulates Seafile Web API
+ *
  * @author plt
  */
 public class SeafConnection {
@@ -115,7 +127,9 @@ public class SeafConnection {
         return prepareHttpsCheck(req);
     }
 
-    /** Prepare a post request.
+    /**
+     * Prepare a post request.
+     *
      * @param apiPath   The path of the http request
      * @param withToken
      * @param params    The query param to be appended to the request url
@@ -126,7 +140,9 @@ public class SeafConnection {
         return prepareApiPostRequest(apiPath, withToken, params, false);
     }
 
-    /** Prepare a post request.
+    /**
+     * Prepare a post request.
+     *
      * @param apiPath   The path of the http request
      * @param withToken
      * @param params    The query param to be appended to the request url
@@ -159,6 +175,7 @@ public class SeafConnection {
 
     /**
      * Login into the server
+     *
      * @return true if login success, false otherwise
      * @throws SeafException
      */
@@ -166,7 +183,7 @@ public class SeafConnection {
         boolean withAuthToken = false;
         HttpRequest req = null;
         try {
-            req = prepareApiPostRequest("api2/auth-token/", false, null);
+            req = prepareApiPostRequest(AUTH_TOKEN, false, null);
             // Log.d(DEBUG_TAG, "Login to " + account.server + "api2/auth-token/");
 
             if (!TextUtils.isEmpty(authToken)) {
@@ -193,8 +210,8 @@ public class SeafConnection {
                 // ignore
             }
 
-            String deviceId = Secure.getString(context.getContentResolver(),
-                    Secure.ANDROID_ID);
+            @SuppressLint("HardwareIds")
+            String deviceId = Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);
 
             req.form("platform", "android");
             req.form("device_id", deviceId);
@@ -235,10 +252,9 @@ public class SeafConnection {
      * @throws SeafException
      */
     public String getAccountInfo() throws SeafException {
-
         String result;
         try {
-            HttpRequest req = prepareApiGetRequest("api2/account/info/");
+            HttpRequest req = prepareApiGetRequest(ACCOUNT_INFO);
             checkRequestResponseStatus(req, HttpURLConnection.HTTP_OK);
             result = new String(req.bytes(), "UTF-8");
         } catch (SeafException e) {
@@ -248,15 +264,13 @@ public class SeafConnection {
         } catch (IOException e) {
             throw SeafException.networkException;
         }
-
         return result;
     }
 
     public String getServerInfo() throws SeafException {
-
         String result;
         try {
-            HttpRequest req = prepareApiGetRequest("api2/server-info/");
+            HttpRequest req = prepareApiGetRequest(SERVER_INFO);
             checkRequestResponseStatus(req, HttpURLConnection.HTTP_OK);
             result = new String(req.bytes(), "UTF-8");
         } catch (SeafException e) {
@@ -281,7 +295,7 @@ public class SeafConnection {
     public String getRepos() throws SeafException {
         HttpRequest req = null;
         try {
-            req = prepareApiGetRequest("api2/repos/");
+            req = prepareApiGetRequest(REPOS);
             checkRequestResponseStatus(req, HttpURLConnection.HTTP_OK);
 
             String result = new String(req.bytes(), "UTF-8");
@@ -300,13 +314,13 @@ public class SeafConnection {
         try {
             Map<String, Object> params = Maps.newHashMap();
             if (useNewActivity) {
-                apiPath = String.format("api/v2.1/activities/");
+                apiPath = String.format(ACTIVITIES);
                 if (start == 0) {
                     start = 1;
                 }
                 params.put("page", start);
             } else {
-                apiPath = String.format("api2/events/");
+                apiPath = String.format(EVENT);
                 params.put("start", start);
             }
 
@@ -325,15 +339,12 @@ public class SeafConnection {
 
     public String getHistoryChanges(String repoID, String commitId) throws SeafException {
         try {
-            String apiPath = String.format("api2/repo_history_changes/%s/", repoID);
+            String apiPath = String.format(REPO_HISTORY_CHANGE, repoID);
             Map<String, Object> params = Maps.newHashMap();
             params.put("commit_id", commitId);
             HttpRequest req = prepareApiGetRequest(apiPath, params);
             checkRequestResponseStatus(req, HttpURLConnection.HTTP_OK);
-
-            String result = new String(req.bytes(), "UTF-8");
-
-            return result;
+            return new String(req.bytes(), StandardCharsets.UTF_8);
         } catch (SeafException e) {
             throw e;
         } catch (HttpRequestException e) {
@@ -346,9 +357,8 @@ public class SeafConnection {
     public String getStarredFiles() throws SeafException {
         try {
 //            HttpRequest req = prepareApiGetRequest("api2/starredfiles/");
-            HttpRequest req = prepareApiGetRequest("api/v2.1/starred-items/");
+            HttpRequest req = prepareApiGetRequest(STARRED_ITEM);
             checkRequestResponseStatus(req, HttpURLConnection.HTTP_OK);
-
             return new String(req.bytes(), "UTF-8");
         } catch (SeafException e) {
             throw e;
@@ -358,6 +368,7 @@ public class SeafConnection {
             throw SeafException.networkException;
         }
     }
+
     public String getAvatar(String email, int size) throws SeafException {
         try {
             String apiPath = String.format("api2/avatars/user/%s/resized/%d", email, size);
@@ -404,6 +415,7 @@ public class SeafConnection {
 
     /**
      * Get the contents of a directory.
+     *
      * @param repoID
      * @param path
      * @param cachedDirID The local cached dirID.
@@ -456,7 +468,7 @@ public class SeafConnection {
         }
     }
 
-    public Pair<String, String> getDownloadLink(String repoID, String path ,boolean isReUsed) throws SeafException {
+    public Pair<String, String> getDownloadLink(String repoID, String path, boolean isReUsed) throws SeafException {
         try {
             String apiPath = String.format("api2/repos/%s/file/", repoID);
             Map<String, Object> params = Maps.newHashMap();
@@ -533,6 +545,7 @@ public class SeafConnection {
 
     /**
      * Get the latest version of the file from server
+     *
      * @param repoID
      * @param fileBlocks
      * @param blockId
@@ -704,6 +717,7 @@ public class SeafConnection {
 
     /**
      * Get the latest version of the file from server
+     *
      * @param repoID
      * @param path
      * @param localPath
@@ -739,7 +753,7 @@ public class SeafConnection {
     }
 
     // get encrypted repo info
-    public String  getEncryptRepo(String repoID) throws SeafException {
+    public String getEncryptRepo(String repoID) throws SeafException {
         Response response = null;
         try {
             String url = account.server + "api2/repos/" + repoID;
@@ -880,8 +894,8 @@ public class SeafConnection {
      */
     public String uploadFile(String repoID, String dir, String filePath, ProgressMonitor monitor, boolean update)
             throws SeafException, IOException {
-            String url = getUploadLink(repoID, update, dir);
-            return uploadFileCommon(url, repoID, dir, filePath, monitor, update);
+        String url = getUploadLink(repoID, update, dir);
+        return uploadFileCommon(url, repoID, dir, filePath, monitor, update);
     }
 
 

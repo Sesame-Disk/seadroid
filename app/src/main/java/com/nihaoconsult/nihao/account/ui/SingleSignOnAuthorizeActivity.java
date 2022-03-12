@@ -22,8 +22,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
 
-import com.nihaoconsult.nihao.R;
 import com.nihaoconsult.nihao.NihaoApplication;
+import com.nihaoconsult.nihao.R;
 import com.nihaoconsult.nihao.SeafException;
 import com.nihaoconsult.nihao.account.Account;
 import com.nihaoconsult.nihao.account.AccountInfo;
@@ -48,12 +48,12 @@ import java.security.cert.X509Certificate;
  */
 public class SingleSignOnAuthorizeActivity extends BaseActivity implements Toolbar.OnMenuItemClickListener {
     public static final String DEBUG_TAG = "SingleSignOnAuthorizeActivity";
-
     public static final String SEAHUB_SHIB_COOKIE_NAME = "seahub_auth";
     private WebView mWebview;
     private LinearLayout mloadingAnimation;
     public String serverUrl;
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,17 +82,13 @@ public class SingleSignOnAuthorizeActivity extends BaseActivity implements Toolb
     @SuppressLint("LongLogTag")
     private void openAuthorizePage(String url) {
         Log.d(DEBUG_TAG, "server url is " + url);
-
         serverUrl = url;
-
         if (!Utils.isNetworkOn()) {
             showShortToast(this, getString(R.string.network_down));
             return;
         }
-
-        String deviceId = Settings.Secure.getString(this.getContentResolver(),
-                Settings.Secure.ANDROID_ID);
-
+        @SuppressLint("HardwareIds")
+        String deviceId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         String appVersion = "";
         Context context = NihaoApplication.getAppContext();
         try {
@@ -102,7 +98,6 @@ public class SingleSignOnAuthorizeActivity extends BaseActivity implements Toolb
         } catch (PackageManager.NameNotFoundException e) {
             // ignore
         }
-
         if (!url.endsWith("/")) {
             url += "/shib-login";
         } else
@@ -118,18 +113,13 @@ public class SingleSignOnAuthorizeActivity extends BaseActivity implements Toolb
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-
-
         Log.d(DEBUG_TAG, "url " + url);
-
         mWebview.loadUrl(url);
-
         showPageLoading(true);
     }
 
 
     private void showPageLoading(boolean pageLoading) {
-
         if (!pageLoading) {
             mloadingAnimation.startAnimation(AnimationUtils.loadAnimation(
                     this, android.R.anim.fade_out));
@@ -137,12 +127,10 @@ public class SingleSignOnAuthorizeActivity extends BaseActivity implements Toolb
                     this, android.R.anim.fade_in));
             mloadingAnimation.setVisibility(View.GONE);
             mWebview.setVisibility(View.VISIBLE);
+            mWebview.getSettings().setUserAgentString(getString(R.string.app_name));
         } else {
-            mloadingAnimation.startAnimation(AnimationUtils.loadAnimation(
-                    this, android.R.anim.fade_in));
-            mWebview.startAnimation(AnimationUtils.loadAnimation(
-                    this, android.R.anim.fade_out));
-
+            mloadingAnimation.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
+            mWebview.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
             mloadingAnimation.setVisibility(View.VISIBLE);
             mWebview.setVisibility(View.INVISIBLE);
         }
@@ -162,6 +150,15 @@ public class SingleSignOnAuthorizeActivity extends BaseActivity implements Toolb
         return true;
     }
 
+    @Override
+    public void onBackPressed() {
+        if (mWebview.canGoBack()) {
+            mWebview.goBack();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     private void displaySSLError() {
         showPageLoading(false);
         showShortToast(this, R.string.ssl_error);
@@ -171,9 +168,7 @@ public class SingleSignOnAuthorizeActivity extends BaseActivity implements Toolb
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             // Display error messages
-            showShortToast(SingleSignOnAuthorizeActivity.this,
-                    String.format((R.string.shib_load_page_error) + description));
-
+            showShortToast(SingleSignOnAuthorizeActivity.this, String.format((R.string.shib_load_page_error) + description));
             showPageLoading(false);
         }
 
@@ -209,7 +204,6 @@ public class SingleSignOnAuthorizeActivity extends BaseActivity implements Toolb
                 dialog.show(getSupportFragmentManager(), SslConfirmDialog.FRAGMENT_TAG);
             }
             return;
-
         }
 
         @SuppressLint("LongLogTag")
@@ -217,11 +211,9 @@ public class SingleSignOnAuthorizeActivity extends BaseActivity implements Toolb
         public void onPageFinished(WebView webView, String url) {
             Log.d(DEBUG_TAG, "onPageFinished " + serverUrl);
             showPageLoading(false);
-
             String cookie = getCookie(serverUrl, SEAHUB_SHIB_COOKIE_NAME);
             if (cookie == null)
                 return;
-
             Account account = null;
             try {
                 account = parseAccount(Utils.cleanServerURL(serverUrl), cookie);
@@ -243,20 +235,15 @@ public class SingleSignOnAuthorizeActivity extends BaseActivity implements Toolb
     private Account parseAccount(String url, String cookie) {
         if (url == null || cookie.isEmpty())
             return null;
-
         if (cookie.startsWith("\"")) {
             cookie = cookie.substring(1, cookie.length() - 1);
         }
-
         String email = cookie.substring(0, cookie.lastIndexOf("@"));
         String token = cookie.substring(cookie.lastIndexOf("@") + 1);
-
         if (email.isEmpty() || token.isEmpty())
             return null;
-
         Log.d(DEBUG_TAG, "email: " + email);
         Log.d(DEBUG_TAG, "token: " + token);
-
         return new Account(url, email, "", token, true);
     }
 
@@ -292,7 +279,6 @@ public class SingleSignOnAuthorizeActivity extends BaseActivity implements Toolb
 
                             @Override
                             public void onRejected() {
-
                             }
                         });
                 dialog.show(getSupportFragmentManager(), SslConfirmDialog.FRAGMENT_TAG);
@@ -344,18 +330,13 @@ public class SingleSignOnAuthorizeActivity extends BaseActivity implements Toolb
     @SuppressLint("LongLogTag")
     public String getCookie(String url, String key) {
         String CookieValue = "";
-
         CookieManager.getInstance().setAcceptCookie(true);
         CookieManager cookieManager = CookieManager.getInstance();
-
         String cookies = cookieManager.getCookie(url);
         if (cookies == null)
             return null;
-
         Log.d(DEBUG_TAG, "All the cookies in a string:" + cookies);
-
         String[] allCookies = cookies.split(";");
-
         for (String cookie : allCookies) {
             if (cookie.contains(key)) {
                 String[] pair = cookie.split("=");
@@ -364,5 +345,4 @@ public class SingleSignOnAuthorizeActivity extends BaseActivity implements Toolb
         }
         return CookieValue;
     }
-
 }

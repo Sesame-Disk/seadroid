@@ -30,18 +30,10 @@ public class FileMonitorService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(DEBUG_TAG, "onStartCommand called.");
-
         if (monitor == null) {
             monitor = new SeafileMonitor(updateMgr);
         }
-
-        ConcurrentAsyncTask.submit(new Runnable() {
-            @Override
-            public void run() {
-                monitor.monitorAllAccounts();
-            }
-        });
-
+        ConcurrentAsyncTask.submit(() -> monitor.monitorAllAccounts());
         return START_STICKY;
     }
 
@@ -60,10 +52,8 @@ public class FileMonitorService extends Service {
     @Override
     public void onCreate() {
         Log.d(DEBUG_TAG, "onCreate");
-
         Intent bindIntent = new Intent(this, TransferService.class);
         bindService(bindIntent, mTransferConnection, Context.BIND_AUTO_CREATE);
-
         LocalBroadcastManager.getInstance(this).registerReceiver(transferReceiver,
                 new IntentFilter(TransferManager.BROADCAST_ACTION));
     }
@@ -71,9 +61,7 @@ public class FileMonitorService extends Service {
     @Override
     public void onDestroy() {
         Log.d(DEBUG_TAG, "onDestroy");
-
         updateMgr.stop();
-
         if (monitor != null) {
             try {
                 monitor.stop();
@@ -96,7 +84,7 @@ public class FileMonitorService extends Service {
             monitor.stopMonitorFilesForAccount(account);
     }
 
-    private ServiceConnection mTransferConnection = new ServiceConnection() {
+    private final ServiceConnection mTransferConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName className, IBinder binder) {
@@ -112,7 +100,7 @@ public class FileMonitorService extends Service {
 
     };
 
-    private BroadcastReceiver transferReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver transferReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -151,8 +139,6 @@ public class FileMonitorService extends Service {
                             info.parentDir, info.localFilePath, info.err, info.version);
                 }
             }
-
         }
-
     };
 }

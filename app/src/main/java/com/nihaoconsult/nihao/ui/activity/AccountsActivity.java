@@ -44,11 +44,9 @@ import java.util.Locale;
 
 
 public class AccountsActivity extends BaseActivity implements Toolbar.OnMenuItemClickListener {
-    private static final String DEBUG_TAG = "AccountsActivity";
+    private final String DEBUG_TAG = "AccountsActivity";
+    public final int DETAIL_ACTIVITY_REQUEST = 1;
 
-    public static final int DETAIL_ACTIVITY_REQUEST = 1;
-
-    private ListView accountsView;
     private android.accounts.AccountManager mAccountManager;
     private AccountManager accountManager;
     private AvatarManager avatarManager;
@@ -56,10 +54,8 @@ public class AccountsActivity extends BaseActivity implements Toolbar.OnMenuItem
     private List<Account> accounts;
     private FileMonitorService mMonitorService;
     private Account currentDefaultAccount;
-
-    private OnAccountsUpdateListener accountsUpdateListener = accounts -> refreshView();
-
-    private ServiceConnection mMonitorConnection = new ServiceConnection() {
+    private final OnAccountsUpdateListener accountsUpdateListener = accounts -> refreshView();
+    private final ServiceConnection mMonitorConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName className, IBinder binder) {
@@ -78,25 +74,33 @@ public class AccountsActivity extends BaseActivity implements Toolbar.OnMenuItem
     public void onCreate(Bundle savedInstanceState) {
         Log.d(DEBUG_TAG, "AccountsActivity.onCreate is called");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.start);
-        mAccountManager = android.accounts.AccountManager.get(this);
-        accountsView = (ListView) findViewById(R.id.account_list_view);
-        accountManager = new AccountManager(this);
-        avatarManager = new AvatarManager();
-        currentDefaultAccount = accountManager.getCurrentAccount();
+        setContentView(R.layout.activity_accounts);
 
+        Toolbar toolbar = getActionBarToolbar();
+        toolbar.setOnMenuItemClickListener(this);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(R.string.accounts);
+
+        ListView accountsView = (ListView) findViewById(R.id.account_list_view);
         View footerView = ((LayoutInflater) this
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
                 R.layout.account_list_footer, null, false);
         Button addAccount = (Button) footerView.findViewById(R.id.account_footer_btn);
-        addAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View btn) {
-                mAccountManager.addAccount(Account.ACCOUNT_TYPE,
-                        Authenticator.AUTHTOKEN_TYPE, null, null,
-                        AccountsActivity.this, accountCallback, null);
-            }
-        });
+        registerForContextMenu(accountsView);
+
+        mAccountManager = android.accounts.AccountManager.get(this);
+        accountManager = new AccountManager(this);
+        avatarManager = new AvatarManager();
+        currentDefaultAccount = accountManager.getCurrentAccount();
+
+        // updates toolbar back button
+        boolean showHomeAsUp = currentDefaultAccount != null && currentDefaultAccount.hasValidToken();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(showHomeAsUp);
+
+        addAccount.setOnClickListener(btn -> mAccountManager.addAccount(Account.ACCOUNT_TYPE,
+                Authenticator.AUTHTOKEN_TYPE, null, null,
+                AccountsActivity.this, accountCallback, null));
+
         accountsView.addFooterView(footerView, null, true);
         accountsView.setFooterDividersEnabled(false);
         adapter = new NihaoAccountAdapter(this);
@@ -114,22 +118,7 @@ public class AccountsActivity extends BaseActivity implements Toolbar.OnMenuItem
         });
 
         mAccountManager.addOnAccountsUpdatedListener(accountsUpdateListener, null, false);
-
-        registerForContextMenu(accountsView);
-
-        Toolbar toolbar = getActionBarToolbar();
-        toolbar.setOnMenuItemClickListener(this);
-        setSupportActionBar(toolbar);
-
         accounts = accountManager.getAccountList();
-        // updates toolbar back button
-        if (currentDefaultAccount == null || !currentDefaultAccount.hasValidToken()) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        } else {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-
-        getSupportActionBar().setTitle(R.string.accounts);
 
         String country = Locale.getDefault().getCountry();
         String language = Locale.getDefault().getLanguage();
@@ -252,7 +241,8 @@ public class AccountsActivity extends BaseActivity implements Toolbar.OnMenuItem
     };
 
     private void startEditAccountActivity(Account account) {
-        mAccountManager.updateCredentials(account.getAndroidAccount(), Authenticator.AUTHTOKEN_TYPE, null, this, accountCallback, null);
+        mAccountManager.updateCredentials(account.getAndroidAccount(),
+                Authenticator.AUTHTOKEN_TYPE, null, this, accountCallback, null);
     }
 
     @Override
@@ -287,15 +277,11 @@ public class AccountsActivity extends BaseActivity implements Toolbar.OnMenuItem
                 return true;
             case R.id.delete:
                 account = adapter.getItem((int) info.id);
-
                 Log.d(DEBUG_TAG, "removing account " + account);
                 mAccountManager.removeAccount(account.getAndroidAccount(), null, null);
-
                 if (mMonitorService != null) {
                     mMonitorService.removeAccount(account);
                 }
-
-
                 return true;
             default:
                 return super.onContextItemSelected(item);
@@ -332,18 +318,14 @@ public class AccountsActivity extends BaseActivity implements Toolbar.OnMenuItem
             if (avatars == null) {
                 return;
             }
-
             // set avatars url to adapter
             adapter.setAvatars((ArrayList<Avatar>) avatars);
-
             // notify adapter data changed
             adapter.notifyDataSetChanged();
-
             return;
         }
 
         LoadAvatarUrlsTask task = new LoadAvatarUrlsTask(avatarSize);
-
         ConcurrentAsyncTask.execute(task);
 
     }

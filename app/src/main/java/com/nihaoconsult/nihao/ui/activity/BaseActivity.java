@@ -26,21 +26,14 @@ import java.util.Map;
  * A base activity that handles common functionality in the app. This includes Action Bar tweaks.
  */
 public class BaseActivity extends AppCompatActivity {
-
     // variables that control the Action Bar auto hide behavior (aka "quick recall")
     private boolean mActionBarAutoHideEnabled = false;
-
     // Primary toolbar and drawer toggle
     private Toolbar mActionBarToolbar;
-
     private int mActionBarAutoHideMinY = 0;
-
     private int mActionBarAutoHideSensivity = 0;
-
     private int mActionBarAutoHideSignal = 0;
-
     private boolean mActionBarShown = true;
-
     protected int screenWidth;
 
     @Override
@@ -169,11 +162,11 @@ public class BaseActivity extends AppCompatActivity {
      * activity then don't define one and this method will use back button functionality. If "Up"
      * functionality is still desired for activities without parents then use
      * {@code syntheticParentActivity} to define one dynamically.
-     *
+     * <p>
      * Note: Up navigation intents are represented by a back arrow in the top left of the Toolbar
-     *       in Material Design guidelines.
+     * in Material Design guidelines.
      *
-     * @param currentActivity Activity in use when navigate Up action occurred.
+     * @param currentActivity         Activity in use when navigate Up action occurred.
      * @param syntheticParentActivity Parent activity to use when one is not already configured.
      */
     public static void navigateUpOrBack(Activity currentActivity,
@@ -212,6 +205,7 @@ public class BaseActivity extends AppCompatActivity {
             }
         }
     }
+
     /**
      * Show the given message in a {@link Toast} for a short period of time
      * <p>
@@ -266,7 +260,6 @@ public class BaseActivity extends AppCompatActivity {
     public void showLongToast(final Activity activity, final int resId) {
         if (activity == null)
             return;
-
         showLongToast(activity, activity.getString(resId));
     }
 

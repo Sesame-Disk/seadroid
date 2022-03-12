@@ -1,18 +1,18 @@
 package com.nihaoconsult.nihao.avatar;
 
-import java.util.*;
-
+import com.google.common.collect.Lists;
 import com.nihaoconsult.nihao.NihaoApplication;
+import com.nihaoconsult.nihao.account.Account;
 import com.nihaoconsult.nihao.account.AccountManager;
+import com.nihaoconsult.nihao.util.Utils;
+
 import org.json.JSONObject;
 
-import com.google.common.collect.Lists;
-import com.nihaoconsult.nihao.account.Account;
-import com.nihaoconsult.nihao.util.Utils;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * load, cache, update avatars
- *
  */
 public class AvatarManager {
     private static final String DEBUG_TAG = "AvatarManager";
@@ -53,7 +53,7 @@ public class AvatarManager {
 
     public boolean isNeedToLoadNewAvatars() {
         ArrayList<Account> accounts = getAccountsWithoutAvatars();
-        if (accounts == null || accounts.size() ==0) return false;
+        if (accounts == null || accounts.size() == 0) return false;
         else
             return true;
     }
@@ -78,8 +78,4 @@ public class AvatarManager {
 
         return avatar;
     }
-
-
-
-
 }
