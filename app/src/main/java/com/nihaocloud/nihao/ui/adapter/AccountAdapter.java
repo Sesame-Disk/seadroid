@@ -2,7 +2,6 @@ package com.nihaocloud.nihao.ui.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -112,11 +111,9 @@ public abstract class AccountAdapter extends BaseAdapter {
         }
         Account account = items.get(position);
 //        viewHolder.title.setText(account.getServerHost());
-////        viewHolder.subtitle.setText(account.getEmail());
+////      viewHolder.subtitle.setText(account.getEmail());
 //        viewHolder.subtitle.setText(account.getName());
-
         viewHolder.title.setText(account.getName());
-        Log.d("DDDDDDDDDD", account.getEmail());
         viewHolder.subtitle.setText(account.getEmail());
         if (getAvatarUrl(account) != null) {
             options = new DisplayImageOptions.Builder()
