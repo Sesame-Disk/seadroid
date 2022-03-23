@@ -43,7 +43,7 @@
   <string name="choose_server">Valitse NiHao Palvelin</string>
   <string-array name="choose_server_array">
     <item>Kertakirjautuminen</item>
-    <item>Muu NiHao palvelin</item>
+    <item>Perustodennus</item>
   </string-array>
   <string name="network_down">Ei verkkoyhteyttä</string>
   <string name="unknow_error">Tuntematon virhe</string>

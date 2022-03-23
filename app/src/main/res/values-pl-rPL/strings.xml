@@ -43,7 +43,7 @@
   <string name="choose_server">Wybierz serwer NiHao</string>
   <string-array name="choose_server_array">
     <item>Single Sign-On</item>
-    <item>Inny serwer NiHao</item>
+    <item>Uwierzytelnianie podstawowe</item>
   </string-array>
   <string name="network_down">Brak połączenia z siecią</string>
   <string name="unknow_error">Nieznany błąd</string>

@@ -49,7 +49,7 @@
   <string name="choose_server">请选择一个NiHao服务器</string>
   <string-array name="choose_server_array">
     <item>统一登录</item>
-    <item>其他NiHao服务器</item>
+    <item>基本认证</item>
   </string-array>
   <string name="network_down">无网络连接</string>
   <string name="unknow_error">未知错误</string>

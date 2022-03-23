@@ -49,7 +49,7 @@
   <string name="choose_server">Elija un Servidor NiHao</string>
   <string-array name="choose_server_array">
     <item>Inicio de Sesión único</item>
-    <item>Otro Servidor NiHao</item>
+    <item>Autenticación básica</item>
   </string-array>
   <string name="network_down">Sin conexión de red</string>
   <string name="unknow_error">Error desconocido</string>

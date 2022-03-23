@@ -49,7 +49,7 @@
   <string name="choose_server">Выберите сервер NiHao</string>
   <string-array name="choose_server_array">
     <item>Единая точка входа</item>
-    <item>Другой NiHao сервер</item>
+    <item>Базовая аутентификация</item>
   </string-array>
   <string name="network_down">Нет соединения с сетью</string>
   <string name="unknow_error">Неизвестная ошибка</string>

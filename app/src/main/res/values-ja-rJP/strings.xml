@@ -49,7 +49,7 @@
   <string name="choose_server">NiHao サーバーを選択</string>
   <string-array name="choose_server_array">
     <item>シングルサインオン</item>
-    <item>他の NiHao サーバー</item>
+    <item>基本認証</item>
   </string-array>
   <string name="network_down">ネットワーク接続がありません</string>
   <string name="unknow_error">不明なエラー</string>

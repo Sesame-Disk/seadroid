@@ -49,7 +49,7 @@
   <string name="choose_server">Choisir un serveur NiHao</string>
   <string-array name="choose_server_array">
     <item>Authentification unique</item>
-    <item>Autre serveur NiHao</item>
+    <item>Authentification de base</item>
   </string-array>
   <string name="network_down">Absence de connexion réseau</string>
   <string name="unknow_error">Erreur inconnue</string>

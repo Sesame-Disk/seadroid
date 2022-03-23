@@ -49,7 +49,7 @@
   <string name="choose_server">Bitte wählen Sie einen NiHao-Server aus</string>
   <string-array name="choose_server_array">
     <item>Single-Sign-On</item>
-    <item>Anderer NiHao-Server</item>
+    <item>Basisauthentifizierung</item>
   </string-array>
   <string name="network_down">Keine Netzwerkverbindung</string>
   <string name="unknow_error">Unbekannter Fehler</string>

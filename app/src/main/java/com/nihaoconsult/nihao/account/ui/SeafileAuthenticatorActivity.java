@@ -38,7 +38,6 @@ public class SeafileAuthenticatorActivity extends BaseAuthenticatorActivity {
     public final static String ARG_IS_EDITING = "isEdited";
     private static final int REQ_SIGNUP = 1;
     private AccountManager mAccountManager;
-
     /**
      * Called when the activity is first created.
      */
