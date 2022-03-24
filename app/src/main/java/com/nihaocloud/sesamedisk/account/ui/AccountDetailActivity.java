@@ -105,7 +105,6 @@ public class AccountDetailActivity extends BaseActivity implements Toolbar.OnMen
             emailText.requestFocus();
         }
         serverURL = intent.getStringExtra(BASIC_SIGN_ON_SERVER_URL);
-        if (serverURL == null) serverURL = getString(R.string.app_url);
         emailText.requestFocus();
         Toolbar toolbar = getActionBarToolbar();
         toolbar.setOnMenuItemClickListener(this);

@@ -1,7 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
     <string name="app_name" translatable="false">NiHao</string>
-    <string name="app_url">https://app.nihaoconsult.com/</string>
     <string name="welcome_to_nihao">Welcome to NiHao</string>
     <string name="select_account">Choose an account to start</string>
     <string name="edit_account">Edit</string>

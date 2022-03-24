@@ -76,7 +76,6 @@ public class SingleSignOnAuthorizeActivity extends BaseActivity implements Toolb
         getSupportActionBar().setTitle(R.string.shib_login_title);
 
         String url = getIntent().getStringExtra(SINGLE_SIGN_ON_SERVER_URL);
-        if (url == null) url = getString(R.string.app_url);
         CookieManager.getInstance().removeAllCookie();
         openAuthorizePage(url);
     }

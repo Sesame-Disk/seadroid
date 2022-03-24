@@ -1,5 +1,22 @@
 apply plugin: 'com.android.application'
 
+def keystores = [
+        'debug'  : loadKeystoreProperties("debug.keystore.properties"),
+        'release': loadKeystoreProperties("debug.keystore.properties")
+]
+
+def loadKeystoreProperties(filename) {
+    def keystorePropertiesFile = rootProject.file(filename)
+    if (keystorePropertiesFile.exists()) {
+        def keystoreProperties = new Properties()
+        keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+        return keystoreProperties
+    } else {
+        return null
+    }
+}
+
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
@@ -32,26 +49,16 @@ android {
 
     signingConfigs {
         debug {
-//            def props = new Properties()
-//            props.load(new FileInputStream(project.file("debugkey.properties")))
-//            storeFile project.file(props.keyStore)
-//            storePassword props.keyStorePassword
-//            keyAlias props.keyAlias
-//            keyPassword props.keyAliasPassword
+            storeFile rootProject.file("${keystores.release.storeFile}")
+            storePassword keystores.debug.storePassword
+            keyAlias keystores.debug.keyAlias
+            keyPassword keystores.debug.keyPassword
         }
         release {
-//            Signing code for manual signing
-//            storeFile file(System.console().readLine("\n\$ Enter keystore path: "))
-//            storePassword System.console().readPassword("\n\$ Enter keystore password: ").toString()
-//            keyAlias System.console().readLine("\n\$ Enter key alias: ")
-//            keyPassword System.console().readPassword("\n\$ Enter key password: ").toString()
-
-//            def props = new Properties()
-//            props.load(new FileInputStream(project.file("key.properties")))
-//            storeFile project.file(props.keyStore)
-//            storePassword props.keyStorePassword
-//            keyAlias props.keyAlias
-//            keyPassword props.keyAliasPassword
+            storeFile rootProject.file("${keystores.release.storeFile}")
+            storePassword keystores.release.storePassword
+            keyAlias keystores.release.keyAlias
+            keyPassword keystores.release.keyPassword
         }
     }
 
@@ -110,7 +117,6 @@ android {
         implementation 'com.shuyu:gsyVideoPlayer-java:3.0.0'
         implementation 'com.shuyu:gsyVideoPlayer-ex_so:3.0.0'
         implementation 'com.squareup.okhttp3:okhttp:3.9.1'
-
         implementation 'com.yydcdut:markdown-processor:0.1.3'
         implementation 'ren.qinc.edit:lib:0.0.5'//editor undo redo
         implementation 'com.github.tiagohm.MarkdownView:library:0.19.0'
