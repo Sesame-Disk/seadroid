@@ -115,9 +115,9 @@
 }
 -dontwarn com.google.**
 
--keep class com.nihaocloud.nihao.**
--keepclassmembers class com.nihaocloud.nihao.** { *; }
--keepclassmembers class com.nihaocloud.nihao.** { public <init>(...); }
+-keep class com.nihaocloud.sesamedisk.**
+-keepclassmembers class com.nihaocloud.sesamedisk.** { *; }
+-keepclassmembers class com.nihaocloud.sesamedisk.** { public <init>(...); }
 
 -keep class tv.danmaku.ijk.** { *; }
 -dontwarn tv.danmaku.ijk.**

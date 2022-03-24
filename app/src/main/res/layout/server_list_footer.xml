@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingTop="7dp"
+    android:paddingBottom="7dp">
+
+    <Button
+        android:id="@+id/single_sign_on_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/long_btn_height"
+        android:layout_marginTop="@dimen/margin_normal"
+        android:text="@string/shib_login_title"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/long_btn_txt_size" />
+
+    <Button
+        android:id="@+id/basic_authentication_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/long_btn_height"
+        android:layout_marginTop="@dimen/margin_normal"
+        android:text="@string/basic_authentication"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/long_btn_txt_size" />
+</LinearLayout>

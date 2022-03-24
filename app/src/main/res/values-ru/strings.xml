@@ -47,10 +47,7 @@
     <item>Другое</item>
   </string-array>
   <string name="choose_server">Выберите сервер NiHao</string>
-  <string-array name="choose_server_array">
-    <item>Единая точка входа</item>
-    <item>Базовая аутентификация</item>
-  </string-array>
+
   <string name="network_down">Нет соединения с сетью</string>
   <string name="unknow_error">Неизвестная ошибка</string>
   <string name="invalid_server_address">Неправильный адрес сервера</string>
@@ -436,6 +433,7 @@
   <string name="shib_server_incorrect_prefix">Адрес сервера должен начинаться с https://</string>
   <string name="shib_load_page_error">Ошибка:</string>
   <string name="shib_login_title">Единая точка входа</string>
+  <string name="basic_authentication">Базовая аутентификация</string>
   <string name="shib_loading">загрузка...</string>
   <!--Transfer List-->
   <string name="transfer_list_network_error">Ошибка подключения к сети, пожалуйста, повторите позже!</string>

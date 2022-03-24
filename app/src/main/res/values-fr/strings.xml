@@ -47,10 +47,6 @@
     <item>Autres</item>
   </string-array>
   <string name="choose_server">Choisir un serveur NiHao</string>
-  <string-array name="choose_server_array">
-    <item>Authentification unique</item>
-    <item>Authentification de base</item>
-  </string-array>
   <string name="network_down">Absence de connexion réseau</string>
   <string name="unknow_error">Erreur inconnue</string>
   <string name="invalid_server_address">Adresse de serveur invalide</string>
@@ -425,6 +421,7 @@ E-mail : support@NiHao.com<br>
   <string name="shib_server_incorrect_prefix">L\'adresse du serveur doit commencer par https://</string>
   <string name="shib_load_page_error">Erreur :</string>
   <string name="shib_login_title">Authentification unique</string>
+  <string name="basic_authentication">Authentification de base</string>
   <string name="shib_loading">Chargement...</string>
   <!--Transfer List-->
   <string name="transfer_list_network_error">Erreur de connexion réseau, réessayer plus tard !</string>

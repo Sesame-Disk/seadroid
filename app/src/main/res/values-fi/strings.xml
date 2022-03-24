@@ -41,10 +41,7 @@
     <item>Muut</item>
   </string-array>
   <string name="choose_server">Valitse NiHao Palvelin</string>
-  <string-array name="choose_server_array">
-    <item>Kertakirjautuminen</item>
-    <item>Perustodennus</item>
-  </string-array>
+
   <string name="network_down">Ei verkkoyhteyttä</string>
   <string name="unknow_error">Tuntematon virhe</string>
   <string name="invalid_server_address">Virheellinen palvelimen osoite</string>
@@ -412,6 +409,7 @@ Sähköposti: support@NiHao.com<br>
   <string name="shib_server_incorrect_prefix">Palvelin pitää alkaa https://</string>
   <string name="shib_load_page_error">Virhe:</string>
   <string name="shib_login_title">Kertakirjautuminen</string>
+  <string name="basic_authentication">Perustodennus</string>
   <string name="shib_loading">Ladataan...</string>
   <!--Transfer List-->
   <string name="transfer_list_network_error">Verkkoyhteys virhe, ole hyvä ja yritä myöhemmin uudelleen!</string>

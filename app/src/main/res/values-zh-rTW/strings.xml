@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-    <string name="app_url">https://app.nihaocloud.com/</string>
     <string name="welcome_to_nihao">歡迎使用NiHao</string>
     <string name="select_account">請選擇一個帳戶開始使用</string>
     <string name="edit_account">編輯帳戶</string>

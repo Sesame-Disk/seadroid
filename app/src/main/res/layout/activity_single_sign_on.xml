@@ -6,7 +6,6 @@
 
     <include layout="@layout/toolbar_actionbar" />
     <!-- placeholder, empty except on L -->
-
     <android.support.design.widget.TextInputLayout
         android:id="@+id/server_hint"
         android:layout_width="match_parent"
@@ -25,7 +24,6 @@
             android:inputType="textUri" />
 
     </android.support.design.widget.TextInputLayout>
-
 
     <LinearLayout
         android:layout_width="match_parent"

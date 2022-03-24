@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.nihaocloud.nihao">
+    package="com.nihaocloud.sesamedisk">
 
     <uses-sdk tools:overrideLibrary="us.feras.mdv" />
 
@@ -43,7 +43,7 @@
 
 
     <application
-        android:name="com.nihaocloud.nihao.NihaoApplication"
+        android:name=".NihaoApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -53,32 +53,32 @@
         android:theme="@style/AppTheme">
 
         <meta-data
-            android:name="com.nihaocloud.nihao.util.GlideCache"
+            android:name="com.nihaocloud.sesamedisk.util.GlideCache"
             android:value="AppGlideModule" />
 
         <activity
-            android:name="com.nihaocloud.nihao.ui.activity.AccountsActivity"
+            android:name=".ui.activity.AccountsActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop" />
 
         <activity
-            android:name="com.nihaocloud.nihao.account.ui.SingleSignOnActivity"
+            android:name=".account.ui.SingleSignOnActivity"
             android:label="@string/app_name" />
 
         <activity
-            android:name="com.nihaocloud.nihao.account.ui.SingleSignOnAuthorizeActivity"
+            android:name=".account.ui.SingleSignOnAuthorizeActivity"
             android:label="@string/app_name" />
 
         <activity
-            android:name="com.nihaocloud.nihao.ui.activity.SettingsActivity"
+            android:name=".ui.activity.SettingsActivity"
             android:label="@string/app_name" />
 
         <activity
-            android:name="com.nihaocloud.nihao.ui.activity.PrivacyPolicyActivity"
+            android:name=".ui.activity.PrivacyPolicyActivity"
             android:label="@string/app_name" />
 
         <activity
-            android:name="com.nihaocloud.nihao.ui.activity.BrowserActivity"
+            android:name=".ui.activity.BrowserActivity"
             android:configChanges="orientation"
             android:label="@string/app_name"
             android:launchMode="singleTop">
@@ -89,34 +89,34 @@
         </activity>
 
         <activity
-            android:name="com.nihaocloud.nihao.ui.activity.UnlockGesturePasswordActivity"
+            android:name=".ui.activity.UnlockGesturePasswordActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.nihaocloud.nihao.ui.activity.CreateGesturePasswordActivity"
+            android:name=".ui.activity.CreateGesturePasswordActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.nihaocloud.nihao.ui.activity.MarkdownActivity"
+            android:name=".ui.activity.MarkdownActivity"
             android:label="@string/app_name" />
 
         <activity
-            android:name="com.nihaocloud.nihao.account.ui.AccountDetailActivity"
+            android:name=".account.ui.AccountDetailActivity"
             android:label="@string/app_name"
-            android:parentActivityName="com.nihaocloud.nihao.ui.activity.AccountsActivity" />
+            android:parentActivityName=".ui.activity.AccountsActivity" />
 
         <!-- MultipleImageSelectionActivity uses the default theme, instead of
              ActionBarSherlock -->
         <activity
-            android:name="com.nihaocloud.nihao.gallery.MultipleImageSelectionActivity"
+            android:name=".gallery.MultipleImageSelectionActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.Multiple" />
 
         <activity
-            android:name="com.nihaocloud.nihao.ui.activity.ShareToSeafileActivity"
+            android:name=".ui.activity.ShareToSeafileActivity"
             android:excludeFromRecents="true"
             android:label="@string/app_name">
             <intent-filter>
@@ -132,32 +132,32 @@
         </activity>
 
         <activity
-            android:name="com.nihaocloud.nihao.ui.activity.SeafilePathChooserActivity"
+            android:name=".ui.activity.SeafilePathChooserActivity"
             android:label="@string/app_name" />
 
         <activity
-            android:name="com.nihaocloud.nihao.ui.activity.FileActivity"
+            android:name=".ui.activity.FileActivity"
             android:label="@string/app_name" />
 
         <activity
-            android:name="com.nihaocloud.nihao.account.ui.SeafileAuthenticatorActivity"
+            android:name=".account.ui.SeafileAuthenticatorActivity"
             android:label="@string/app_name"
-            android:parentActivityName="com.nihaocloud.nihao.ui.activity.AccountsActivity">
+            android:parentActivityName=".ui.activity.AccountsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.nihaocloud.nihao.ui.activity.AccountsActivity" />
+                android:value=".ui.activity.AccountsActivity" />
         </activity>
 
         <activity
-            android:name="com.nihaocloud.nihao.fileschooser.MultiFileChooserActivity"
+            android:name=".fileschooser.MultiFileChooserActivity"
             android:label="@string/app_name" />
 
         <activity
-            android:name="com.nihaocloud.nihao.ui.activity.TransferActivity"
+            android:name=".ui.activity.TransferActivity"
             android:label="@string/app_name" />
 
         <activity
-            android:name="com.nihaocloud.nihao.ui.activity.SearchActivity"
+            android:name=".ui.activity.SearchActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -165,29 +165,29 @@
         </activity>
 
         <activity
-            android:name="com.nihaocloud.nihao.cameraupload.CameraUploadConfigActivity"
+            android:name=".cameraupload.CameraUploadConfigActivity"
             android:label="@string/app_name" />
         <!--<activity android:name="com.seafile.seadroid2.cameraupload.ContactsUploadConfigActivity"-->
         <!--android:label="@string/app_name">-->
         <!--</activity>-->
 
         <activity
-            android:name="com.nihaocloud.nihao.ui.activity.GalleryActivity"
+            android:name=".ui.activity.GalleryActivity"
             android:label="@string/app_name" />
         <activity
-            android:name="com.nihaocloud.nihao.play.PlayActivity"
+            android:name=".play.PlayActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="sensor"
             android:theme="@style/Theme.Fullscreen" />
         <activity
-            android:name="com.nihaocloud.nihao.editor.EditorActivity"
+            android:name=".editor.EditorActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Editor" />
 
         <provider
-            android:name="com.nihaocloud.nihao.provider.SeafileProvider"
+            android:name=".provider.SeafileProvider"
             android:authorities="${applicationId}.documents"
             android:enabled="@bool/atLeastKitKat"
             android:exported="true"
@@ -198,12 +198,12 @@
             </intent-filter>
         </provider>
 
-        <service android:name="com.nihaocloud.nihao.transfer.TransferService" />
-        <service android:name="com.nihaocloud.nihao.monitor.FileMonitorService" />
-        <service android:name="com.nihaocloud.nihao.cameraupload.MediaObserverService" />
+        <service android:name=".transfer.TransferService" />
+        <service android:name=".monitor.FileMonitorService" />
+        <service android:name=".cameraupload.MediaObserverService" />
 
         <provider
-            android:name="com.nihaocloud.nihao.cameraupload.StubContentProvider"
+            android:name=".cameraupload.StubContentProvider"
             android:authorities="${applicationId}.cameraupload.provider"
             android:exported="false"
             android:label="@string/sync_provider_camera_upload"
@@ -219,7 +219,7 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <service android:name="com.nihaocloud.nihao.account.AuthenticatorService">
+        <service android:name=".account.AuthenticatorService">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
@@ -229,7 +229,7 @@
         </service>
 
         <service
-            android:name="com.nihaocloud.nihao.cameraupload.CameraSyncService"
+            android:name=".cameraupload.CameraSyncService"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
@@ -240,10 +240,10 @@
         </service>
 
         <service
-            android:name="com.nihaocloud.nihao.cameraupload.MediaSchedulerService"
+            android:name=".cameraupload.MediaSchedulerService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
-        <receiver android:name="com.nihaocloud.nihao.BootAutostart">
+        <receiver android:name=".BootAutostart">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>

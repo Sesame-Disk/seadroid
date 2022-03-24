@@ -47,10 +47,6 @@
         <item>Otro</item>
     </string-array>
     <string name="choose_server">Elija un Servidor NiHao</string>
-    <string-array name="choose_server_array">
-        <item>Inicio de Sesión único</item>
-        <item>Autenticación básica</item>
-    </string-array>
     <string name="network_down">Sin conexión de red</string>
     <string name="unknow_error">Error desconocido</string>
     <string name="invalid_server_address">Dirección de servidor inválida</string>
@@ -426,6 +422,7 @@
     <string name="shib_server_incorrect_prefix">El servidor debe comenzar con https://</string>
     <string name="shib_load_page_error">Error:</string>
     <string name="shib_login_title">Inicio de Sesión único</string>
+    <string name="basic_authentication">Autenticación básica</string>
     <string name="shib_loading">cargando...</string>
     <!--Transfer List-->
     <string name="transfer_list_network_error">Error de conexión de red, por favor intente más tarde.</string>

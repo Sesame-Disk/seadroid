@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/email_hint">
 
-                <com.nihaocloud.nihao.ui.EmailAutoCompleteTextView
+                <com.nihaocloud.sesamedisk.ui.EmailAutoCompleteTextView
                     android:id="@+id/email_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

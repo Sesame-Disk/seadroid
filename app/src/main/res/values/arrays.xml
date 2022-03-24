@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <array name="choose_server_array" tools:ignore="InconsistentArrays">
+        <!--    The User must be able to use any of them, but app.nihaoconsult should be the default.-->
+
+        <!--    (Official/Default) <- China our outside China.-->
+        <item>https://app.nihaoconsult.com/</item>
+        <!--    Blocked in China. -->
+        <item>https://app.nihaocloud.com/</item>
+        <item>https://app.nihaoshares.com/</item>
+        <item>https://nihaoconsult.com/</item>
+    </array>
+</resources>

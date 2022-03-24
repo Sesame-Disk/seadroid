@@ -50,10 +50,6 @@
         <item>Other</item>
     </string-array>
     <string name="choose_server">Choose a NiHao Server</string>
-    <string-array name="choose_server_array">
-        <item>Single Sign-On</item>
-        <item>Basic authentication</item>
-    </string-array>
     <string name="server_name_top" translatable="false">cloud.nihao.com</string>
     <string name="server_url_seacloud" translatable="false">https://cloud.nihao.com</string>
     <string name="network_down">No network connection</string>
@@ -441,7 +437,9 @@
     <string name="shib_server_incorrect_prefix">Server needs to start with https://</string>
     <string name="shib_load_page_error">Error: </string>
     <string name="shib_login_title">Single Sign-On</string>
+    <string name="basic_authentication">Basic authentication</string>
     <string name="shib_loading">loading…</string>
+
     <!--Transfer List-->
     <string name="transfer_list_network_error">Network connection error, please try again later!</string>
     <string name="transfer_list_cancel_all">Cancel all tasks</string>

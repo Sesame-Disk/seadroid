@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-    <string name="app_url">https://app.nihaocloud.com/</string>
     <string name="welcome_to_nihao">欢迎使用NiHao</string>
     <string name="select_account">请选择一个账户开始使用</string>
     <string name="edit_account">编辑帐户</string>
@@ -48,10 +47,6 @@
         <item>其他</item>
     </string-array>
     <string name="choose_server">请选择一个NiHao服务器</string>
-    <string-array name="choose_server_array">
-        <item>统一登录</item>
-        <item>基本认证</item>
-    </string-array>
     <string name="network_down">无网络连接</string>
     <string name="unknow_error">未知错误</string>
     <string name="invalid_server_address">无效的服务器地址</string>
@@ -422,7 +417,9 @@
     <string name="shib_server_incorrect_prefix">服务器地址需要以 https:// 开头</string>
     <string name="shib_load_page_error">错误：</string>
     <string name="shib_login_title">统一登录</string>
+    <string name="basic_authentication">基本认证</string>
     <string name="shib_loading">加载中...</string>
+
     <!--Transfer List-->
     <string name="transfer_list_network_error">网络连接错误，请稍后重试！</string>
     <string name="transfer_list_cancel_all">取消所有任务</string>
