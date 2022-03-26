@@ -21,8 +21,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.common.collect.Maps;
-import com.nihaocloud.sesamedisk.R;
 import com.nihaocloud.sesamedisk.NihaoApplication;
+import com.nihaocloud.sesamedisk.R;
 import com.nihaocloud.sesamedisk.SeafException;
 import com.nihaocloud.sesamedisk.SettingsManager;
 import com.nihaocloud.sesamedisk.account.Account;
@@ -68,7 +68,7 @@ public class SettingsFragment extends CustomPreferenceFragment {
     public static final String CAMERA_UPLOAD_LOCAL_DIRECTORIES = "com.seafile.seadroid2.camera.upload.directories";
     public static final String CONTACTS_UPLOAD_REMOTE_LIBRARY = "com.seafile.seadroid2.contacts.upload.library";
     public static final int CHOOSE_CAMERA_UPLOAD_REQUEST = 2;
-//    public static final int CHOOSE_CONTACTS_UPLOAD_REQUEST = 3;
+    //    public static final int CHOOSE_CONTACTS_UPLOAD_REQUEST = 3;
     // Account Info
     private static Map<String, AccountInfo> accountInfoMap = Maps.newHashMap();
 
@@ -87,11 +87,11 @@ public class SettingsFragment extends CustomPreferenceFragment {
     private String appVersion;
     public SettingsManager settingsMgr;
     private CameraUploadManager cameraManager;
-//    public ContactsUploadManager contactsManager;
+    //    public ContactsUploadManager contactsManager;
     private AccountManager accountMgr;
     private DataManager dataMgr;
     private StorageManager storageManager = StorageManager.getInstance();
-//    private PreferenceCategory cContactsCategory;
+    //    private PreferenceCategory cContactsCategory;
 //    private Preference cContactsRepoPref;
 //    private Preference cContactsRepoTime;
 //    private Preference cContactsRepoBackUp;
@@ -160,66 +160,60 @@ public class SettingsFragment extends CustomPreferenceFragment {
         }
 
         // Gesture Lock
-        findPreference(SettingsManager.GESTURE_LOCK_SWITCH_KEY).setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if (newValue instanceof Boolean) {
-                    boolean isChecked = (Boolean) newValue;
-                    if (isChecked) {
-                        // inverse checked status
-                        Intent newIntent = new Intent(getActivity(), CreateGesturePasswordActivity.class);
-                        newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivityForResult(newIntent, SettingsManager.GESTURE_LOCK_REQUEST);
-                    } else {
-                        LockPatternUtils mLockPatternUtils = new LockPatternUtils(getActivity());
-                        mLockPatternUtils.clearLock();
-                    }
-                    return true;
+        findPreference(SettingsManager.GESTURE_LOCK_SWITCH_KEY).setOnPreferenceChangeListener((preference, newValue) -> {
+            if (newValue instanceof Boolean) {
+                boolean isChecked = (Boolean) newValue;
+                if (isChecked) {
+                    // inverse checked status
+                    Intent newIntent = new Intent(getActivity(), CreateGesturePasswordActivity.class);
+                    newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivityForResult(newIntent, SettingsManager.GESTURE_LOCK_REQUEST);
+                } else {
+                    LockPatternUtils mLockPatternUtils = new LockPatternUtils(getActivity());
+                    mLockPatternUtils.clearLock();
                 }
-
-                return false;
+                return true;
             }
+
+            return false;
         });
 
         // Sign out
-        findPreference(SettingsManager.SETTINGS_ACCOUNT_SIGN_OUT_KEY).setOnPreferenceClickListener(new OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
+        findPreference(SettingsManager.SETTINGS_ACCOUNT_SIGN_OUT_KEY).setOnPreferenceClickListener(preference -> {
 
-                // popup a dialog to confirm sign out request
-                final AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-                builder.setTitle(getString(R.string.settings_account_sign_out_title));
-                builder.setMessage(getString(R.string.settings_account_sign_out_confirm));
-                builder.setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Account account = accountMgr.getCurrentAccount();
+            // popup a dialog to confirm sign out request
+            final AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+            builder.setTitle(getString(R.string.settings_account_sign_out_title));
+            builder.setMessage(getString(R.string.settings_account_sign_out_confirm));
+            builder.setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Account account = accountMgr.getCurrentAccount();
 
-                        // sign out operations
-                        accountMgr.signOutAccount(account);
+                    // sign out operations
+                    accountMgr.signOutAccount(account);
 
-                        // password auto clear
-                        if (settingsMgr.isPasswordAutoClearEnabled()) {
-                            clearPasswordSilently();
-                        }
-
-                        // restart BrowserActivity (will go to AccountsActivity)
-                        Intent intent = new Intent(mActivity, BrowserActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        mActivity.startActivity(intent);
-                        mActivity.finish();
+                    // password auto clear
+                    if (settingsMgr.isPasswordAutoClearEnabled()) {
+                        clearPasswordSilently();
                     }
-                });
-                builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // dismiss
-                        dialog.dismiss();
-                    }
-                });
-                builder.show();
-                return true;
-            }
+
+                    // restart BrowserActivity (will go to AccountsActivity)
+                    Intent intent = new Intent(mActivity, BrowserActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    mActivity.startActivity(intent);
+                    mActivity.finish();
+                }
+            });
+            builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // dismiss
+                    dialog.dismiss();
+                }
+            });
+            builder.show();
+            return true;
         });
 
         findPreference(SettingsManager.CLEAR_PASSOWR_SWITCH_KEY).setOnPreferenceClickListener(new OnPreferenceClickListener() {
@@ -417,27 +411,30 @@ public class SettingsFragment extends CustomPreferenceFragment {
         findPreference(SettingsManager.SETTINGS_ABOUT_VERSION_KEY).setSummary(appVersion);
 
         // About author
-        findPreference(SettingsManager.SETTINGS_ABOUT_AUTHOR_KEY).setOnPreferenceClickListener(new OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-                // builder.setIcon(R.drawable.icon);
-                builder.setMessage(Html.fromHtml(getString(R.string.settings_about_author_info, appVersion)));
-                builder.show();
-                return true;
-            }
+        final Preference aboutPreference = findPreference(SettingsManager.SETTINGS_ABOUT_AUTHOR_KEY);
+        aboutPreference.setOnPreferenceClickListener(preference -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+            // builder.setIcon(R.drawable.icon);
+            builder.setMessage(Html.fromHtml(getString(R.string.settings_about_author_info, appVersion)));
+            builder.show();
+            return true;
         });
 
-        findPreference(SettingsManager.SETTINGS_PRIVACY_POLICY_KEY).setOnPreferenceClickListener(new OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
+        PreferenceCategory aboutCategory = (PreferenceCategory) findPreference("settings_about_key");
+        if (aboutCategory != null && aboutPreference != null) {
+            aboutCategory.removePreference(aboutPreference);
+        }
 
-                Intent intent = new Intent(mActivity, PrivacyPolicyActivity.class);
-                mActivity.startActivity(intent);
-                return true;
-            }
+        final Preference privacyPreference = findPreference(SettingsManager.SETTINGS_PRIVACY_POLICY_KEY);
+        privacyPreference.setOnPreferenceClickListener(preference -> {
+            Intent intent = new Intent(mActivity, PrivacyPolicyActivity.class);
+            mActivity.startActivity(intent);
+            return true;
         });
+
+        if (aboutCategory != null && privacyPreference != null) {
+            aboutCategory.removePreference(privacyPreference);
+        }
 
         // Cache size
         calculateCacheSize();
@@ -462,7 +459,7 @@ public class SettingsFragment extends CustomPreferenceFragment {
                 }
             });
         } else {
-            PreferenceCategory cCacheCategory = (PreferenceCategory)findPreference(SettingsManager.SETTINGS_CACHE_CATEGORY_KEY);
+            PreferenceCategory cCacheCategory = (PreferenceCategory) findPreference(SettingsManager.SETTINGS_CACHE_CATEGORY_KEY);
             cCacheCategory.removePreference(findPreference(SettingsManager.SETTINGS_CACHE_DIR_KEY));
         }
 
@@ -634,7 +631,7 @@ public class SettingsFragment extends CustomPreferenceFragment {
             cbDataPlan.setChecked(settingsMgr.isDataPlanAllowed());
 
         // videos
-        CheckBoxPreference cbVideoAllowed = ((CheckBoxPreference)findPreference(SettingsManager.CAMERA_UPLOAD_ALLOW_VIDEOS_SWITCH_KEY));
+        CheckBoxPreference cbVideoAllowed = ((CheckBoxPreference) findPreference(SettingsManager.CAMERA_UPLOAD_ALLOW_VIDEOS_SWITCH_KEY));
         if (cbVideoAllowed != null)
             cbVideoAllowed.setChecked(settingsMgr.isVideosUploadAllowed());
 
@@ -650,7 +647,7 @@ public class SettingsFragment extends CustomPreferenceFragment {
             allBuckets.add(bucket);
         }
 
-        for (GalleryBucketUtils.Bucket bucket: allBuckets) {
+        for (GalleryBucketUtils.Bucket bucket : allBuckets) {
             if (bucketIds.contains(bucket.id)) {
                 bucketNames.add(bucket.name);
             }
@@ -871,7 +868,7 @@ public class SettingsFragment extends CustomPreferenceFragment {
         cUploadRepoState.setSummary(Utils.getUploadStateShow(getActivity()));
 
         Log.d(DEBUG_TAG, "==========" + result.getLogInfo());
-        Utils.utilsLogInfo(true,"==========" + result.getLogInfo());
+        Utils.utilsLogInfo(true, "==========" + result.getLogInfo());
     }
 
 }

@@ -16,9 +16,7 @@
 
 package com.nihaocloud.sesamedisk.ui.fragment;
 
-import com.nihaocloud.sesamedisk.R;
-import com.nihaocloud.sesamedisk.ui.CustomPreferenceManagerCompat;
-
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,13 +33,15 @@ import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.nihaocloud.sesamedisk.R;
+import com.nihaocloud.sesamedisk.ui.CustomPreferenceManagerCompat;
+
 /**
  * Unofficial PreferenceFragment compatibility layer for Android 1.6 and up.
- * @see Alternatives to PreferenceFragment with android-support-v4 {@link http://stackoverflow.com/a/20727515/3962551}
- * @see {@link https://github.com/kolavar/android-support-v4-preferencefragment}
  *
  * @author kolavar
- *
+ * @see Alternatives to PreferenceFragment with android-support-v4 {@link http://stackoverflow.com/a/20727515/3962551}
+ * @see {@link https://github.com/kolavar/android-support-v4-preferencefragment}
  */
 public abstract class CustomPreferenceFragment extends Fragment implements
         CustomPreferenceManagerCompat.OnPreferenceTreeClickListener {
@@ -59,14 +59,13 @@ public abstract class CustomPreferenceFragment extends Fragment implements
     private static final int FIRST_REQUEST_CODE = 100;
 
     private static final int MSG_BIND_PREFERENCES = 1;
-    private Handler mHandler = new Handler() {
+    @SuppressLint("HandlerLeak")
+    private final Handler mHandler = new Handler() {
+        @SuppressLint("HandlerLeak")
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what) {
-
-                case MSG_BIND_PREFERENCES:
-                    bindPreferences();
-                    break;
+            if (msg.what == MSG_BIND_PREFERENCES) {
+                bindPreferences();
             }
         }
     };
@@ -101,9 +100,8 @@ public abstract class CustomPreferenceFragment extends Fragment implements
 
     @Override
     public View onCreateView(LayoutInflater paramLayoutInflater, ViewGroup paramViewGroup,
-            Bundle paramBundle) {
-        return paramLayoutInflater.inflate(R.layout.preference_list_fragment, paramViewGroup,
-                false);
+                             Bundle paramBundle) {
+        return paramLayoutInflater.inflate(R.layout.preference_list_fragment, paramViewGroup, false);
     }
 
     @Override
@@ -175,6 +173,7 @@ public abstract class CustomPreferenceFragment extends Fragment implements
 
     /**
      * Returns the {@link PreferenceManager} used by this fragment.
+     *
      * @return The {@link PreferenceManager}.
      */
     public PreferenceManager getPreferenceManager() {
@@ -199,7 +198,7 @@ public abstract class CustomPreferenceFragment extends Fragment implements
      * Gets the root of the preference hierarchy that this fragment is showing.
      *
      * @return The {@link PreferenceScreen} that is the root of the preference
-     *         hierarchy.
+     * hierarchy.
      */
     public PreferenceScreen getPreferenceScreen() {
         return CustomPreferenceManagerCompat.getPreferenceScreen(mPreferenceManager);
@@ -224,7 +223,6 @@ public abstract class CustomPreferenceFragment extends Fragment implements
      */
     public void addPreferencesFromResource(int preferencesResId) {
         requirePreferenceManager();
-
         setPreferenceScreen(CustomPreferenceManagerCompat.inflateFromResource(mPreferenceManager, getActivity(),
                 preferencesResId, getPreferenceScreen()));
     }
@@ -233,12 +231,11 @@ public abstract class CustomPreferenceFragment extends Fragment implements
      * {@inheritDoc}
      */
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen,
-            Preference preference) {
+                                         Preference preference) {
         //if (preference.getFragment() != null &&
-        if (
-                getActivity() instanceof OnPreferenceStartFragmentCallback) {
-            return ((OnPreferenceStartFragmentCallback)getActivity()).onPreferenceStartFragment(
-                    this, preference);
+        if (getActivity() instanceof OnPreferenceStartFragmentCallback) {
+            return ((OnPreferenceStartFragmentCallback) getActivity())
+                    .onPreferenceStartFragment(this, preference);
         }
         return false;
     }
@@ -292,13 +289,13 @@ public abstract class CustomPreferenceFragment extends Fragment implements
         if (!(rawListView instanceof ListView)) {
             throw new RuntimeException(
                     "Content has view with id attribute 'android.R.id.list' "
-                    + "that is not a ListView class");
+                            + "that is not a ListView class");
         }
-        mList = (ListView)rawListView;
+        mList = (ListView) rawListView;
         if (mList == null) {
             throw new RuntimeException(
                     "Your content must have a ListView whose id attribute is " +
-                    "'android.R.id.list'");
+                            "'android.R.id.list'");
         }
         mList.setOnKeyListener(mListOnKeyListener);
         mHandler.post(mRequestFocus);
