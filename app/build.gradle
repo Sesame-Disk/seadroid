@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 
-def keystores = [
+def keyStores = [
         'debug'  : loadKeystoreProperties("debug.keystore.properties"),
         'release': loadKeystoreProperties("debug.keystore.properties")
 ]
@@ -49,16 +49,16 @@ android {
 
     signingConfigs {
         debug {
-            storeFile rootProject.file("${keystores.release.storeFile}")
-            storePassword keystores.debug.storePassword
-            keyAlias keystores.debug.keyAlias
-            keyPassword keystores.debug.keyPassword
+            storeFile rootProject.file("${keyStores.release.storeFile}")
+            storePassword keyStores.debug.storePassword
+            keyAlias keyStores.debug.keyAlias
+            keyPassword keyStores.debug.keyPassword
         }
         release {
-            storeFile rootProject.file("${keystores.release.storeFile}")
-            storePassword keystores.release.storePassword
-            keyAlias keystores.release.keyAlias
-            keyPassword keystores.release.keyPassword
+            storeFile rootProject.file("${keyStores.release.storeFile}")
+            storePassword keyStores.release.storePassword
+            keyAlias keyStores.release.keyAlias
+            keyPassword keyStores.release.keyPassword
         }
     }
 
@@ -125,4 +125,3 @@ android {
         annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
     }
 }
-
