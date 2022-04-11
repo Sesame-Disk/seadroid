@@ -570,7 +570,7 @@ public class Utils {
             // Allow user to select multiple files
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             // only show local document providers
-            intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+          //  intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
         }
         return intent;
     }

@@ -1,6 +1,8 @@
 package com.nihaocloud.sesamedisk.ui.activity;
 
-import android.Manifest;
+import static android.os.Build.VERSION.SDK_INT;
+
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -15,17 +17,15 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.IBinder;
 import android.provider.MediaStore;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
@@ -93,6 +93,7 @@ import com.nihaocloud.sesamedisk.ui.fragment.ActivitiesFragment;
 import com.nihaocloud.sesamedisk.ui.fragment.ReposFragment;
 import com.nihaocloud.sesamedisk.ui.fragment.StarredFragment;
 import com.nihaocloud.sesamedisk.util.ConcurrentAsyncTask;
+import com.nihaocloud.sesamedisk.util.PermissionUtils;
 import com.nihaocloud.sesamedisk.util.Utils;
 import com.nihaocloud.sesamedisk.util.UtilsJellyBean;
 import com.viewpagerindicator.IconPagerAdapter;
@@ -125,7 +126,7 @@ public class BrowserActivity extends BaseActivity
     public static final String CHOOSE_APP_DIALOG_FRAGMENT_TAG = "choose_app_fragment";
     public static final String CHARE_LINK_PASSWORD_FRAGMENT_TAG = "share_link_password_fragment";
     public static final String PICK_FILE_DIALOG_FRAGMENT_TAG = "pick_file_fragment";
-    public static final int REQUEST_PERMISSIONS_WRITE_EXTERNAL_STORAGE = 1;
+    public static final int REQUEST_PERMISSIONS_WRITE_EXTERNAL_STORAGE = 5672;
 
     public static final String TAG_NEW_REPO_DIALOG_FRAGMENT = "NewRepoDialogFragment";
     public static final String TAG_DELETE_REPO_DIALOG_FRAGMENT = "DeleteRepoDialogFragment";
@@ -140,7 +141,7 @@ public class BrowserActivity extends BaseActivity
     public static final int INDEX_STARRED_TAB = 1;
     public static final int INDEX_ACTIVITIES_TAB = 2;
 
-    private static final int[] ICONS = new int[] {
+    private static final int[] ICONS = new int[]{
             R.drawable.tab_library, R.drawable.tab_starred,
             R.drawable.tab_activity
     };
@@ -410,7 +411,7 @@ public class BrowserActivity extends BaseActivity
     }
 
     private void requestServerInfo() {
-        if(!checkServerProEdition()) {
+        if (!checkServerProEdition()) {
             // hide Activity tab
             adapter.hideActivityTab();
             adapter.notifyDataSetChanged();
@@ -429,6 +430,7 @@ public class BrowserActivity extends BaseActivity
         ConcurrentAsyncTask.execute(new RequestServerInfoTask());
     }
 
+    @SuppressLint("StaticFieldLeak")
     public void completeRemoteWipe() {
         ConcurrentAsyncTask.execute(new AsyncTask<Void, Void, Void>() {
             @Override
@@ -533,7 +535,7 @@ public class BrowserActivity extends BaseActivity
                                         public void onTaskSuccess() {
                                             getReposFragment().startContextualActionMode();
                                         }
-                                    } , password);
+                                    }, password);
 
                             return true;
                         }
@@ -544,7 +546,7 @@ public class BrowserActivity extends BaseActivity
 
                 return true;
             case R.id.settings:
-                Intent settingsIntent = new Intent(BrowserActivity.this,SettingsActivity.class);
+                Intent settingsIntent = new Intent(BrowserActivity.this, SettingsActivity.class);
                 settingsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(settingsIntent);
                 return true;
@@ -552,47 +554,14 @@ public class BrowserActivity extends BaseActivity
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * If the user is running Android 6.0 (API level 23) or later, the user has to grant your app its permissions while they are running the app
-     *
-     * Requests the WRITE_EXTERNAL_STORAGE permission.
-     * If the permission has been denied previously, a SnackBar will prompt the user to grant the
-     * permission, otherwise it is requested directly.
-     *
-     */
     private void requestReadExternalStoragePermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-
-                Snackbar.make(mLayout,
-                        R.string.permission_read_exteral_storage_rationale,
-                        Snackbar.LENGTH_INDEFINITE)
-                        .setAction(R.string.settings, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                ActivityCompat.requestPermissions(BrowserActivity.this,
-                                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                        REQUEST_PERMISSIONS_WRITE_EXTERNAL_STORAGE);
-                            }
-                        })
-                        .show();
-
-            } else {
-
-                // No explanation needed, we can request the permission.
-
-                // WRITE_EXTERNAL_STORAGE permission has not been granted yet. Request it directly.
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        REQUEST_PERMISSIONS_WRITE_EXTERNAL_STORAGE);
-            }
+        final boolean hasPermission = PermissionUtils.checkStoragePermission(this);
+        if (!hasPermission) {
+            PermissionUtils.requestStoragePermission(this,
+                    mLayout, REQUEST_PERMISSIONS_WRITE_EXTERNAL_STORAGE);
         }
     }
 
-    /**
-     * Callback received when a permissions request has been completed.
-     */
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         // Log.i(DEBUG_TAG, "Received response for permission request.");
@@ -657,9 +626,8 @@ public class BrowserActivity extends BaseActivity
     /**
      * check if server is pro edition
      *
-     * @return
-     *          true, if server is pro edition
-     *          false, otherwise.
+     * @return true, if server is pro edition
+     * false, otherwise.
      */
     private boolean checkServerProEdition() {
         if (account == null)
@@ -673,9 +641,8 @@ public class BrowserActivity extends BaseActivity
     /**
      * check if server supports searching feature
      *
-     * @return
-     *          true, if search enabled
-     *          false, otherwise.
+     * @return true, if search enabled
+     * false, otherwise.
      */
     private boolean checkSearchEnabled() {
         if (account == null)
@@ -771,7 +738,7 @@ public class BrowserActivity extends BaseActivity
     }
 
     public Fragment getFragment(int index) {
-       return (Fragment)adapter.instantiateItem(pager,index);
+        return (Fragment) adapter.instantiateItem(pager, index);
     }
 
     public ReposFragment getReposFragment() {
@@ -779,11 +746,11 @@ public class BrowserActivity extends BaseActivity
     }
 
     public StarredFragment getStarredFragment() {
-        return (StarredFragment)getFragment(1);
+        return (StarredFragment) getFragment(1);
     }
 
     public ActivitiesFragment getActivitiesFragment() {
-        return (ActivitiesFragment)getFragment(2);
+        return (ActivitiesFragment) getFragment(2);
     }
 
     ServiceConnection mConnection = new ServiceConnection() {
@@ -815,7 +782,7 @@ public class BrowserActivity extends BaseActivity
     public void onStart() {
         Log.d(DEBUG_TAG, "onStart");
         super.onStart();
-        if (android.os.Build.VERSION.SDK_INT < 14
+        if (SDK_INT < 14
                 && SettingsManager.instance().isGestureLockRequired()) {
             Intent intent = new Intent(this, UnlockGesturePasswordActivity.class);
             startActivity(intent);
@@ -860,11 +827,11 @@ public class BrowserActivity extends BaseActivity
         }
 
         Account selectedAccount = accountManager.getCurrentAccount();
-        Log.d(DEBUG_TAG,"Current account: "+selectedAccount);
+        Log.d(DEBUG_TAG, "Current account: " + selectedAccount);
         if (selectedAccount == null
                 || !account.equals(selectedAccount)
                 || !account.getToken().equals(selectedAccount.getToken())) {
-            Log.d(DEBUG_TAG,"Account switched, restarting activity.");
+            Log.d(DEBUG_TAG, "Account switched, restarting activity.");
             finish();
             startActivity(intent);
         }
@@ -1043,7 +1010,7 @@ public class BrowserActivity extends BaseActivity
         dialog.init(account);
         dialog.setTaskDialogLisenter(new TaskDialog.TaskDialogListener() {
             @Override
-            public void onTaskSuccess(){
+            public void onTaskSuccess() {
                 showShortToast(
                         BrowserActivity.this,
                         String.format(getResources().getString(R.string.create_new_repo_success), dialog.getRepoName())
@@ -1063,18 +1030,15 @@ public class BrowserActivity extends BaseActivity
     private void addFile() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.add_file));
-        builder.setItems(R.array.add_file_options_array, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (which == 0) // create file
-                    showNewFileDialog();
-                else if (which == 1) // create folder
-                    showNewDirDialog();
-                else if (which == 2) // upload file
-                    pickFile();
-                else if (which == 3) // take a photo
-                    CameraTakePhoto();
-            }
+        builder.setItems(R.array.add_file_options_array, (dialog, which) -> {
+            if (which == 0) // create file
+                showNewFileDialog();
+            else if (which == 1) // create folder
+                showNewDirDialog();
+            else if (which == 2) // upload file
+                pickFile();
+            else if (which == 3) // take a photo
+                CameraTakePhoto();
         }).show();
     }
 
@@ -1137,12 +1101,10 @@ public class BrowserActivity extends BaseActivity
 
         try {
             File ImgDir = DataManager.createTempDir();
-
             String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".jpg";
             takeCameraPhotoTempFile = new File(ImgDir, fileName);
-
             Uri photo = null;
-            if (android.os.Build.VERSION.SDK_INT > 23) {
+            if (SDK_INT > 23) {
                 photo = FileProvider.getUriForFile(this, getApplicationContext().getPackageName(), takeCameraPhotoTempFile);
             } else {
                 photo = Uri.fromFile(takeCameraPhotoTempFile);
@@ -1167,7 +1129,7 @@ public class BrowserActivity extends BaseActivity
         //getActionBarToolbar().setLogo(R.drawable.icon);
     }
 
-    public void setUpButtonTitle(String title){
+    public void setUpButtonTitle(String title) {
         getActionBarToolbar().setTitle(title);
     }
 
@@ -1233,13 +1195,18 @@ public class BrowserActivity extends BaseActivity
     }
 
     void pickFile() {
-        if (!hasRepoWritePermission()) {
+        final boolean hasPermission = PermissionUtils.checkStoragePermission(this);
+        if (!hasPermission) {
+            PermissionUtils.requestStoragePermission(this,
+                    mLayout, REQUEST_PERMISSIONS_WRITE_EXTERNAL_STORAGE);
+
+        } else if (!hasRepoWritePermission()) {
             showShortToast(this, R.string.library_read_only);
             return;
         }
 
         // Starting with kitkat (or earlier?), the document picker has integrated image and local file support
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+        if (SDK_INT < Build.VERSION_CODES.KITKAT) {
             UploadChoiceDialog dialog = new UploadChoiceDialog();
             dialog.show(getSupportFragmentManager(), PICK_FILE_DIALOG_FRAGMENT_TAG);
         } else {
@@ -1252,135 +1219,143 @@ public class BrowserActivity extends BaseActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-        case PICK_FILES_REQUEST:
-            if (resultCode == RESULT_OK) {
-                String[] paths = data.getStringArrayExtra(MultiFileChooserActivity.MULTI_FILES_PATHS);
-                if (paths == null)
-                    return;
-                showShortToast(this, getString(R.string.added_to_upload_tasks));
+            case PICK_FILES_REQUEST:
+                if (resultCode == RESULT_OK) {
+                    String[] paths = data.getStringArrayExtra(MultiFileChooserActivity.MULTI_FILES_PATHS);
+                    if (paths == null)
+                        return;
+                    showShortToast(this, getString(R.string.added_to_upload_tasks));
 
-                List<SeafDirent> list = dataManager.getCachedDirents(navContext.getRepoID(), navContext.getDirPath());
-                if (list == null) return;
+                    List<SeafDirent> list = dataManager.getCachedDirents(navContext.getRepoID(), navContext.getDirPath());
+                    if (list == null) return;
 
-                for (String path : paths) {
-                    boolean duplicate = false;
-                    for (SeafDirent dirent : list) {
-                        if (dirent.name.equals(Utils.fileNameFromPath(path))) {
-                            duplicate = true;
-                            break;
+                    for (String path : paths) {
+                        boolean duplicate = false;
+                        for (SeafDirent dirent : list) {
+                            if (dirent.name.equals(Utils.fileNameFromPath(path))) {
+                                duplicate = true;
+                                break;
+                            }
                         }
-                    }
-                    if (!duplicate) {
-                        showShortToast(BrowserActivity.this, getString(R.string.added_to_upload_tasks));
-                        final SeafRepo repo = dataManager.getCachedRepoByID(navContext.getRepoID());
-                        if (repo != null && repo.canLocalDecrypt()) {
-                            addUploadBlocksTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), path);
+                        if (!duplicate) {
+                            showShortToast(BrowserActivity.this, getString(R.string.added_to_upload_tasks));
+                            final SeafRepo repo = dataManager.getCachedRepoByID(navContext.getRepoID());
+                            if (repo != null && repo.canLocalDecrypt()) {
+                                addUploadBlocksTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), path);
+                            } else {
+                                addUploadTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), path);
+                            }
                         } else {
-                            addUploadTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), path);
-                        }
-                    } else {
-                        showFileExistDialog(path);
-                    }
-                }
-            }
-            break;
-        case PICK_PHOTOS_VIDEOS_REQUEST:
-            if (resultCode == RESULT_OK) {
-                ArrayList<String> paths = data.getStringArrayListExtra("photos");
-                if (paths == null)
-                    return;
-                showShortToast(this, getString(R.string.added_to_upload_tasks));
-
-                List<SeafDirent> list = dataManager.getCachedDirents(navContext.getRepoID(), navContext.getDirPath());
-                if (list == null) return;
-
-                for (String path : paths) {
-                    boolean duplicate = false;
-                    for (SeafDirent dirent : list) {
-                        if (dirent.name.equals(Utils.fileNameFromPath(path))) {
-                            duplicate = true;
-                            break;
+                            showFileExistDialog(path);
                         }
                     }
-                    if (!duplicate) {
-                        showShortToast(BrowserActivity.this, getString(R.string.added_to_upload_tasks));
-                        final SeafRepo repo = dataManager.getCachedRepoByID(navContext.getRepoID());
-                        if (repo != null && repo.canLocalDecrypt()) {
-                            addUploadBlocksTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), path);
-                        }else {
-                            addUploadTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), path);
+                }
+                break;
+            case PICK_PHOTOS_VIDEOS_REQUEST:
+                if (resultCode == RESULT_OK) {
+                    ArrayList<String> paths = data.getStringArrayListExtra("photos");
+                    if (paths == null)
+                        return;
+                    showShortToast(this, getString(R.string.added_to_upload_tasks));
+
+                    List<SeafDirent> list = dataManager.getCachedDirents(navContext.getRepoID(), navContext.getDirPath());
+                    if (list == null) return;
+
+                    for (String path : paths) {
+                        boolean duplicate = false;
+                        for (SeafDirent dirent : list) {
+                            if (dirent.name.equals(Utils.fileNameFromPath(path))) {
+                                duplicate = true;
+                                break;
+                            }
+                        }
+                        if (!duplicate) {
+                            showShortToast(BrowserActivity.this, getString(R.string.added_to_upload_tasks));
+                            final SeafRepo repo = dataManager.getCachedRepoByID(navContext.getRepoID());
+                            if (repo != null && repo.canLocalDecrypt()) {
+                                addUploadBlocksTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), path);
+                            } else {
+                                addUploadTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), path);
+                            }
+                        } else {
+                            showFileExistDialog(path);
+                        }
+                    }
+                }
+                break;
+            case PICK_FILE_REQUEST:
+                if (resultCode == RESULT_OK) {
+                    if (!Utils.isNetworkOn()) {
+                        showShortToast(this, R.string.network_down);
+                        return;
+                    }
+
+                    if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        List<Uri> uriList = UtilsJellyBean.extractUriListFromIntent(data);
+                        if (uriList.size() > 0) {
+                            ConcurrentAsyncTask.execute(new SAFLoadRemoteFileTask(), uriList.toArray(new Uri[]{}));
+                        } else {
+                            showShortToast(BrowserActivity.this, R.string.saf_upload_path_not_available);
                         }
                     } else {
-                        showFileExistDialog(path);
+                        Uri uri = data.getData();
+                        if (uri != null) {
+                            ConcurrentAsyncTask.execute(new SAFLoadRemoteFileTask(), uri);
+                        } else {
+                            showShortToast(BrowserActivity.this, R.string.saf_upload_path_not_available);
+                        }
                     }
                 }
-            }
-            break;
-        case PICK_FILE_REQUEST:
-            if (resultCode == RESULT_OK) {
-                if (!Utils.isNetworkOn()) {
-                    showShortToast(this, R.string.network_down);
-                    return;
-                }
+                break;
+            case CHOOSE_COPY_MOVE_DEST_REQUEST:
+                if (resultCode == RESULT_OK) {
+                    if (!Utils.isNetworkOn()) {
+                        showShortToast(this, R.string.network_down);
+                        return;
+                    }
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    List<Uri> uriList = UtilsJellyBean.extractUriListFromIntent(data);
-                    if (uriList.size() > 0) {
-                        ConcurrentAsyncTask.execute(new SAFLoadRemoteFileTask(), uriList.toArray(new Uri[]{}));
+                    copyMoveIntent = data;
+                }
+                break;
+            case TAKE_PHOTO_REQUEST:
+                if (resultCode == RESULT_OK) {
+                    showShortToast(this, getString(R.string.take_photo_successfully));
+                    if (!Utils.isNetworkOn()) {
+                        showShortToast(this, R.string.network_down);
+                        return;
+                    }
+
+                    if (takeCameraPhotoTempFile == null) {
+                        showShortToast(this, getString(R.string.saf_upload_path_not_available));
+                        Log.i(DEBUG_TAG, "Pick file request did not return a path");
+                        return;
+                    }
+                    showShortToast(this, getString(R.string.added_to_upload_tasks));
+                    final SeafRepo repo = dataManager.getCachedRepoByID(navContext.getRepoID());
+                    if (repo != null && repo.canLocalDecrypt()) {
+                        addUploadBlocksTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), takeCameraPhotoTempFile.getAbsolutePath());
                     } else {
-                        showShortToast(BrowserActivity.this, R.string.saf_upload_path_not_available);
+                        addUploadTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), takeCameraPhotoTempFile.getAbsolutePath());
                     }
-                } else {
-                    Uri uri = data.getData();
-                    if (uri != null) {
-                        ConcurrentAsyncTask.execute(new SAFLoadRemoteFileTask(), uri);
-                    } else {
-                        showShortToast(BrowserActivity.this, R.string.saf_upload_path_not_available);
-                    }
-                }
-            }
-            break;
-        case CHOOSE_COPY_MOVE_DEST_REQUEST:
-            if (resultCode == RESULT_OK) {
-                if (!Utils.isNetworkOn()) {
-                    showShortToast(this, R.string.network_down);
-                    return;
-                }
 
-                copyMoveIntent = data;
-            }
-            break;
-        case TAKE_PHOTO_REQUEST:
-            if (resultCode == RESULT_OK) {
-                showShortToast(this, getString(R.string.take_photo_successfully));
-                if (!Utils.isNetworkOn()) {
-                    showShortToast(this, R.string.network_down);
-                    return;
                 }
-
-                if(takeCameraPhotoTempFile == null) {
-                    showShortToast(this, getString(R.string.saf_upload_path_not_available));
-                    Log.i(DEBUG_TAG, "Pick file request did not return a path");
-                    return;
-                }
-                showShortToast(this, getString(R.string.added_to_upload_tasks));
-                final SeafRepo repo = dataManager.getCachedRepoByID(navContext.getRepoID());
-                if (repo != null && repo.canLocalDecrypt()) {
-                    addUploadBlocksTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), takeCameraPhotoTempFile.getAbsolutePath());
-                } else {
-                    addUploadTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), takeCameraPhotoTempFile.getAbsolutePath());
-                }
-
-            }
-            break;
+                break;
             case DOWNLOAD_FILE_REQUEST:
                 if (resultCode == RESULT_OK) {
                     File file = new File(data.getStringExtra("path"));
                     boolean isOpenWith = data.getBooleanExtra("is_open_with", false);
                     WidgetUtils.showFile(BrowserActivity.this, file, isOpenWith);
                 }
-        default:
-             break;
+                break;
+            case REQUEST_PERMISSIONS_WRITE_EXTERNAL_STORAGE: {
+                if (SDK_INT >= Build.VERSION_CODES.R) {
+                    if (Environment.isExternalStorageManager()) {
+                    } else {
+                    }
+                }
+            }
+            default:
+                break;
         }
     }
 
@@ -1392,7 +1367,7 @@ public class BrowserActivity extends BaseActivity
                 return null;
 
             List<File> fileList = new ArrayList<File>();
-            for (Uri uri: uriList) {
+            for (Uri uri : uriList) {
                 // Log.d(DEBUG_TAG, "Uploading file from uri: " + uri);
                 InputStream in = null;
                 OutputStream out = null;
@@ -1429,7 +1404,7 @@ public class BrowserActivity extends BaseActivity
 
             List<SeafDirent> list = dataManager.getCachedDirents(navContext.getRepoID(), navContext.getDirPath());
 
-            for (final File file: fileList) {
+            for (final File file : fileList) {
                 if (file == null) {
                     showShortToast(BrowserActivity.this, R.string.saf_upload_path_not_available);
                 } else {
@@ -1472,7 +1447,7 @@ public class BrowserActivity extends BaseActivity
         }
     }
 
-    private void showFileExistDialog(final String filePath){
+    private void showFileExistDialog(final String filePath) {
         showFileExistDialog(new File(filePath));
     }
 
@@ -1517,8 +1492,8 @@ public class BrowserActivity extends BaseActivity
 
     /***************  Navigation *************/
 
-    public void onFileSelected(SeafDirent dirent,boolean isOpenWith) {
-        final String fileName= dirent.name;
+    public void onFileSelected(SeafDirent dirent, boolean isOpenWith) {
+        final String fileName = dirent.name;
         final long fileSize = dirent.size;
         final String repoName = navContext.getRepoName();
         final String repoID = navContext.getRepoID();
@@ -1611,7 +1586,7 @@ public class BrowserActivity extends BaseActivity
                 fileName);
     }
 
-    private class DownloadDirTask extends AsyncTask<String, Void, List<SeafDirent> > {
+    private class DownloadDirTask extends AsyncTask<String, Void, List<SeafDirent>> {
 
         private String repoName;
         private String repoID;
@@ -1741,7 +1716,7 @@ public class BrowserActivity extends BaseActivity
         intent.putExtra("filePath", filePath);
         intent.putExtra("account", account);
         //DOWNLOAD_PLAY_REQUEST
-        startActivity(intent );
+        startActivity(intent);
     }
 
 
@@ -1808,7 +1783,7 @@ public class BrowserActivity extends BaseActivity
                     navContext.setDir(parentPath, null);
                     if (parentPath.equals(ACTIONBAR_PARENT_PATH)) {
                         getActionBarToolbar().setTitle(navContext.getRepoName());
-                    }else {
+                    } else {
                         getActionBarToolbar().setTitle(parentPath.substring(parentPath.lastIndexOf(ACTIONBAR_PARENT_PATH) + 1));
                     }
                 }
@@ -1852,8 +1827,8 @@ public class BrowserActivity extends BaseActivity
     private void chooseExportApp(final String repoName, final String repoID, final String path, final long fileSize) {
         final File file = dataManager.getLocalRepoFile(repoName, repoID, path);
         Uri uri = null;
-        if (android.os.Build.VERSION.SDK_INT > 23) {
-            uri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() , file);
+        if (SDK_INT > 23) {
+            uri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName(), file);
         } else {
             uri = Uri.fromFile(file);
         }
@@ -1894,7 +1869,7 @@ public class BrowserActivity extends BaseActivity
     }
 
     public void fetchFileAndExport(final ResolveInfo appInfo, final Intent intent,
-                                    final String repoName, final String repoID, final String path, final long fileSize) {
+                                   final String repoName, final String repoID, final String path, final long fileSize) {
 
         fetchFileDialog = new FetchFileDialog();
         fetchFileDialog.init(repoName, repoID, path, fileSize, new FetchFileDialog.FetchFileListener() {
@@ -1950,6 +1925,7 @@ public class BrowserActivity extends BaseActivity
     /**
      * Share a file. Generating a file share link and send the link or file to someone
      * through some app.
+     *
      * @param repoID
      * @param path
      */
@@ -2048,7 +2024,7 @@ public class BrowserActivity extends BaseActivity
     private void chooseCopyMoveDest(String repoID, String repoName, String path,
                                     String filename, boolean isdir, CopyMoveContext.OP op) {
         copyMoveContext = new CopyMoveContext(repoID, repoName, path, filename,
-                                              isdir, op);
+                isdir, op);
         Intent intent = new Intent(this, SeafilePathChooserActivity.class);
         intent.putExtra(SeafilePathChooserActivity.DATA_ACCOUNT, account);
         SeafRepo repo = dataManager.getCachedRepoByID(repoID);
@@ -2127,9 +2103,9 @@ public class BrowserActivity extends BaseActivity
                             @Override
                             public void onTaskSuccess() {
                                 txService.addDownloadTask(account,
-                                                          repoName,
-                                                          repoID,
-                                                          path);
+                                        repoName,
+                                        repoID,
+                                        path);
                             }
                         });
                 return;
@@ -2162,8 +2138,9 @@ public class BrowserActivity extends BaseActivity
     }
 
     private int intShowErrorTime;
+
     private void onFileUploadFailed(int taskID) {
-        if (++ intShowErrorTime <= 1)
+        if (++intShowErrorTime <= 1)
             showShortToast(this, getString(R.string.upload_failed));
     }
 
@@ -2375,7 +2352,7 @@ public class BrowserActivity extends BaseActivity
                 if (!txService.hasDownloadNotifProvider()) {
                     DownloadNotificationProvider provider =
                             new DownloadNotificationProvider(txService.getDownloadTaskManager(),
-                            txService);
+                                    txService);
                     txService.saveDownloadNotifProvider(provider);
                 }
 
@@ -2386,11 +2363,11 @@ public class BrowserActivity extends BaseActivity
 
     @Override
     public boolean onKeyUp(int keycode, KeyEvent e) {
-        switch(keycode) {
-        case KeyEvent.KEYCODE_MENU:
-            if (overFlowMenu !=null) {
-                overFlowMenu.performIdentifierAction(R.id.menu_overflow, 0);
-            }
+        switch (keycode) {
+            case KeyEvent.KEYCODE_MENU:
+                if (overFlowMenu != null) {
+                    overFlowMenu.performIdentifierAction(R.id.menu_overflow, 0);
+                }
         }
 
         return super.onKeyUp(keycode, e);
@@ -2399,7 +2376,8 @@ public class BrowserActivity extends BaseActivity
     // for receive broadcast from TransferService
     private class TransferReceiver extends BroadcastReceiver {
 
-        private TransferReceiver() {}
+        private TransferReceiver() {
+        }
 
         public void onReceive(Context context, Intent intent) {
             String type = intent.getStringExtra("type");
