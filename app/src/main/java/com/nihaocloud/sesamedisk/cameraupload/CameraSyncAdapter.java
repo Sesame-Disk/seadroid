@@ -20,8 +20,8 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.common.base.Joiner;
-import com.nihaocloud.sesamedisk.R;
 import com.nihaocloud.sesamedisk.NihaoApplication;
+import com.nihaocloud.sesamedisk.R;
 import com.nihaocloud.sesamedisk.SeafException;
 import com.nihaocloud.sesamedisk.SettingsManager;
 import com.nihaocloud.sesamedisk.account.Account;
@@ -196,8 +196,8 @@ public class CameraSyncAdapter extends AbstractThreadedSyncAdapter {
      * Create a directory, rename a file away if necessary,
      *
      * @param dataManager
-     * @param parent parent dir
-     * @param dir directory to create
+     * @param parent      parent dir
+     * @param dir         directory to create
      * @throws SeafException
      */
     private void forceCreateDirectory(DataManager dataManager, String parent, String dir) throws SeafException {
@@ -205,7 +205,7 @@ public class CameraSyncAdapter extends AbstractThreadedSyncAdapter {
         List<SeafDirent> dirs = dataManager.getDirentsFromServer(targetRepoId, parent);
         boolean found = false;
         for (SeafDirent dirent : dirs) {
-           if (dirent.name.equals(dir) && dirent.isDir()) {
+            if (dirent.name.equals(dir) && dirent.isDir()) {
                 found = true;
             } else if (dirent.name.equals(dir) && !dirent.isDir()) {
                 // there is already a file. move it away.
@@ -239,7 +239,7 @@ public class CameraSyncAdapter extends AbstractThreadedSyncAdapter {
 
         Log.d(DEBUG_TAG, "Media buckets available on this system: ");*/
 //        for (GalleryBucketUtils.Bucket bucket: GalleryBucketUtils.getMediaBuckets(getContext())) {
-            // Log.d(DEBUG_TAG, "Bucket id="+bucket.id+" name="+bucket.name);
+        // Log.d(DEBUG_TAG, "Bucket id="+bucket.id+" name="+bucket.name);
 //        }
 
         // resync all media
@@ -407,7 +407,7 @@ public class CameraSyncAdapter extends AbstractThreadedSyncAdapter {
         try {
             if (cursor == null) {
                 Log.e(DEBUG_TAG, "ContentResolver query failed!");
-                Utils.utilsLogInfo(true,"===ContentResolver query failed!");
+                Utils.utilsLogInfo(true, "===ContentResolver query failed!");
                 return;
             }
             // Log.d(DEBUG_TAG, "i see " + cursor.getCount() + " new images.");
@@ -428,7 +428,7 @@ public class CameraSyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private void uploadVideos(SyncResult syncResult, DataManager dataManager) throws SeafException, InterruptedException {
-        Utils.utilsLogInfo(true,"Starting to upload videos...");
+        Utils.utilsLogInfo(true, "Starting to upload videos...");
         // Log.d(DEBUG_TAG, "Starting to upload videos...");
 
         if (isCancelled())
@@ -466,11 +466,11 @@ public class CameraSyncAdapter extends AbstractThreadedSyncAdapter {
         try {
             if (cursor == null) {
                 Log.e(DEBUG_TAG, "ContentResolver query failed!");
-                Utils.utilsLogInfo(true,"====ContentResolver query failed!");
+                Utils.utilsLogInfo(true, "====ContentResolver query failed!");
                 return;
             }
             // Log.d(DEBUG_TAG, "i see " + cursor.getCount() + " new videos.");
-            Utils.utilsLogInfo(true,"=====i see " + cursor.getCount() + " videos.");
+            Utils.utilsLogInfo(true, "=====i see " + cursor.getCount() + " videos.");
             if (cursor.getCount() > 0) {
                 // create directories for media buckets
                 createDirectories(dataManager);
@@ -561,21 +561,22 @@ public class CameraSyncAdapter extends AbstractThreadedSyncAdapter {
 
             uploadFile(dataManager, file, bucketName);
         }
-        Utils.utilsLogInfo(true,"=======waitForUploads===");
+        Utils.utilsLogInfo(true, "=======waitForUploads===");
         waitForUploads();
         checkUploadResult(syncResult);
     }
 
     private void waitForUploads() throws InterruptedException {
         // Log.d(DEBUG_TAG, "wait for transfer service to finish our tasks");
-        WAITLOOP: while (!isCancelled()) {
+        WAITLOOP:
+        while (!isCancelled()) {
             Thread.sleep(100); // wait
 
-            for (int id: tasksInProgress) {
+            for (int id : tasksInProgress) {
                 UploadTaskInfo info = txService.getUploadTaskInfo(id);
                 if (info.state == TaskState.INIT || info.state == TaskState.TRANSFERRING) {
                     // there is still at least one task pending
-                    continue  WAITLOOP;
+                    continue WAITLOOP;
                 }
             }
             break;
@@ -589,7 +590,7 @@ public class CameraSyncAdapter extends AbstractThreadedSyncAdapter {
      * @throws SeafException
      */
     private void checkUploadResult(SyncResult syncResult) throws SeafException {
-        for (int id: tasksInProgress) {
+        for (int id : tasksInProgress) {
             UploadTaskInfo info = txService.getUploadTaskInfo(id);
             if (info.err != null) {
                 throw info.err;
@@ -615,11 +616,11 @@ public class CameraSyncAdapter extends AbstractThreadedSyncAdapter {
     private void uploadFile(DataManager dataManager, File file, String bucketName) throws SeafException {
 
         String serverPath = Utils.pathJoin(BASE_DIR, bucketName);
-        Utils.utilsLogInfo(true,"=======uploadFile===");
+        Utils.utilsLogInfo(true, "=======uploadFile===");
         List<SeafDirent> list = dataManager.getCachedDirents(targetRepoId, serverPath);
         if (list == null) {
             Log.e(DEBUG_TAG, "Seadroid dirent cache is empty in uploadFile. Should not happen, aborting.");
-            Utils.utilsLogInfo(true,"=======Seadroid dirent cache is empty in uploadFile. Should not happen, aborting.");
+            Utils.utilsLogInfo(true, "=======Seadroid dirent cache is empty in uploadFile. Should not happen, aborting.");
             // the dirents were supposed to be refreshed in createDirectories()
             // something changed, abort.
             throw SeafException.unknownException;
@@ -638,14 +639,14 @@ public class CameraSyncAdapter extends AbstractThreadedSyncAdapter {
         for (SeafDirent dirent : list) {
             if (pattern.matcher(dirent.name).matches() && dirent.size == file.length()) {
                 // Log.d(DEBUG_TAG, "File " + file.getName() + " in bucket " + bucketName + " already exists on the server. Skipping.");
-                Utils.utilsLogInfo(true,"====File " + file.getName() + " in bucket " + bucketName + " already exists on the server. Skipping.");
+                Utils.utilsLogInfo(true, "====File " + file.getName() + " in bucket " + bucketName + " already exists on the server. Skipping.");
                 dbHelper.markAsUploaded(file);
                 return;
             }
         }
 
         // Log.d(DEBUG_TAG, "uploading file " + file.getName() + " to " + serverPath);
-        Utils.utilsLogInfo(true,"====uploading file " + file.getName() + " to " + serverPath);
+        Utils.utilsLogInfo(true, "====uploading file " + file.getName() + " to " + serverPath);
         int taskID = txService.addUploadTask(dataManager.getAccount(), targetRepoId, targetRepoName,
                 serverPath, file.getAbsolutePath(), false, false);
         tasksInProgress.add(taskID);
@@ -663,7 +664,7 @@ public class CameraSyncAdapter extends AbstractThreadedSyncAdapter {
             mBuilder = new NotificationCompat.Builder(getContext());
         }
 
-        mBuilder.setSmallIcon(R.drawable.icon)
+        mBuilder.setSmallIcon(R.drawable.ic_nihao_notification)
                 .setOnlyAlertOnce(true)
                 .setContentTitle(getContext().getString(R.string.camera_sync_notification_title_failed))
                 .setContentText(getContext().getString(R.string.camera_sync_notification_auth_error_failed));
@@ -692,7 +693,7 @@ public class CameraSyncAdapter extends AbstractThreadedSyncAdapter {
     private void showNotificationRepoError() {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(getContext())
-                        .setSmallIcon(R.drawable.icon)
+                        .setSmallIcon(R.drawable.ic_nihao_notification)
                         .setContentTitle(getContext().getString(R.string.camera_sync_notification_title_failed))
                         .setContentText(getContext().getString(R.string.camera_sync_notification_repo_missing_failed));
 

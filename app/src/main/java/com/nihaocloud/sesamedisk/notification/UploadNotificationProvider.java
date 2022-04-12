@@ -2,8 +2,9 @@ package com.nihaocloud.sesamedisk.notification;
 
 import android.app.PendingIntent;
 import android.content.Intent;
-import com.nihaocloud.sesamedisk.R;
+
 import com.nihaocloud.sesamedisk.NihaoApplication;
+import com.nihaocloud.sesamedisk.R;
 import com.nihaocloud.sesamedisk.transfer.TaskState;
 import com.nihaocloud.sesamedisk.transfer.TransferService;
 import com.nihaocloud.sesamedisk.transfer.UploadTaskInfo;
@@ -15,7 +16,6 @@ import java.util.List;
 
 /**
  * Upload notification provider
- *
  */
 public class UploadNotificationProvider extends BaseNotificationProvider {
 
@@ -49,10 +49,10 @@ public class UploadNotificationProvider extends BaseNotificationProvider {
 
             if (uploadingCount != 0)
                 progressStatus = NihaoApplication.getAppContext().getResources().
-                                getQuantityString(R.plurals.notification_upload_info,
-                                        uploadingCount,
-                                        uploadingCount,
-                                        getProgress());
+                        getQuantityString(R.plurals.notification_upload_info,
+                                uploadingCount,
+                                uploadingCount,
+                                getProgress());
         }
         return progressStatus;
     }
@@ -69,7 +69,7 @@ public class UploadNotificationProvider extends BaseNotificationProvider {
                 0);
         mNotifBuilder = CustomNotificationBuilder.getNotificationBuilder(NihaoApplication.getAppContext(),
                 CustomNotificationBuilder.CHANNEL_ID_UPLOAD)
-                .setSmallIcon(R.drawable.icon)
+                .setSmallIcon(R.drawable.ic_nihao_notification)
                 .setOnlyAlertOnce(true)
                 .setContentTitle(NihaoApplication.getAppContext().getString(R.string.notification_upload_started_title))
                 .setOngoing(true)

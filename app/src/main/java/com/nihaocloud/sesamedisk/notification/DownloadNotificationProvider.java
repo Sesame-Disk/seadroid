@@ -108,7 +108,7 @@ public class DownloadNotificationProvider extends BaseNotificationProvider {
                 0);
         mNotifBuilder = CustomNotificationBuilder.getNotificationBuilder(NihaoApplication.getAppContext(),
                 CustomNotificationBuilder.CHANNEL_ID_DOWNLOAD)
-                .setSmallIcon(R.drawable.icon)
+                .setSmallIcon(R.drawable.ic_nihao_notification)
                 .setOnlyAlertOnce(true)
                 .setDefaults(Notification.DEFAULT_VIBRATE)
                 .setContentTitle(NihaoApplication.getAppContext().getString(R.string.notification_download_started_title))
