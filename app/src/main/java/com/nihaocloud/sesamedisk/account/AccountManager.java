@@ -1,5 +1,6 @@
 package com.nihaocloud.sesamedisk.account;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
@@ -17,6 +18,7 @@ import java.util.List;
  * note the differences between {@link Account} and {@link AccountInfo}<br>
  */
 
+@SuppressLint("MissingPermission")
 public class AccountManager {
     @SuppressWarnings("unused")
     private final String DEBUG_TAG = "AccountManager";

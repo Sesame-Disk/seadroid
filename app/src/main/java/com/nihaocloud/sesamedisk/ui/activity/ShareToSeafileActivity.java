@@ -1,5 +1,6 @@
 package com.nihaocloud.sesamedisk.ui.activity;
 
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -49,6 +50,7 @@ public class ShareToSeafileActivity extends BaseActivity {
     private ArrayList<String> localPathList;
     private Intent dstData;
     private Boolean isFinishActivity = false;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
@@ -56,10 +58,10 @@ public class ShareToSeafileActivity extends BaseActivity {
         Bundle extras = intent.getExtras();
         if (extras != null) {
             Object extraStream = extras.get(Intent.EXTRA_STREAM);
-            if(localPathList == null) localPathList = Lists.newArrayList();
+            if (localPathList == null) localPathList = Lists.newArrayList();
             loadSharedFiles(extraStream);
         }
-        
+
     }
 
     private void loadSharedFiles(Object extraStream) {
@@ -86,6 +88,7 @@ public class ShareToSeafileActivity extends BaseActivity {
             if (cursor == null || !cursor.moveToFirst()) {
                 return null;
             }
+            @SuppressLint("Range")
             String filePath = cursor.getString(cursor.getColumnIndex(Images.Media.DATA));
             return filePath;
         }
@@ -99,7 +102,7 @@ public class ShareToSeafileActivity extends BaseActivity {
                 return null;
 
             List<File> fileList = new ArrayList<File>();
-            for (Uri uri: uriList) {
+            for (Uri uri : uriList) {
                 InputStream in = null;
                 OutputStream out = null;
 
@@ -131,7 +134,7 @@ public class ShareToSeafileActivity extends BaseActivity {
 
         @Override
         protected void onPostExecute(File... fileList) {
-            for (File file: fileList) {
+            for (File file : fileList) {
                 if (file == null) {
                     showShortToast(ShareToSeafileActivity.this, R.string.saf_upload_path_not_available);
                 } else {
@@ -196,13 +199,11 @@ public class ShareToSeafileActivity extends BaseActivity {
      * @param repoID
      * @param targetDir
      * @param localPaths
-     * @param update
-     *          update the file to avoid duplicates if true,
-     *          upload directly, otherwise.
-     *
+     * @param update     update the file to avoid duplicates if true,
+     *                   upload directly, otherwise.
      */
     private void bindTransferService(final Account account, final String repoName, final String repoID,
-                                        final String targetDir, final ArrayList<String> localPaths, final boolean update) {
+                                     final String targetDir, final ArrayList<String> localPaths, final boolean update) {
         // start transfer service
         Intent txIntent = new Intent(this, TransferService.class);
         startService(txIntent);
@@ -337,7 +338,7 @@ public class ShareToSeafileActivity extends BaseActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 addUpdateTask(account, repoName, repoID, targetDir, localPathList);
-                                if(isFinishActivity) {
+                                if (isFinishActivity) {
                                     Log.d(DEBUG_TAG, "finish!");
                                     finish();
                                 }
@@ -346,7 +347,7 @@ public class ShareToSeafileActivity extends BaseActivity {
                         .setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                if(isFinishActivity) {
+                                if (isFinishActivity) {
                                     Log.d(DEBUG_TAG, "finish!");
                                     finish();
                                 }

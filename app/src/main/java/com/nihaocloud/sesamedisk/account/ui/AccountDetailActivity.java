@@ -99,7 +99,7 @@ public class AccountDetailActivity extends BaseActivity implements Toolbar.OnMen
             String account_name = intent.getStringExtra(SeafileAuthenticatorActivity.ARG_ACCOUNT_NAME);
             String account_type = intent.getStringExtra(SeafileAuthenticatorActivity.ARG_ACCOUNT_TYPE);
             android.accounts.Account account = new android.accounts.Account(account_name, account_type);
-            String email = mAccountManager.getUserData(account, Authenticator.KEY_EMAIL);
+            @SuppressLint("MissingPermission") String email = mAccountManager.getUserData(account, Authenticator.KEY_EMAIL);
             mSessionKey = mAccountManager.getUserData(account, Authenticator.SESSION_KEY);
             emailText.setText(email);
             emailText.requestFocus();

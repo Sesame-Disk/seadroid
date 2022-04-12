@@ -31,8 +31,7 @@ import java.util.List;
  */
 public abstract class AccountAdapter extends BaseAdapter {
     private static final String DEBUG_TAG = "AccountAdapter";
-    private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
-    private DisplayImageOptions options;
+    private final ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
     private ArrayList<Account> items;
     private ArrayList<Avatar> avatars;
     private final Context context;
@@ -85,8 +84,6 @@ public abstract class AccountAdapter extends BaseAdapter {
         items.clear();
     }
 
-    private Viewholder viewHolder;
-
     protected abstract int getChildLayout();
 
     protected abstract int getChildTitleId();
@@ -98,6 +95,7 @@ public abstract class AccountAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
+        Viewholder viewHolder;
         if (convertView == null) {
             view = LayoutInflater.from(context).inflate(getChildLayout(), null);
             TextView title = view.findViewById(getChildTitleId());
@@ -112,7 +110,8 @@ public abstract class AccountAdapter extends BaseAdapter {
         viewHolder.subtitle.setText(account.getServerHost());
         viewHolder.title.setText(account.getName());
         if (getAvatarUrl(account) != null) {
-            options = new DisplayImageOptions.Builder()
+            // .delayBeforeLoading(1000)
+            DisplayImageOptions options = new DisplayImageOptions.Builder()
                     .extraForDownloader(account)
                     .showStubImage(R.drawable.default_account)
                     // .delayBeforeLoading(1000)

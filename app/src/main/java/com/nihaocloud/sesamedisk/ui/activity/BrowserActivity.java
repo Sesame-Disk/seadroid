@@ -2,6 +2,8 @@ package com.nihaocloud.sesamedisk.ui.activity;
 
 import static android.os.Build.VERSION.SDK_INT;
 
+import static com.nihaocloud.sesamedisk.R.id.transfer_tasks;
+
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -507,7 +509,7 @@ public class BrowserActivity extends BaseActivity
             case R.id.add:
                 addFile();
                 return true;
-            case R.id.transfer_tasks:
+            case transfer_tasks:
                 Intent newIntent = new Intent(this, TransferActivity.class);
                 newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(newIntent);

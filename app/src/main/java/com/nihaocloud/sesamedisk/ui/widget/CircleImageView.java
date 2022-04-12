@@ -13,17 +13,17 @@ import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
 import com.nihaocloud.sesamedisk.R;
 
 /**
  * A fast circular ImageView perfect for profile images
- *
+ * <p>
  * styleable attr are border_width and border_color
  */
-public class CircleImageView extends ImageView {
+public class CircleImageView extends AppCompatImageView {
 
     private static final ScaleType SCALE_TYPE = ScaleType.CENTER_CROP;
 

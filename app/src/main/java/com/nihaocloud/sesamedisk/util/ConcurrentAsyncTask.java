@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Make sure an AsyncTask is executed in parallel across different version of
  * Android
+ *
  * @see asynctask executing tasks serially or concurrently {@link http://www.jayway.com/2012/11/28/is-androids-asynctask-executing-tasks-serially-or-concurrently/}
  */
 public class ConcurrentAsyncTask {
@@ -74,7 +75,7 @@ public class ConcurrentAsyncTask {
 
     private static final ThreadPoolExecutor threadPoolExecutor = new SeadroidThreadPoolExecutor();
 
-    public static <T> void execute(AsyncTask<T, ?, ?> task, T...args) {
+    public static <T> void execute(AsyncTask<T, ?, ?> task, T... args) {
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.HONEYCOMB_MR1) {
             task.execute(args);
         } else {

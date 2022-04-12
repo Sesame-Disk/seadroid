@@ -1,5 +1,6 @@
 package com.nihaocloud.sesamedisk.util;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.job.JobInfo;
@@ -34,8 +35,8 @@ import android.webkit.MimeTypeMap;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.nihaocloud.sesamedisk.R;
 import com.nihaocloud.sesamedisk.NihaoApplication;
+import com.nihaocloud.sesamedisk.R;
 import com.nihaocloud.sesamedisk.SettingsManager;
 import com.nihaocloud.sesamedisk.cameraupload.MediaSchedulerService;
 import com.nihaocloud.sesamedisk.data.SeafRepo;
@@ -94,7 +95,8 @@ public class Utils {
     private static HashMap<String, Integer> suffixIconMap = null;
     private static final int JOB_ID = 0;
 
-    private Utils() {}
+    private Utils() {
+    }
 
     public static JSONObject parseJsonObject(String json) {
         if (json == null) {
@@ -188,10 +190,10 @@ public class Utils {
     }
 
     public static String readableFileSize(long size) {
-        if(size <= 0) return "0 KB";
-        final String[] units = new String[] { "B", "KB", "MB", "GB", "TB" };
-        int digitGroups = (int) (Math.log10(size)/Math.log10(1000));
-        return new DecimalFormat("#,##0.#").format(size/Math.pow(1000, digitGroups)) + " " + units[digitGroups];
+        if (size <= 0) return "0 KB";
+        final String[] units = new String[]{"B", "KB", "MB", "GB", "TB"};
+        int digitGroups = (int) (Math.log10(size) / Math.log10(1000));
+        return new DecimalFormat("#,##0.#").format(size / Math.pow(1000, digitGroups)) + " " + units[digitGroups];
     }
 
     public static void writeFile(File file, String content) throws IOException {
@@ -245,7 +247,8 @@ public class Utils {
             return R.drawable.file_audio;
         } else if (mimetype.contains("video")) {
             return R.drawable.file_video;
-        } if (mimetype.contains("pdf")) {
+        }
+        if (mimetype.contains("pdf")) {
             return R.drawable.file_pdf;
         } else if (mimetype.contains("msword") || mimetype.contains("ms-word")) {
             return R.drawable.file_ms_word;
@@ -345,10 +348,12 @@ public class Utils {
         return false;
     }
 
+    @SuppressLint("MissingPermission")
     public static boolean isNetworkOn() {
         ConnectivityManager connMgr = (ConnectivityManager)
                 NihaoApplication.getAppContext().getSystemService(
                         Context.CONNECTIVITY_SERVICE);
+
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo == null) {
             return false;
@@ -371,16 +376,17 @@ public class Utils {
                         Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo wifi = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        if(wifi != null && wifi.isAvailable()
+        if (wifi != null && wifi.isAvailable()
                 && wifi.getDetailedState() == DetailedState.CONNECTED) {
             return true;
         }
 
         return false;
     }
-    public static String pathJoin (String first, String... rest) {
+
+    public static String pathJoin(String first, String... rest) {
         StringBuilder result = new StringBuilder(first);
-        for (String b: rest) {
+        for (String b : rest) {
             boolean resultEndsWithSlash = result.toString().endsWith("/");
             boolean bStartWithSlash = b.startsWith("/");
             if (resultEndsWithSlash && bStartWithSlash) {
@@ -405,6 +411,7 @@ public class Utils {
         } else
             return path;
     }
+
     /**
      * Strip leading and trailing slashes
      */
@@ -472,7 +479,7 @@ public class Utils {
         if (suffix.length() == 0) {
             return MIME_APPLICATION_OCTET_STREAM;
         } else {
-            String mime =  MimeTypeMap.getSingleton().getMimeTypeFromExtension(suffix);
+            String mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(suffix);
             if (mime != null) {
                 return mime;
             } else {
@@ -570,14 +577,15 @@ public class Utils {
             // Allow user to select multiple files
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             // only show local document providers
-          //  intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+            //  intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
         }
         return intent;
     }
 
+    @SuppressLint("Range")
     public static String getFilenamefromUri(Context context, Uri uri) {
 
-        ContentResolver resolver =context.getContentResolver();
+        ContentResolver resolver = context.getContentResolver();
         Cursor cursor = resolver.query(uri, null, null, null, null);
         String displayName = null;
         if (cursor != null && cursor.moveToFirst()) {
@@ -595,7 +603,7 @@ public class Utils {
 
     public static String getPath(Context context, Uri uri) throws URISyntaxException {
         if ("content".equalsIgnoreCase(uri.getScheme())) {
-            String[] projection = { "_data" };
+            String[] projection = {"_data"};
             Cursor cursor = null;
 
             try {
@@ -608,8 +616,7 @@ public class Utils {
             } catch (Exception e) {
                 // Eat it
             }
-        }
-        else if ("file".equalsIgnoreCase(uri.getScheme())) {
+        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
             return uri.getPath();
         }
 
@@ -726,8 +733,9 @@ public class Utils {
             locale = Locale.getDefault();
         }
         String language = locale.getCountry();
-        return TextUtils.equals("CN",language)||TextUtils.equals("TW",language);
+        return TextUtils.equals("CN", language) || TextUtils.equals("TW", language);
     }
+
     public static List<ResolveInfo> getAppsByIntent(Intent intent) {
         PackageManager pm = NihaoApplication.getAppContext().getPackageManager();
         List<ResolveInfo> infos = pm.queryIntentActivities(intent, 0);
@@ -766,6 +774,7 @@ public class Utils {
 
     /**
      * check if click event is a fast tapping
+     *
      * @return
      */
     public static boolean isFastTapping() {
@@ -780,6 +789,7 @@ public class Utils {
     /**
      * SslCertificate class does not has a public getter for the underlying
      * X509Certificate, we can only do this by hack. This only works for andorid 4.0+
+     *
      * @see https://groups.google.com/forum/#!topic/android-developers/eAPJ6b7mrmg
      */
     public static X509Certificate getX509CertFromSslCertHack(SslCertificate sslCert) {
@@ -900,6 +910,7 @@ public class Utils {
         return false;
     }
 
+    @SuppressLint("MissingPermission")
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static void startCameraSyncJob(Context context) {
         JobScheduler mJobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);

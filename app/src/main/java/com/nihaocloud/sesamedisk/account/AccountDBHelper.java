@@ -1,5 +1,6 @@
 package com.nihaocloud.sesamedisk.account;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -140,6 +141,7 @@ public class AccountDBHelper extends SQLiteOpenHelper {
         onUpgrade(db, oldVersion, newVersion);
     }
 
+    @SuppressLint("MissingPermission")
     private void migrateToAndroidAccount(SQLiteDatabase db) {
 
         Log.i(DEBUG_TAG, "Migrating seafile accounts into Android account store (upgrade)");
