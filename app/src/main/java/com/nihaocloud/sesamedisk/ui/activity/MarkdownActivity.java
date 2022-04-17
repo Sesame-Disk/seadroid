@@ -10,16 +10,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.mukesh.MarkdownView;
 import com.nihaocloud.sesamedisk.R;
 import com.nihaocloud.sesamedisk.editor.EditorActivity;
 import com.nihaocloud.sesamedisk.util.FileMimeUtils;
 
 import java.io.File;
 
-import br.tiagohm.markdownview.MarkdownView;
-import br.tiagohm.markdownview.Utils;
-import br.tiagohm.markdownview.css.InternalStyleSheet;
-import br.tiagohm.markdownview.css.styles.Github;
 
 /**
  * For showing markdown files
@@ -57,17 +54,18 @@ public class MarkdownActivity extends BaseActivity implements Toolbar.OnMenuItem
         if (!file.exists())
             return;
 
-        InternalStyleSheet css = new Github();
-        css.addRule("body", new String[]{"line-height: 1.6", "padding: 0px"});
-        css.addRule("a", "color: orange");
-        markdownView.addStyleSheet(css);
-        try {
-            markdownView.loadMarkdownFromFile(file);
-        } catch (Exception e) {
-            markdownView.loadData(Utils.getStringFromFile(file), "text/plain", "UTF-8");
-            e.printStackTrace();
-        }
+//        InternalStyleSheet css = new Github();
+//        css.addRule("body", new String[]{"line-height: 1.6", "padding: 0px"});
+//        css.addRule("a", "color: orange");
+//        markdownView.addStyleSheet(css);
 
+        markdownView.loadMarkdownFromFile(file);
+//        try {
+//            markdownView.loadMarkdownFromFile(file);
+//        } catch (Exception e) {
+//            markdownView.loadData(Utils.getStringFromFile(file), "text/plain", "UTF-8");
+//            e.printStackTrace();
+//        }
         getSupportActionBar().setTitle(file.getName());
     }
 
@@ -102,7 +100,7 @@ public class MarkdownActivity extends BaseActivity implements Toolbar.OnMenuItem
         Intent editAsMarkDown = new Intent(Intent.ACTION_EDIT);
         Uri uri;
         if (android.os.Build.VERSION.SDK_INT > 23) {
-            uri = FileProvider.getUriForFile(this, getPackageName() , new File(path));
+            uri = FileProvider.getUriForFile(this, getPackageName(), new File(path));
             editAsMarkDown.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         } else {
             uri = Uri.parse(path);
