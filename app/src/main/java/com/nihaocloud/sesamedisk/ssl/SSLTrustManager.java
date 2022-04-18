@@ -1,5 +1,6 @@
 package com.nihaocloud.sesamedisk.ssl;
 
+import android.net.http.X509TrustManagerExtensions;
 import android.util.Log;
 
 import com.google.common.collect.ImmutableList;
@@ -35,16 +36,11 @@ public final class SSLTrustManager {
         CERT_CHANGED,
     }
 
-    private static final String DEBUG_TAG = "SSLTrustManager";
-
+    private final String DEBUG_TAG = "SSLTrustManager";
     private X509TrustManager defaultTrustManager;
-
-    private Map<Account, SecureX509TrustManager> managers =
-            Maps.newHashMap();
-
-    private Map<Account, SSLSocketFactory> cachedFactories =
-            Maps.newHashMap();
-
+    private X509TrustManagerExtensions trustManagerExtensions;
+    private Map<Account, SecureX509TrustManager> managers = Maps.newHashMap();
+    private Map<Account, SSLSocketFactory> cachedFactories = Maps.newHashMap();
     private static SSLTrustManager instance;
 
     private SSLTrustManager() {
@@ -55,7 +51,6 @@ public final class SSLTrustManager {
             instance = new SSLTrustManager();
             instance.init();
         }
-
         return instance;
     }
 
@@ -70,6 +65,7 @@ public final class SSLTrustManager {
                 for (TrustManager tm : tms) {
                     if (tm instanceof X509TrustManager) {
                         defaultTrustManager = (X509TrustManager) tm;
+                        trustManagerExtensions = new X509TrustManagerExtensions(defaultTrustManager);
                         break;
                     }
                 }
@@ -144,7 +140,7 @@ public final class SSLTrustManager {
     /**
      * Reorder the certificates chain, since it may not be in the right order when passed to us
      *
-     * @see http://stackoverflow.com/questions/7822381/need-help-understanding-certificate-chains
+     * @see <a href="https://stackoverflow.com/questions/7822381/need-help-understanding-certificate-chains></a>
      */
     public List<X509Certificate> orderCerts(X509Certificate[] certificates) {
         if (certificates == null || certificates.length == 0) {
@@ -223,9 +219,12 @@ public final class SSLTrustManager {
 
             List<X509Certificate> orderedChain = orderCerts(chain);
             try {
+                trustManagerExtensions.checkServerTrusted(chain, authType, account.getServerHost());
                 // First try to do default check
-                defaultTrustManager.checkServerTrusted(chain, authType);
-                // Second check if hostname is valid
+                //  https://stackoverflow.com/questions/58934384/network-security-configuration-not-working-with-third-party-api
+                //  https://github.com/microsoft/cpprestsdk/issues/1313
+                //  defaultTrustManager.checkServerTrusted(chain, authType);
+                //  Second check if hostname is valid
                 validateHostName(orderedChain);
             } catch (CertificateException e) {
                 customCheck(orderedChain, authType);
