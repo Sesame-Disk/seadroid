@@ -795,7 +795,7 @@ public class BrowserActivity extends BaseActivity
         }
 
         IntentFilter filter = new IntentFilter(TransferManager.BROADCAST_ACTION);
-        LocalBroadcastManager.getInstance(this).registerReceiver(mTransferReceiver, filter);
+        registerReceiver(mTransferReceiver, filter);
     }
 
     @Override
@@ -845,7 +845,7 @@ public class BrowserActivity extends BaseActivity
         super.onStop();
 
         if (mTransferReceiver != null) {
-            LocalBroadcastManager.getInstance(this).unregisterReceiver(mTransferReceiver);
+            unregisterReceiver(mTransferReceiver);
         }
     }
 

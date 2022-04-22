@@ -1,7 +1,6 @@
 package com.nihaocloud.sesamedisk.transfer;
 
 import android.content.Intent;
-import android.support.v4.content.LocalBroadcastManager;
 
 import com.google.common.collect.Lists;
 import com.nihaocloud.sesamedisk.NihaoApplication;
@@ -49,7 +48,7 @@ public class DownloadTaskManager extends TransferManager implements DownloadStat
                 return oldTask.getTaskID();
             }
         }
-        allTaskList.put(task.getTaskID(),task);
+        allTaskList.put(task.getTaskID(), task);
         ConcurrentAsyncTask.execute(task);
         return task.getTaskID();
     }
@@ -157,7 +156,7 @@ public class DownloadTaskManager extends TransferManager implements DownloadStat
     public void onFileDownloadProgress(int taskID) {
         Intent localIntent = new Intent(BROADCAST_ACTION).putExtra("type",
                 BROADCAST_FILE_DOWNLOAD_PROGRESS).putExtra("taskID", taskID);
-        LocalBroadcastManager.getInstance(NihaoApplication.getAppContext()).sendBroadcast(localIntent);
+        NihaoApplication.getAppContext().sendBroadcast(localIntent);
         notifyProgress(taskID);
     }
 
@@ -167,7 +166,7 @@ public class DownloadTaskManager extends TransferManager implements DownloadStat
         doNext();
         Intent localIntent = new Intent(BROADCAST_ACTION).putExtra("type",
                 BROADCAST_FILE_DOWNLOAD_SUCCESS).putExtra("taskID", taskID);
-        LocalBroadcastManager.getInstance(NihaoApplication.getAppContext()).sendBroadcast(localIntent);
+        NihaoApplication.getAppContext().sendBroadcast(localIntent);
         notifyProgress(taskID);
     }
 
@@ -177,7 +176,7 @@ public class DownloadTaskManager extends TransferManager implements DownloadStat
         doNext();
         Intent localIntent = new Intent(BROADCAST_ACTION).putExtra("type",
                 BROADCAST_FILE_DOWNLOAD_FAILED).putExtra("taskID", taskID);
-        LocalBroadcastManager.getInstance(NihaoApplication.getAppContext()).sendBroadcast(localIntent);
+        NihaoApplication.getAppContext().sendBroadcast(localIntent);
         notifyProgress(taskID);
     }
 }

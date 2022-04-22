@@ -9,12 +9,16 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Binder;
 import android.os.IBinder;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.nihaocloud.sesamedisk.util.ConcurrentAsyncTask;
 import com.nihaocloud.sesamedisk.account.Account;
-import com.nihaocloud.sesamedisk.transfer.*;
+import com.nihaocloud.sesamedisk.transfer.DownloadTaskInfo;
+import com.nihaocloud.sesamedisk.transfer.DownloadTaskManager;
+import com.nihaocloud.sesamedisk.transfer.TransferManager;
+import com.nihaocloud.sesamedisk.transfer.TransferService;
+import com.nihaocloud.sesamedisk.transfer.UploadTaskInfo;
+import com.nihaocloud.sesamedisk.transfer.UploadTaskManager;
+import com.nihaocloud.sesamedisk.util.ConcurrentAsyncTask;
 
 /**
  * Monitor changes of local cached files, and upload them through TransferService if modified
@@ -54,8 +58,7 @@ public class FileMonitorService extends Service {
         Log.d(DEBUG_TAG, "onCreate");
         Intent bindIntent = new Intent(this, TransferService.class);
         bindService(bindIntent, mTransferConnection, Context.BIND_AUTO_CREATE);
-        LocalBroadcastManager.getInstance(this).registerReceiver(transferReceiver,
-                new IntentFilter(TransferManager.BROADCAST_ACTION));
+        registerReceiver(transferReceiver, new IntentFilter(TransferManager.BROADCAST_ACTION));
     }
 
     @Override
@@ -74,8 +77,7 @@ public class FileMonitorService extends Service {
             unbindService(mTransferConnection);
             mTransferService = null;
         }
-
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(transferReceiver);
+        unregisterReceiver(transferReceiver);
     }
 
     public void removeAccount(Account account) {
