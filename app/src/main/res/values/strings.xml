@@ -160,12 +160,13 @@
     </string-array>
     <string name="add_repo">New Library</string>
     <string name="add_file">Add</string>
-    <string-array name="add_file_options_array">
-        <item>Create file</item>
-        <item>Create folder</item>
-        <item>Upload file</item>
-        <item>Take a photo</item>
-    </string-array>
+
+    <string name="create_file">Create file</string>
+    <string name="create_folder">Create folder</string>
+    <string name="upload_file">Upload file</string>
+    <string name="upload_folder">Upload folder</string>
+    <string name="take_a_photo">Take a photo</string>
+
     <string-array name="video_download_array">
         <item>play</item>
         <item>download</item>
@@ -566,4 +567,5 @@
 
     <string name="required_password">Password is required.</string>
     <string name="weak_password">Password is too weak.</string>
+    <string name="more_hint" translatable="false">More</string>
 </resources>

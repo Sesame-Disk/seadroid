@@ -148,12 +148,13 @@
     </string-array>
     <string name="add_repo">Nueva Biblioteca</string>
     <string name="add_file">Agregar</string>
-    <string-array name="add_file_options_array">
-        <item>Crear archivo</item>
-        <item>Crear carpeta</item>
-        <item>Subir archivo</item>
-        <item>Tomar una foto</item>
-    </string-array>
+
+    <string name="create_file">Crear archivo</string>
+    <string name="create_folder">Crear carpeta</string>
+    <string name="upload_file">>Subir archivo</string>
+    <string name="upload_folder">Subir carpeta</string>
+    <string name="take_a_photo">Tomar una foto</string>
+
     <string-array name="video_download_array">
         <item>reproducir</item>
         <item>descargar</item>

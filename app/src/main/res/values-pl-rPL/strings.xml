@@ -138,12 +138,13 @@
     </string-array>
     <string name="add_repo">Nowa biblioteka</string>
     <string name="add_file">Dodaj</string>
-    <string-array name="add_file_options_array">
-        <item>Utwórz plik</item>
-        <item>Utwórz folder</item>
-        <item>Prześlij plik</item>
-        <item>Zrób zdjęcie</item>
-    </string-array>
+
+    <string name="create_file">Utwórz plik</string>
+    <string name="create_folder">Utwórz folder</string>
+    <string name="upload_file">Prześlij plik</string>
+    <string name="upload_folder">Prześlij folder</string>
+    <string name="take_a_photo">Zrób zdjęcie</string>
+
     <string-array name="video_download_array">
         <item>odtwórz</item>
         <item>pobierz</item>

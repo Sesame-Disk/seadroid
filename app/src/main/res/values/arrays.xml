@@ -11,4 +11,13 @@
         <item>https://app.nihaoshares.com/</item>
         <item>https://nihaoconsult.com/</item>
     </array>
+
+    <string-array name="add_file_options_array">
+        <item>@string/create_file</item>
+        <item>@string/create_folder</item>
+        <item>@string/upload_file</item>
+        <item>@string/upload_folder</item>
+        <item>@string/take_a_photo</item>
+    </string-array>
+
 </resources>

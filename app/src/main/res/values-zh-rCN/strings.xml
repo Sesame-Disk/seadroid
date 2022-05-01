@@ -146,12 +146,13 @@
     </string-array>
     <string name="add_repo">新建资料库</string>
     <string name="add_file">添加</string>
-    <string-array name="add_file_options_array">
-        <item>新建文件</item>
-        <item>新建文件夹</item>
-        <item>上传文件</item>
-        <item>拍照上传</item>
-    </string-array>
+
+    <string name="create_file">新建文件</string>
+    <string name="create_folder">新建文件夹</string>
+    <string name="upload_file">上传文件</string>
+    <string name="upload_folder">上传文件夹</string>
+    <string name="take_a_photo">拍照上传</string>
+
     <string-array name="video_download_array">
         <item>播放</item>
         <item>下载</item>

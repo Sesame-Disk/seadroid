@@ -111,12 +111,13 @@
     <item>Hala niður skráasafni og undirskráasöfnum</item>
   </string-array>
   <string name="add_file">Bæta við</string>
-  <string-array name="add_file_options_array">
-    <item>Búa til skrá</item>
-    <item>Búa til skráasafn</item>
-    <item>Hlaða upp skrá</item>
-    <item>Taka mynd</item>
-  </string-array>
+
+  <string name="create_file">Búa til skrá</string>
+  <string name="create_folder">Búa til skráasafn</string>
+  <string name="upload_file">Hlaða upp skrá</string>
+  <string name="upload_folder">Hlaða upp skráasafn</string>
+  <string name="take_a_photo">Taka mynd</string>
+
   <string name="create_new_file">Búa til nýja skrá</string>
   <string name="create_new_dir">Búa til nýtt skráasafn</string>
   <string name="camera">Taka mynd hér</string>

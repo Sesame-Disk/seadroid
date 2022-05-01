@@ -133,12 +133,13 @@
     </string-array>
     <string name="add_repo">新建資料庫</string>
     <string name="add_file">添加</string>
-    <string-array name="add_file_options_array">
-        <item>新建文件</item>
-        <item>新建文件夾</item>
-        <item>上傳文件</item>
-        <item>拍照上傳</item>
-    </string-array>
+
+    <string name="create_file">新建文件</string>
+    <string name="create_folder">新建文件夾</string>
+    <string name="upload_file">上傳文件</string>
+    <string name="upload_folder">上传文件夹</string>
+    <string name="take_a_photo">拍照上傳</string>
+
     <string name="create_new_repo">新建資料庫</string>
     <string name="create_new_repo_success">新建資料庫%s成功</string>
     <string name="create_new_folder_success">文件夾%s創建成功</string>

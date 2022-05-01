@@ -146,12 +146,13 @@
     </string-array>
     <string name="add_repo">새 라이브러리</string>
     <string name="add_file">추가</string>
-    <string-array name="add_file_options_array">
-        <item>파일 만들기</item>
-        <item>폴더 만들기</item>
-        <item>파일 업로드</item>
-        <item>사진 촬영</item>
-    </string-array>
+
+    <string name="create_file">파일 만들기</string>
+    <string name="create_folder">폴더 만들기</string>
+    <string name="upload_file">파일 업로드</string>
+    <string name="upload_folder">폴더 업로드</string>
+    <string name="take_a_photo">사진 촬영</string>
+
     <string-array name="video_download_array">
         <item>재생</item>
         <item>다운로드</item>

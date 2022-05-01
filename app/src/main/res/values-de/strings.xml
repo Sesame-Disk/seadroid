@@ -149,12 +149,13 @@ Zum Aktualisieren einmal antippen</string>
     </string-array>
     <string name="add_repo">Neue Bibliothek</string>
     <string name="add_file">Hinzufügen</string>
-    <string-array name="add_file_options_array">
-        <item>Datei erstellen</item>
-        <item>Ordner erstellen</item>
-        <item>Datei hochladen</item>
-        <item>Foto machen</item>
-    </string-array>
+
+    <string name="create_file">Datei erstellen</string>
+    <string name="create_folder">Ordner erstellen</string>
+    <string name="upload_file">Datei hochladen</string>
+    <string name="upload_folder">Ordner hochladen</string>
+    <string name="take_a_photo">Foto machen</string>
+
     <string-array name="video_download_array">
         <item>Abspielen</item>
         <item>Herunterladen</item>
