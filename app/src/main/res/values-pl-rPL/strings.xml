@@ -196,6 +196,7 @@
     <string name="upload_cancelled">Wysyłanie anulowane</string>
     <string name="upload_failed">Wysyłanie nieudane</string>
     <string name="upload_file_exist">Plik już istnieje</string>
+    <string name="upload_folder_exist">Folder już istnieje</string>
     <string name="upload_duplicate_found">Element o nazwie \"%s\" już istnieje w tej lokalizacji.\n Czy chcesz go zastąpić tym, który właśnie przesyłasz?</string>
     <string name="upload_replace_all">Zamień wszystkie</string>
     <string name="upload_keep_both">Zachowaj oba</string>

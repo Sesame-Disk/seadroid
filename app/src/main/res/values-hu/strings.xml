@@ -186,6 +186,7 @@
     <string name="upload_cancelled">Feltöltés megszakítva</string>
     <string name="upload_failed">Sikertelen feltöltés</string>
     <string name="upload_file_exist">A fájl már létezik</string>
+    <string name="upload_folder_exist">A Könyvtár már létezik</string>
     <string name="upload_duplicate_found">Egy \"%s\" nevű elem már létezik ezen a helyen.\n Lecseréljük arra, amit éppen feltölt?</string>
     <string name="upload_replace_all">Mindegyik cseréje</string>
     <string name="upload_keep_both">Mindkettő megtartása</string>

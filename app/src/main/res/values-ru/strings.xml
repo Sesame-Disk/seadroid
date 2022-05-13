@@ -209,6 +209,7 @@
     <string name="upload_cancelled">Загрузка отменена</string>
     <string name="upload_failed">Загрузка не удалась</string>
     <string name="upload_file_exist">Файл уже существует</string>
+    <string name="upload_folder_exist">Папка уже существует</string>
     <string name="upload_duplicate_found">Элемент с именем \"%s\" уже существует в этом месте.\n Вы хотите заменить его на загружаемый ?</string>
     <string name="upload_replace_all">Заменить все</string>
     <string name="upload_keep_both">Оставить оба</string>

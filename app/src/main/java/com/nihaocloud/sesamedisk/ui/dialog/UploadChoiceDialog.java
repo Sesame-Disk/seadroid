@@ -24,30 +24,27 @@ public class UploadChoiceDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity()).
                 setTitle(getResources().getString(R.string.pick_upload_type)).
                 setItems(R.array.pick_upload_array,
-                        new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                        case 0:
-                            Intent intent = new Intent(ctx, MultiFileChooserActivity.class);
-                            getActivity().startActivityForResult(intent, BrowserActivity.PICK_FILES_REQUEST);
-                            break;
-                        case 1:
-                            // photos
-                            intent = new Intent(ctx, MultipleImageSelectionActivity.class);
-                            getActivity().startActivityForResult(intent, BrowserActivity.PICK_PHOTOS_VIDEOS_REQUEST);
-                            break;
-                        case 2:
-                            // thirdparty file chooser
-                            Intent target = Utils.createGetContentIntent();
-                            intent = Intent.createChooser(target, getString(R.string.choose_file));
-                            getActivity().startActivityForResult(intent, BrowserActivity.PICK_FILE_REQUEST);
-                            break;
-                        default:
-                            return;
-                        }
-                    }
-                });
+                        (dialog, which) -> {
+                            switch (which) {
+                            case 0:
+                                Intent intent = new Intent(ctx, MultiFileChooserActivity.class);
+                                getActivity().startActivityForResult(intent, BrowserActivity.PICK_FILES_REQUEST);
+                                break;
+                            case 1:
+                                // photos
+                                intent = new Intent(ctx, MultipleImageSelectionActivity.class);
+                                getActivity().startActivityForResult(intent, BrowserActivity.PICK_PHOTOS_VIDEOS_REQUEST);
+                                break;
+                            case 2:
+                                // thirdparty file chooser
+                                Intent target = Utils.createGetContentIntent();
+                                intent = Intent.createChooser(target, getString(R.string.choose_file));
+                                getActivity().startActivityForResult(intent, BrowserActivity.PICK_FILE_REQUEST);
+                                break;
+                            default:
+                                return;
+                            }
+                        });
         return builder.show();
     }
 }

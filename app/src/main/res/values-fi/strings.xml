@@ -194,6 +194,7 @@
     <string name="upload_cancelled">Lähetys peruutettu</string>
     <string name="upload_failed">Lähetys epäonnistui</string>
     <string name="upload_file_exist">Tiedosto on jo olemassa</string>
+    <string name="upload_folder_exist">Kansio on jo olemassa</string>
     <string name="upload_duplicate_found">kohde nimeltä \"%s\" on jo olemassa tässä  sijainnissa.\n Haluatko korvata sen tällä lähettävällä?</string>
     <string name="upload_replace_all">Korvaa Kaikki</string>
     <string name="upload_keep_both">Pidä Molemmat</string>

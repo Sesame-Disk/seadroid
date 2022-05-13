@@ -205,6 +205,7 @@
     <string name="upload_cancelled">업로드를 취소했습니다</string>
     <string name="upload_failed">업로드에 실패했습니다</string>
     <string name="upload_file_exist">파일이 이미 있습니다</string>
+    <string name="upload_folder_exist">폴더가 이미 있습니다</string>
     <string name="upload_duplicate_found">\"%s\" 항목이 이 위치에 이미 있습니다.\n새로 업로드하는 항목으로 바꿀까요?</string>
     <string name="upload_replace_all">모두 바꾸기</string>
     <string name="upload_keep_both">둘 다 유지</string>

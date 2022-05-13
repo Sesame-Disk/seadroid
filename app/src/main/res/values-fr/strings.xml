@@ -206,6 +206,7 @@
     <string name="upload_cancelled">Envoi annulé</string>
     <string name="upload_failed">Échec de l\'envoi</string>
     <string name="upload_file_exist">Le fichier existe déjà</string>
+    <string name="upload_folder_exist">Le dossier existe déjà</string>
     <string name="upload_duplicate_found">Un élément nommé \"%s\" existe déjà à cet emplacement. \n Voulez-vous le remplacer avec celui que vous avez envoyé ?</string>
     <string name="upload_replace_all">Remplacer tout</string>
     <string name="upload_keep_both">Garder les deux</string>

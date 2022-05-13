@@ -207,6 +207,7 @@
     <string name="upload_cancelled">Subida cancelada</string>
     <string name="upload_failed">Subida falló</string>
     <string name="upload_file_exist">El archivo ya existe</string>
+    <string name="upload_folder_exist">El carpeta ya existe</string>
     <string name="upload_duplicate_found">Un ítem llamado \"%s\" ya existe en esta ubicación.\n ¿Desea reemplazarlo con el que está subiendo?</string>
     <string name="upload_replace_all">Reemplazar todo</string>
     <string name="upload_keep_both">Mantener ambos</string>

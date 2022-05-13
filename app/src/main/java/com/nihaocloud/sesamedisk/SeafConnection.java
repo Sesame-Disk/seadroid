@@ -114,6 +114,7 @@ public class SeafConnection {
             sconn.setSSLSocketFactory(SSLTrustManager.instance().getSSLSocketFactory(account));
         }
 
+
         return req;
     }
 
@@ -299,7 +300,6 @@ public class SeafConnection {
         try {
             req = prepareApiGetRequest(REPOS);
             checkRequestResponseStatus(req, HttpURLConnection.HTTP_OK);
-
             String result = new String(req.bytes(), "UTF-8");
             return result;
         } catch (SeafException e) {
@@ -926,7 +926,9 @@ public class SeafConnection {
         //create RequestBody
         RequestBody body = builder.build();
         //create Request
-        final Request request = new Request.Builder().url(link).post(body).header("Authorization", "Token " + account.token).build();
+        final Request request = new Request.Builder().url(link).post(body)
+                .header("Authorization", "Token " + account.token)
+                .build();
         Response response = RequestManager.getInstance(account).getClient().newCall(request).execute();
         if (response.isSuccessful()) {
             String str = response.body().string();
@@ -1012,6 +1014,8 @@ public class SeafConnection {
             }
 
             String content = new String(req.bytes(), "UTF-8");
+
+            Log.v(DEBUG_TAG, "HTTP request : url : " + req.url() + ",body : " + content);
             if (content.length() == 0) {
                 return null;
             }
@@ -1507,7 +1511,6 @@ public class SeafConnection {
             if (content.length() == 0) {
                 return null;
             }
-
             return new Pair<String, String>(newDirID, content);
         } catch (SeafException e) {
             throw e;
@@ -1519,8 +1522,27 @@ public class SeafConnection {
     }
 
     private void checkRequestResponseStatus(HttpRequest req, int expectedStatusCode) throws SeafException {
+        Map<String, List<String>> headers = req.headers();
+        StringBuilder builder = new StringBuilder();
+        builder.append("Header : ");
+        for (Map.Entry<String, List<String>> header : headers.entrySet()) {
+            builder.append(header.getKey() + " = " + header.getValue());
+        }
+
+        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+
+        StringBuilder mm = new StringBuilder();
+        for (StackTraceElement s : stackTraceElements) {
+            mm.append(s.getClassName() + " " + s.getMethodName() + " " + s.getLineNumber());
+        }
+
+        Log.v(DEBUG_TAG, "StackTraceElement :  " + mm);
+
+        Log.v(DEBUG_TAG, "HTTP request : url : " + req.url() + ", code : " + req.code() + ", message : " +
+                "" + req.message() + "," + builder.toString());
+
         if (req.code() != expectedStatusCode) {
-            Log.d(DEBUG_TAG, "HTTP request failed : " + req.url() + ", " + req.code() + ", " + req.message());
+            //Log.d(DEBUG_TAG, "HTTP request failed : " + req.url() + ", " + req.code() + ", " + req.message());
 
             if (req.message() == null) {
                 throw SeafException.networkException;

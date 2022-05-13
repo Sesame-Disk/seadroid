@@ -179,6 +179,7 @@
     <string name="upload_cancelled">Upload geannuleerd</string>
     <string name="upload_failed">Upload mislukt</string>
     <string name="upload_file_exist">Bestand bestaat reeds</string>
+    <string name="upload_folder_exist">Map bestaat reeds</string>
     <string name="upload_duplicate_found">Een item genaamd \"%s\" bestaat al op deze plek.\n Vervangen met het item wat je aan het uploaden bent?</string>
     <string name="upload_replace_all">Alles vervangen</string>
     <string name="upload_keep_both">Beide behouden</string>

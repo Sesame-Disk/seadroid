@@ -186,6 +186,7 @@
     <string name="upload_cancelled">上傳取消</string>
     <string name="upload_failed">上傳失敗</string>
     <string name="upload_file_exist">文件已存在</string>
+    <string name="upload_folder_exist">文件夹已存在</string>
     <string name="upload_duplicate_found">名字為\"%s\"的文件在此位置已存在.\n 你想用上傳的文件替換它嗎?</string>
     <string name="upload_replace_all">全部替換</string>
     <string name="upload_keep_both">保留兩者</string>

@@ -1,7 +1,6 @@
 package com.nihaocloud.sesamedisk.ui.activity;
 
 import static android.os.Build.VERSION.SDK_INT;
-
 import static com.nihaocloud.sesamedisk.R.id.transfer_tasks;
 
 import android.annotation.SuppressLint;
@@ -29,11 +28,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.FileProvider;
-import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.provider.DocumentFile;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.Pair;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -1039,7 +1039,9 @@ public class BrowserActivity extends BaseActivity
                 showNewDirDialog();
             else if (which == 2) // upload file
                 pickFile();
-            else if (which == 3) // take a photo
+            else if (which == 3) // upload folder
+                pickFolder();
+            else if (which == 4) // take a photo
                 CameraTakePhoto();
         }).show();
     }
@@ -1182,6 +1184,7 @@ public class BrowserActivity extends BaseActivity
     public static final int PICK_FILES_REQUEST = 1;
     public static final int PICK_PHOTOS_VIDEOS_REQUEST = 2;
     public static final int PICK_FILE_REQUEST = 3;
+    public static final int PICK_FOLDER_REQUEST = 14179;
     public static final int TAKE_PHOTO_REQUEST = 4;
     public static final int CHOOSE_COPY_MOVE_DEST_REQUEST = 5;
     public static final int DOWNLOAD_FILE_REQUEST = 6;
@@ -1206,7 +1209,6 @@ public class BrowserActivity extends BaseActivity
             showShortToast(this, R.string.library_read_only);
             return;
         }
-
         // Starting with kitkat (or earlier?), the document picker has integrated image and local file support
         if (SDK_INT < Build.VERSION_CODES.KITKAT) {
             UploadChoiceDialog dialog = new UploadChoiceDialog();
@@ -1214,7 +1216,20 @@ public class BrowserActivity extends BaseActivity
         } else {
             Intent target = Utils.createGetContentIntent();
             Intent intent = Intent.createChooser(target, getString(R.string.choose_file));
-            startActivityForResult(intent, BrowserActivity.PICK_FILE_REQUEST);
+            startActivityForResult(intent, PICK_FILE_REQUEST);
+        }
+    }
+
+    private void pickFolder() {
+        final boolean hasPermission = PermissionUtils.checkStoragePermission(this);
+        if (!hasPermission) {
+            PermissionUtils.requestStoragePermission(this,
+                    mLayout, REQUEST_PERMISSIONS_WRITE_EXTERNAL_STORAGE);
+        } else if (!hasRepoWritePermission()) {
+            showShortToast(this, R.string.library_read_only);
+        } else {
+            final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+            startActivityForResult(intent, PICK_FOLDER_REQUEST);
         }
     }
 
@@ -1291,7 +1306,6 @@ public class BrowserActivity extends BaseActivity
                         showShortToast(this, R.string.network_down);
                         return;
                     }
-
                     if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         List<Uri> uriList = UtilsJellyBean.extractUriListFromIntent(data);
                         if (uriList.size() > 0) {
@@ -1309,6 +1323,23 @@ public class BrowserActivity extends BaseActivity
                     }
                 }
                 break;
+
+            case PICK_FOLDER_REQUEST:
+                if (resultCode == RESULT_OK) {
+                    if (!Utils.isNetworkOn()) {
+                        showShortToast(this, R.string.network_down);
+                        return;
+                    }
+                    Uri uri = data.getData();
+                    if (uri != null) {
+                        getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        ConcurrentAsyncTask.execute(new SAFLoadRemoteFolderTask(), uri);
+                    } else {
+                        showShortToast(BrowserActivity.this, R.string.saf_upload_path_not_available);
+                    }
+                }
+                break;
+
             case CHOOSE_COPY_MOVE_DEST_REQUEST:
                 if (resultCode == RESULT_OK) {
                     if (!Utils.isNetworkOn()) {
@@ -1377,6 +1408,7 @@ public class BrowserActivity extends BaseActivity
                 try {
                     File tempDir = DataManager.createTempDir();
                     File tempFile = new File(tempDir, Utils.getFilenamefromUri(BrowserActivity.this, uri));
+                    Log.d("CCCCCCCCCCCCCCCC", tempFile.getAbsolutePath());
 
                     if (!tempFile.createNewFile()) {
                         throw new RuntimeException("could not create temporary file");
@@ -1483,6 +1515,117 @@ public class BrowserActivity extends BaseActivity
                     addUploadTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), file.getAbsolutePath());
                 }
             }
+        });
+        builder.show();
+    }
+
+    class SAFLoadRemoteFolderTask extends AsyncTask<Uri, Void, Pair<DocumentFile, File[]>> {
+
+        @Override
+        protected Pair<DocumentFile, File[]> doInBackground(Uri... uriList) {
+            if (uriList == null || uriList.length != 1)
+                return null;
+
+            final Uri dir = uriList[0];
+            final DocumentFile documentsTree = DocumentFile.fromTreeUri(getApplication(), dir);
+            if (!documentsTree.isDirectory()) {
+                return null;
+            }
+            final DocumentFile[] documentFiles = documentsTree.listFiles();
+            List<File> fileList = new ArrayList<File>();
+            for (DocumentFile documentFile : documentFiles) {
+                // Log.d(DEBUG_TAG, "Uploading file from uri: " + uri);
+                InputStream in = null;
+                OutputStream out = null;
+                try {
+                    final File tempDir = DataManager.createTempDir();
+                    final Uri uri = documentFile.getUri();
+                    final File tempFile = new File(tempDir, Utils.getFilenamefromUri(BrowserActivity.this, uri));
+
+                    if (!tempFile.createNewFile()) {
+                        throw new RuntimeException("could not create temporary file");
+                    }
+                    in = getContentResolver().openInputStream(uri);
+                    out = new FileOutputStream(tempFile);
+                    IOUtils.copy(in, out);
+                    fileList.add(tempFile);
+
+                } catch (IOException e) {
+                    Log.d(DEBUG_TAG, "Could not open requested document", e);
+                } catch (RuntimeException e) {
+                    Log.d(DEBUG_TAG, "Could not open requested document", e);
+                } finally {
+                    IOUtils.closeQuietly(in);
+                    IOUtils.closeQuietly(out);
+                }
+            }
+            return new Pair<>(documentsTree, fileList.toArray(new File[]{}));
+        }
+
+        @Override
+        protected void onPostExecute(Pair<DocumentFile, File[]> result) {
+            if (result == null) return;
+            List<SeafDirent> list = dataManager.getCachedDirents(navContext.getRepoID(), navContext.getDirPath());
+            if (list == null) {
+                Log.e(DEBUG_TAG, "Seadroid dirent cache is empty in uploadFile. Should not happen, aborting.");
+                return;
+            }
+            final DocumentFile documentsTree = result.first;
+            final String dirName = documentsTree.getName();
+            for (SeafDirent seafDirent : list) {
+                if (seafDirent.isDir() && seafDirent.name != null && seafDirent.name.equals(dirName)) {
+                    showFolderExistDialog(dirName);
+                    return;
+                }
+            }
+            File[] files = result.second;
+            if (files == null) return;
+            if (files.length == 0) {
+                showFolderEmptyDialog(dirName);
+                return;
+            }
+
+            for (final File file : files) {
+                if (file == null) {
+                    showShortToast(BrowserActivity.this, R.string.saf_upload_path_not_available);
+                } else {
+                    final SeafRepo repo = dataManager.getCachedRepoByID(navContext.getRepoID());
+                    showShortToast(BrowserActivity.this, getString(R.string.added_to_upload_tasks));
+                    final String uploadDirPath = Utils.pathJoin(navContext.getDirPath(), dirName);
+                    if (repo != null && repo.canLocalDecrypt()) {
+                        addUploadBlocksTask(repo.id, repo.name, uploadDirPath, file.getAbsolutePath());
+                    } else {
+                        addUploadTask(navContext.getRepoID(), navContext.getRepoName(), uploadDirPath, file.getAbsolutePath());
+                    }
+                }
+            }
+
+            if (txService == null)
+                return;
+
+            if (!txService.hasUploadNotifProvider()) {
+                UploadNotificationProvider provider = new UploadNotificationProvider(
+                        txService.getUploadTaskManager(),
+                        txService);
+                txService.saveUploadNotifProvider(provider);
+            }
+        }
+    }
+
+    private void showFolderExistDialog(final String name) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        //builder.setTitle(getString(R.string.unknow_error));
+        builder.setMessage(getString(R.string.upload_folder_exist));
+        builder.setPositiveButton(getString(R.string.ok), (dialog, which) -> {
+        });
+        builder.show();
+    }
+
+    private void showFolderEmptyDialog(final String name) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        //builder.setTitle(getString(R.string.unknow_error));
+        builder.setMessage(getString(R.string.empty_folder));
+        builder.setPositiveButton(getString(R.string.ok), (dialog, which) -> {
         });
         builder.show();
     }

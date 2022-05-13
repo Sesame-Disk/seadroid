@@ -208,6 +208,7 @@ Zum Aktualisieren einmal antippen</string>
     <string name="upload_cancelled">Hochladen abgebrochen</string>
     <string name="upload_failed">Hochladen fehlgeschlagen</string>
     <string name="upload_file_exist">Die Datei ist schon vorhanden</string>
+    <string name="upload_folder_exist">Die Ordner ist schon vorhanden</string>
     <string name="upload_duplicate_found">An diesem Ort gibt es bereits ein Objekt mit dem Namen „%s“.\n Wollen Sie es hiermit ersetzen?</string>
     <string name="upload_replace_all">Alle ersetzen</string>
     <string name="upload_keep_both">Beide behalten</string>
