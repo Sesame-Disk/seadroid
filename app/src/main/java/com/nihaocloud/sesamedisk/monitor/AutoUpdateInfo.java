@@ -9,15 +9,16 @@ class AutoUpdateInfo {
     final String repoID;
     final String repoName;
     final String parentDir;
+    final String relativePath;
     final String localPath;
 
-    public AutoUpdateInfo(Account account, String repoID, String repoName, String parentDir,
-                          String localPath) {
-
+    public AutoUpdateInfo(Account account, String repoID, String repoName,
+                          String parentDir, String relativePath, String localPath) {
         this.account = account;
         this.repoID = repoID;
         this.repoName = repoName;
         this.parentDir = parentDir;
+        this.relativePath = relativePath;
         this.localPath = localPath;
     }
 
@@ -33,13 +34,13 @@ class AutoUpdateInfo {
             return false;
 
         AutoUpdateInfo that = (AutoUpdateInfo) obj;
-        if(that.account == null || that.repoID == null || that.repoName == null || that.parentDir == null || that.localPath == null) {
+        if (that.account == null || that.repoID == null || that.repoName == null || that.parentDir == null || that.localPath == null) {
             return false;
         }
 
         return that.account.equals(this.account) && that.repoID.equals(this.repoID) &&
                 that.repoName.equals(this.repoName) && that.parentDir.equals(this.parentDir) &&
-                that.localPath.equals(this.localPath);
+                that.localPath.equals(this.localPath) && (that.relativePath == null || that.relativePath == relativePath);
     }
 
     private volatile int hashCode = 0;
@@ -49,7 +50,6 @@ class AutoUpdateInfo {
         if (hashCode == 0) {
             hashCode = Objects.hashCode(account, repoID, repoName, parentDir, localPath);
         }
-
         return hashCode;
     }
 }

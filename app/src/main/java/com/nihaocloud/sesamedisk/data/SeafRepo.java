@@ -20,7 +20,6 @@ public class SeafRepo implements SeafItem {
     public String name;
     public String owner;
     public long mtime;    // the last modification time
-
     public boolean isGroupRepo;
     public boolean isPersonalRepo;
     public boolean isSharedRepo;

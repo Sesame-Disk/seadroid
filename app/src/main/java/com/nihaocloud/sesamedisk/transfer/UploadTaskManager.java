@@ -1,7 +1,6 @@
 package com.nihaocloud.sesamedisk.transfer;
 
 import android.content.Intent;
-import android.support.v4.content.LocalBroadcastManager;
 
 import com.google.common.collect.Lists;
 import com.nihaocloud.sesamedisk.NihaoApplication;
@@ -25,12 +24,14 @@ public class UploadTaskManager extends TransferManager implements UploadStateLis
     private static UploadNotificationProvider mNotifyProvider;
 
 
-    public int addTaskToQue(Account account, String repoID, String repoName, String dir, String filePath, boolean isUpdate, boolean isCopyToLocal, boolean byBlock) {
+    public int addTaskToQue(Account account, String repoID, String repoName, String dir, String relativePath,
+                            String filePath, boolean isUpdate, boolean isCopyToLocal, boolean byBlock) {
         if (repoID == null || repoName == null)
             return 0;
 
         // create a new one to avoid IllegalStateException
-        UploadTask task = new UploadTask(++notificationID, account, repoID, repoName, dir, filePath, isUpdate, isCopyToLocal, byBlock, this);
+        UploadTask task = new UploadTask(++notificationID, account, repoID, repoName, dir,
+                relativePath, filePath, isUpdate, isCopyToLocal, byBlock, this);
         addTaskToQue(task);
         return task.getTaskID();
     }
@@ -54,24 +55,20 @@ public class UploadTaskManager extends TransferManager implements UploadStateLis
         UploadTask task = (UploadTask) getTask(taskID);
         if (task == null || !task.canRetry())
             return;
-        addTaskToQue(task.getAccount(), task.getRepoID(), task.getRepoName(), task.getDir(), task.getPath(), task.isUpdate(), task.isCopyToLocal(), false);
+        addTaskToQue(task.getAccount(), task.getRepoID(), task.getRepoName(), task.getDir(), task.relativePath, task.getPath(), task.isUpdate(), task.isCopyToLocal(), false);
     }
 
     private void notifyProgress(int taskID) {
         UploadTaskInfo info = (UploadTaskInfo) getTaskInfo(taskID);
-        if (info == null)
-            return;
-
+        if (info == null) return;
         // use isCopyToLocal as a flag to mark a camera photo upload task if false
         // mark a file upload task if true
-        if (!info.isCopyToLocal)
-            return;
+        if (!info.isCopyToLocal) return;
 
         //Log.d(DEBUG_TAG, "notify key " + info.repoID);
         if (mNotifyProvider != null) {
             mNotifyProvider.updateNotification();
         }
-
     }
 
     public void saveUploadNotifProvider(UploadNotificationProvider provider) {
@@ -130,5 +127,4 @@ public class UploadTaskManager extends TransferManager implements UploadStateLis
         NihaoApplication.getAppContext().sendBroadcast(localIntent);
         notifyProgress(taskID);
     }
-
 }

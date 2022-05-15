@@ -13,6 +13,7 @@ public class SeafCachedFile implements SeafItem {
     public String accountSignature;
     public long fileOriginalSize;
     protected File file;
+    public String relativePath;
 
     public SeafCachedFile() {
         id = -1;

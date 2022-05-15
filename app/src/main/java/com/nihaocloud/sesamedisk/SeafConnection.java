@@ -66,11 +66,9 @@ import okhttp3.Response;
  */
 public class SeafConnection {
     public static final int HTTP_STATUS_REPO_PASSWORD_REQUIRED = 440;
-
     private static final String DEBUG_TAG = "SeafConnection";
     private static final int CONNECTION_TIMEOUT = 15000;
     private static final int READ_TIMEOUT = 30000;
-
     private Account account;
 
     public SeafConnection(Account act) {
@@ -572,7 +570,7 @@ public class SeafConnection {
         }
     }
 
-    public String uploadByBlocks(String repoID, String dir, String filePath, List<Block> blocks, boolean update, ProgressMonitor monitor) throws IOException, SeafException {
+    public String uploadByBlocks(String repoID, String dir, String relativePath, String filePath, List<Block> blocks, boolean update, ProgressMonitor monitor) throws IOException, SeafException {
 
         try {
             LinkedList<String> blkListId = new LinkedList<>();
@@ -584,7 +582,7 @@ public class SeafConnection {
             if (infoBean.blkIds.size() > 0) {
                 uploadBlocksCommon(infoBean.rawblksurl, infoBean.blkIds, dir, filePath, blocks, monitor, update);
             }
-            commitUpload(infoBean.commiturl, blkListId, dir, filePath, update);
+            commitUpload(infoBean.commiturl, blkListId, dir, relativePath, filePath, update);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -739,7 +737,7 @@ public class SeafConnection {
         if (fileID.equals(cachedFileID)) {
             // cache is valid
             // Log.d(DEBUG_TAG, String.format("file %s is cached", path));
-            return new Pair<String, File>(fileID, null);
+            return new Pair(fileID, null);
         } else {
             /*Log.d(DEBUG_TAG,
                   String.format("file %s will be downloaded from server, latest %s, local cache %s",
@@ -747,7 +745,7 @@ public class SeafConnection {
 
             File file = getFileFromLink(dlink, path, localPath, fileID, monitor);
             if (file != null) {
-                return new Pair<String, File>(fileID, file);
+                return new Pair(fileID, file);
             } else {
                 throw SeafException.unknownException;
             }
@@ -852,7 +850,7 @@ public class SeafConnection {
     /**
      * commit blocks to server
      */
-    private String commitUpload(String link, List<String> blkIds, String dir, String filePath, boolean update)
+    private String commitUpload(String link, List<String> blkIds, String dir, String relativePath, String filePath, boolean update)
             throws SeafException, IOException {
         File file = new File(filePath);
         if (!file.exists()) {
@@ -871,6 +869,11 @@ public class SeafConnection {
         builder.addFormDataPart("parent_dir", dir);
         builder.addFormDataPart("file_size", file.length() + "");
         builder.addFormDataPart("file_name", file.getName());
+
+        if (relativePath != null && !relativePath.isEmpty()) {
+            builder.addFormDataPart("relative_path", relativePath);
+        }
+
         JSONArray jsonArray = new JSONArray(blkIds);
         builder.addFormDataPart("blockids", jsonArray.toString());
         RequestBody body = builder.build();
@@ -894,17 +897,17 @@ public class SeafConnection {
      * @return
      * @throws SeafException
      */
-    public String uploadFile(String repoID, String dir, String filePath, ProgressMonitor monitor, boolean update)
+    public String uploadFile(String repoID, String dir, String relativePath, String filePath, ProgressMonitor monitor, boolean update)
             throws SeafException, IOException {
         String url = getUploadLink(repoID, update, dir);
-        return uploadFileCommon(url, repoID, dir, filePath, monitor, update);
+        return uploadFileCommon(url, repoID, dir, relativePath, filePath, monitor, update);
     }
 
 
     /**
      * Upload a file to seafile httpserver
      */
-    private String uploadFileCommon(String link, String repoID, String dir,
+    private String uploadFileCommon(String link, String repoID, String dir, String relativePath,
                                     String filePath, ProgressMonitor monitor, boolean update)
             throws SeafException, IOException {
         File file = new File(filePath);
@@ -920,6 +923,10 @@ public class SeafConnection {
             builder.addFormDataPart("target_file", targetFilePath);
         } else {
             builder.addFormDataPart("parent_dir", dir);
+        }
+
+        if (relativePath != null && !relativePath.isEmpty()) {
+            builder.addFormDataPart("relative_path", relativePath);
         }
 
         builder.addFormDataPart("file", file.getName(), RequestManager.getInstance(account).createProgressRequestBody(monitor, file));

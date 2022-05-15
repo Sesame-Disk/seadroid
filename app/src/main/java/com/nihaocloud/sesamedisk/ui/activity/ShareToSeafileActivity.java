@@ -222,7 +222,7 @@ public class ShareToSeafileActivity extends BaseActivity {
 
                     final SeafRepo repo = dataManager.getCachedRepoByID(repoID);
                     if (repo != null && repo.canLocalDecrypt()) {
-                        mTxService.addTaskToUploadQueBlock(account, repoID, repoName, targetDir, path, update, false);
+                        mTxService.addTaskToUploadQueBlock(account, repoID, repoName, targetDir,null, path, update, false);
                     } else {
                         mTxService.addUploadTask(account, repoID, repoName,
                                 targetDir, path, update, true);

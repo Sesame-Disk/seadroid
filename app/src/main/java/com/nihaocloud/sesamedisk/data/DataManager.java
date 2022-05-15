@@ -89,7 +89,7 @@ public class DataManager {
      */
     public static File createTempDir() throws IOException {
         String dirName = "dir-" + UUID.randomUUID();
-        File dir = new File (storageManager.getTempDir(), dirName);
+        File dir = new File(storageManager.getTempDir(), dirName);
         if (dir.mkdir()) {
             return dir;
         } else {
@@ -194,24 +194,24 @@ public class DataManager {
 
     /**
      * The account directory structure of Seafile is like this:
-     *
+     * <p>
      * StorageManager.getMediaDir()
-     *            |__ foo@gmail.com (cloud.seafile.com)
-     *                      |__ Photos
-     *                      |__ Musics
-     *                      |__ ...
-     *            |__ foo@mycompany.com (seafile.mycompany.com)
-     *                      |__ Documents
-     *                      |__ Manuals
-     *                      |__ ...
-     *            |__ ...
-     *
+     * |__ foo@gmail.com (cloud.seafile.com)
+     * |__ Photos
+     * |__ Musics
+     * |__ ...
+     * |__ foo@mycompany.com (seafile.mycompany.com)
+     * |__ Documents
+     * |__ Manuals
+     * |__ ...
+     * |__ ...
+     * <p>
      * In the above directory, the user has used two accounts.
-     *
+     * <p>
      * 1. One account has email "foo@gmail.com" and server
      * "cloud.seafile.com". Two repos, "Photos" and "Musics", has been
      * viewed.
-     *
+     * <p>
      * 2. Another account has email "foo@mycompany.com", and server
      * "seafile.mycompany.com". Two repos, "Documents" and "Manuals", has
      * been viewed.
@@ -281,6 +281,7 @@ public class DataManager {
     /**
      * Each repo is placed under [account-dir]/[repo-name]. When a
      * file is downloaded, it's placed in its repo, with its full path.
+     *
      * @param repoName
      * @param repoID
      * @param path
@@ -350,13 +351,11 @@ public class DataManager {
         if (cachedRepos == null) {
             return null;
         }
-
-        for (SeafRepo repo: cachedRepos) {
+        for (SeafRepo repo : cachedRepos) {
             if (repo.getID().equals(id)) {
                 return repo;
             }
         }
-
         return null;
     }
 
@@ -476,13 +475,13 @@ public class DataManager {
             return localFile;
         } else {
             File file = ret.second;
-            addCachedFile(repoName, repoID, path, fileID, file);
+            addCachedFile(repoName, repoID, null, path, fileID, file);
             return file;
         }
     }
 
     public synchronized File getFileByBlocks(String repoName, String repoID, String path, long fileSize,
-                        ProgressMonitor monitor) throws SeafException, IOException, JSONException, NoSuchAlgorithmException {
+                                             ProgressMonitor monitor) throws SeafException, IOException, JSONException, NoSuchAlgorithmException {
 
         String cachedFileID = null;
         SeafCachedFile cf = getCachedFile(repoName, repoID, path);
@@ -520,7 +519,7 @@ public class DataManager {
                 return null;
             }
             Log.d(DEBUG_TAG, String.format("addCachedFile repoName %s, repoId %s, path %s, fileId %s", repoName, repoID, path, fileBlocks.fileID));
-            addCachedFile(repoName, repoID, path, fileBlocks.fileID, localFile);
+            addCachedFile(repoName, repoID, null, path, fileBlocks.fileID, localFile);
             return localFile;
         }
 
@@ -533,7 +532,7 @@ public class DataManager {
         }
 
         Log.d(DEBUG_TAG, String.format("addCachedFile repoName %s, repoId %s, path %s, fileId %s", repoName, repoID, path, fileBlocks.fileID));
-        addCachedFile(repoName, repoID, path, fileBlocks.fileID, localFile);
+        addCachedFile(repoName, repoID, null, path, fileBlocks.fileID, localFile);
         return localFile;
     }
 
@@ -600,12 +599,12 @@ public class DataManager {
 
     /**
      * In four cases we need to visit the server for dirents
-     *
+     * <p>
      * 1. No cached dirents
      * 2. User clicks "refresh" button.
      * 3. Download all dirents within a folder
      * 4. View starred or searched files in gallery without available local cache
-     *
+     * <p>
      * In the second case, the local cache may still be valid.
      */
     public List<SeafDirent> getDirentsFromServer(String repoID, String path) throws SeafException {
@@ -667,19 +666,16 @@ public class DataManager {
         return dbHelper.getFileCacheItems(this);
     }
 
-    public void addCachedFile(String repoName, String repoID, String path, String fileID, File file) {
-        if (file == null) {
-            return;
-        }
+    public void addCachedFile(String repoName, String repoID, String relativePath, String path, String fileID, File file) {
+        if (file == null) return;
         // notify Android Gallery that a new file has appeared
-
         // file does not always reside in Seadroid directory structure (e.g. camera upload)
-        if (file.exists())
-            storageManager.notifyAndroidGalleryFileChange(file);
+        if (file.exists()) storageManager.notifyAndroidGalleryFileChange(file);
 
         SeafCachedFile item = new SeafCachedFile();
         item.repoName = repoName;
         item.repoID = repoID;
+        item.relativePath = relativePath;
         item.path = path;
         item.fileID = fileID;
         item.accountSignature = account.getSignature();
@@ -700,15 +696,15 @@ public class DataManager {
         }
     }
 
-    public void uploadFile(String repoName, String repoID, String dir, String filePath,
+    public void uploadFile(String repoName, String repoID, String dir, String relativePath, String filePath,
                            ProgressMonitor monitor, boolean isUpdate, boolean isCopyToLocal) throws SeafException, IOException {
-        uploadFileCommon(repoName, repoID, dir, filePath, monitor, isUpdate, isCopyToLocal);
+        uploadFileCommon(repoName, repoID, dir, relativePath, filePath, monitor, isUpdate, isCopyToLocal);
     }
 
     private void uploadFileCommon(String repoName, String repoID, String dir,
-                                  String filePath, ProgressMonitor monitor,
+                                  String relativePath, String filePath, ProgressMonitor monitor,
                                   boolean isUpdate, boolean isCopyToLocal) throws SeafException, IOException {
-        String newFileID  = sc.uploadFile(repoID, dir, filePath, monitor,isUpdate);
+        String newFileID = sc.uploadFile(repoID, dir, relativePath, filePath, monitor, isUpdate);
         if (newFileID == null || newFileID.length() == 0) {
             return;
         }
@@ -734,7 +730,7 @@ public class DataManager {
             }
         }
         // Update file cache entry
-        addCachedFile(repoName, repoID, path, newFileID, fileInRepo);
+        addCachedFile(repoName, repoID, relativePath, path, newFileID, fileInRepo);
     }
 
     public void createNewRepo(String repoName, String password) throws SeafException {
@@ -746,10 +742,8 @@ public class DataManager {
         if (ret == null) {
             return;
         }
-
         String newDirID = ret.first;
         String response = ret.second;
-
         // The response is the dirents of the parentDir after creating
         // the new dir. We save it to avoid request it again
         saveDirentContent(repoID, parentDir, newDirID, response);
@@ -830,7 +824,7 @@ public class DataManager {
             return sc.deleteShareLink(token);
         } catch (SeafException e) {
             e.printStackTrace();
-            return  false;
+            return false;
         }
     }
 
@@ -855,9 +849,9 @@ public class DataManager {
     }
 
 
-    public void delete(String repoID, String path, boolean isdir) throws SeafException{
+    public void delete(String repoID, String path, boolean isdir) throws SeafException {
         Pair<String, String> ret = sc.delete(repoID, path, isdir);
-        if (ret == null){
+        if (ret == null) {
             return;
         }
 
@@ -1147,10 +1141,8 @@ public class DataManager {
      * search on server
      *
      * @param query query text
-     * @param page pass 0 to disable page loading
-     *
+     * @param page  pass 0 to disable page loading
      * @return json format strings of searched result
-     *
      * @throws SeafException
      */
     public String search(String query, int page) throws SeafException {
@@ -1228,14 +1220,16 @@ public class DataManager {
     }
 
     public void uploadByBlocks(String repoName, String repoId, String dir,
-                               String filePath, ProgressMonitor monitor,
+                               String relativePath, String filePath, ProgressMonitor monitor,
                                boolean isUpdate, boolean isCopyToLocal) throws NoSuchAlgorithmException, IOException, SeafException {
-        uploadByBlocksCommon(repoName, repoId, dir, filePath, monitor, isUpdate, isCopyToLocal);
+        uploadByBlocksCommon(repoName, repoId, dir, relativePath, filePath, monitor, isUpdate, isCopyToLocal);
     }
 
-    private void uploadByBlocksCommon(String repoName, String repoID, String dir, String filePath,
-                                      ProgressMonitor monitor, boolean isUpdate, boolean isCopyToLocal) throws NoSuchAlgorithmException, IOException, SeafException {
-
+    private void uploadByBlocksCommon(String repoName, String repoID, String dir,
+                                      String relativePath, String filePath,
+                                      ProgressMonitor monitor, boolean isUpdate,
+                                      boolean isCopyToLocal)
+            throws NoSuchAlgorithmException, IOException, SeafException {
 
         final Pair<String, String> pair = getRepoEncKey(repoID);
         if (pair == null) return;
@@ -1252,7 +1246,7 @@ public class DataManager {
             throw SeafException.blockListNullPointerException;
         }
 
-        String newFileID = sc.uploadByBlocks(repoID, dir, filePath, chunkFile.blocks, isUpdate, monitor);
+        String newFileID = sc.uploadByBlocks(repoID, dir, relativePath, filePath, chunkFile.blocks, isUpdate, monitor);
         // Log.d(DEBUG_TAG, "uploadByBlocks " + newFileID);
 
         if (newFileID == null || newFileID.length() == 0) {
@@ -1274,6 +1268,6 @@ public class DataManager {
             }
         }
         // Update file cache entry
-        addCachedFile(repoName, repoID, path, newFileID, fileInRepo);
+        addCachedFile(repoName, repoID, relativePath, path, newFileID, fileInRepo);
     }
 }

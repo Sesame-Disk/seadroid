@@ -58,6 +58,7 @@ import com.nihaocloud.sesamedisk.data.SeafRepo;
 import com.nihaocloud.sesamedisk.data.SeafStarredFile;
 import com.nihaocloud.sesamedisk.data.ServerInfo;
 import com.nihaocloud.sesamedisk.data.StorageManager;
+import com.nihaocloud.sesamedisk.data.UploadFolder;
 import com.nihaocloud.sesamedisk.fileschooser.MultiFileChooserActivity;
 import com.nihaocloud.sesamedisk.monitor.FileMonitorService;
 import com.nihaocloud.sesamedisk.notification.DownloadNotificationProvider;
@@ -166,7 +167,6 @@ public class BrowserActivity extends BaseActivity
     private int currentPosition = 0;
     private Intent copyMoveIntent;
     private Account account;
-
     private Intent mediaObserver;
 
     public DataManager getDataManager() {
@@ -175,37 +175,37 @@ public class BrowserActivity extends BaseActivity
 
     public void addUpdateTask(String repoID, String repoName, String targetDir, String localFilePath) {
         if (txService != null) {
-            txService.addTaskToUploadQue(account, repoID, repoName, targetDir, localFilePath, true, true);
+            txService.addTaskToUploadQue(account, repoID, repoName, targetDir, null, localFilePath, true, true);
         } else {
-            PendingUploadInfo info = new PendingUploadInfo(repoID, repoName, targetDir, localFilePath, true, true);
+            PendingUploadInfo info = new PendingUploadInfo(repoID, repoName, targetDir, null, localFilePath, true, true);
             pendingUploads.add(info);
         }
     }
 
     public void addUpdateBlocksTask(String repoID, String repoName, String targetDir, String localFilePath) {
         if (txService != null) {
-            txService.addTaskToUploadQueBlock(account, repoID, repoName, targetDir, localFilePath, true, true);
+            txService.addTaskToUploadQueBlock(account, repoID, repoName, targetDir, null, localFilePath, true, true);
         } else {
-            PendingUploadInfo info = new PendingUploadInfo(repoID, repoName, targetDir, localFilePath, true, true);
+            PendingUploadInfo info = new PendingUploadInfo(repoID, repoName, targetDir, null, localFilePath, true, true);
             pendingUploads.add(info);
         }
     }
 
-    private int addUploadTask(String repoID, String repoName, String targetDir, String localFilePath) {
+    private int addUploadTask(String repoID, String repoName, String targetDir, String relativePath, String localFilePath) {
         if (txService != null) {
-            return txService.addTaskToUploadQue(account, repoID, repoName, targetDir, localFilePath, false, true);
+            return txService.addTaskToUploadQue(account, repoID, repoName, targetDir, relativePath, localFilePath, false, true);
         } else {
-            PendingUploadInfo info = new PendingUploadInfo(repoID, repoName, targetDir, localFilePath, false, true);
+            PendingUploadInfo info = new PendingUploadInfo(repoID, repoName, targetDir, relativePath, localFilePath, false, true);
             pendingUploads.add(info);
             return 0;
         }
     }
 
-    private int addUploadBlocksTask(String repoID, String repoName, String targetDir, String localFilePath) {
+    private int addUploadBlocksTask(String repoID, String repoName, String targetDir, String relativePath, String localFilePath) {
         if (txService != null) {
-            return txService.addTaskToUploadQueBlock(account, repoID, repoName, targetDir, localFilePath, false, true);
+            return txService.addTaskToUploadQueBlock(account, repoID, repoName, targetDir, relativePath, localFilePath, false, true);
         } else {
-            PendingUploadInfo info = new PendingUploadInfo(repoID, repoName, targetDir, localFilePath, false, true);
+            PendingUploadInfo info = new PendingUploadInfo(repoID, repoName, targetDir, relativePath, localFilePath, false, true);
             pendingUploads.add(info);
             return 0;
         }
@@ -767,6 +767,7 @@ public class BrowserActivity extends BaseActivity
                         info.repoID,
                         info.repoName,
                         info.targetDir,
+                        info.relativePath,
                         info.localFilePath,
                         info.isUpdate,
                         info.isCopyToLocal);
@@ -1258,9 +1259,9 @@ public class BrowserActivity extends BaseActivity
                             showShortToast(BrowserActivity.this, getString(R.string.added_to_upload_tasks));
                             final SeafRepo repo = dataManager.getCachedRepoByID(navContext.getRepoID());
                             if (repo != null && repo.canLocalDecrypt()) {
-                                addUploadBlocksTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), path);
+                                addUploadBlocksTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), null, path);
                             } else {
-                                addUploadTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), path);
+                                addUploadTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), null, path);
                             }
                         } else {
                             showFileExistDialog(path);
@@ -1290,9 +1291,9 @@ public class BrowserActivity extends BaseActivity
                             showShortToast(BrowserActivity.this, getString(R.string.added_to_upload_tasks));
                             final SeafRepo repo = dataManager.getCachedRepoByID(navContext.getRepoID());
                             if (repo != null && repo.canLocalDecrypt()) {
-                                addUploadBlocksTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), path);
+                                addUploadBlocksTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), null, path);
                             } else {
-                                addUploadTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), path);
+                                addUploadTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), null, path);
                             }
                         } else {
                             showFileExistDialog(path);
@@ -1366,9 +1367,9 @@ public class BrowserActivity extends BaseActivity
                     showShortToast(this, getString(R.string.added_to_upload_tasks));
                     final SeafRepo repo = dataManager.getCachedRepoByID(navContext.getRepoID());
                     if (repo != null && repo.canLocalDecrypt()) {
-                        addUploadBlocksTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), takeCameraPhotoTempFile.getAbsolutePath());
+                        addUploadBlocksTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), null, takeCameraPhotoTempFile.getAbsolutePath());
                     } else {
-                        addUploadTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), takeCameraPhotoTempFile.getAbsolutePath());
+                        addUploadTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), null, takeCameraPhotoTempFile.getAbsolutePath());
                     }
 
                 }
@@ -1408,8 +1409,6 @@ public class BrowserActivity extends BaseActivity
                 try {
                     File tempDir = DataManager.createTempDir();
                     File tempFile = new File(tempDir, Utils.getFilenamefromUri(BrowserActivity.this, uri));
-                    Log.d("CCCCCCCCCCCCCCCC", tempFile.getAbsolutePath());
-
                     if (!tempFile.createNewFile()) {
                         throw new RuntimeException("could not create temporary file");
                     }
@@ -1459,9 +1458,9 @@ public class BrowserActivity extends BaseActivity
                         final SeafRepo repo = dataManager.getCachedRepoByID(navContext.getRepoID());
                         showShortToast(BrowserActivity.this, getString(R.string.added_to_upload_tasks));
                         if (repo != null && repo.canLocalDecrypt()) {
-                            addUploadBlocksTask(repo.id, repo.name, navContext.getDirPath(), file.getAbsolutePath());
+                            addUploadBlocksTask(repo.id, repo.name, navContext.getDirPath(), null, file.getAbsolutePath());
                         } else {
-                            addUploadTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), file.getAbsolutePath());
+                            addUploadTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), null, file.getAbsolutePath());
                         }
                     } else {
                         showFileExistDialog(file);
@@ -1510,19 +1509,20 @@ public class BrowserActivity extends BaseActivity
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (repo != null && repo.canLocalDecrypt()) {
-                    addUploadBlocksTask(repo.id, repo.name, navContext.getDirPath(), file.getAbsolutePath());
+                    addUploadBlocksTask(repo.id, repo.name, navContext.getDirPath(), null, file.getAbsolutePath());
                 } else {
-                    addUploadTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), file.getAbsolutePath());
+                    addUploadTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), null, file.getAbsolutePath());
                 }
             }
         });
         builder.show();
     }
 
-    class SAFLoadRemoteFolderTask extends AsyncTask<Uri, Void, Pair<DocumentFile, File[]>> {
+    class SAFLoadRemoteFolderTask extends AsyncTask<Uri, Void, Pair<DocumentFile, UploadFolder[]>> {
 
         @Override
-        protected Pair<DocumentFile, File[]> doInBackground(Uri... uriList) {
+        protected Pair<DocumentFile, UploadFolder[]> doInBackground(Uri... uriList) {
+
             if (uriList == null || uriList.length != 1)
                 return null;
 
@@ -1531,39 +1531,12 @@ public class BrowserActivity extends BaseActivity
             if (!documentsTree.isDirectory()) {
                 return null;
             }
-            final DocumentFile[] documentFiles = documentsTree.listFiles();
-            List<File> fileList = new ArrayList<File>();
-            for (DocumentFile documentFile : documentFiles) {
-                // Log.d(DEBUG_TAG, "Uploading file from uri: " + uri);
-                InputStream in = null;
-                OutputStream out = null;
-                try {
-                    final File tempDir = DataManager.createTempDir();
-                    final Uri uri = documentFile.getUri();
-                    final File tempFile = new File(tempDir, Utils.getFilenamefromUri(BrowserActivity.this, uri));
-
-                    if (!tempFile.createNewFile()) {
-                        throw new RuntimeException("could not create temporary file");
-                    }
-                    in = getContentResolver().openInputStream(uri);
-                    out = new FileOutputStream(tempFile);
-                    IOUtils.copy(in, out);
-                    fileList.add(tempFile);
-
-                } catch (IOException e) {
-                    Log.d(DEBUG_TAG, "Could not open requested document", e);
-                } catch (RuntimeException e) {
-                    Log.d(DEBUG_TAG, "Could not open requested document", e);
-                } finally {
-                    IOUtils.closeQuietly(in);
-                    IOUtils.closeQuietly(out);
-                }
-            }
-            return new Pair<>(documentsTree, fileList.toArray(new File[]{}));
+            final UploadFolder[] uploadCashFiles = UploadFolder.getUploadCashFiles(BrowserActivity.this, documentsTree);
+            return new Pair<>(documentsTree, uploadCashFiles);
         }
 
         @Override
-        protected void onPostExecute(Pair<DocumentFile, File[]> result) {
+        protected void onPostExecute(Pair<DocumentFile, UploadFolder[]> result) {
             if (result == null) return;
             List<SeafDirent> list = dataManager.getCachedDirents(navContext.getRepoID(), navContext.getDirPath());
             if (list == null) {
@@ -1578,24 +1551,22 @@ public class BrowserActivity extends BaseActivity
                     return;
                 }
             }
-            File[] files = result.second;
+            UploadFolder[] files = result.second;
             if (files == null) return;
             if (files.length == 0) {
                 showFolderEmptyDialog(dirName);
                 return;
             }
-
-            for (final File file : files) {
+            for (final UploadFolder file : files) {
                 if (file == null) {
                     showShortToast(BrowserActivity.this, R.string.saf_upload_path_not_available);
                 } else {
                     final SeafRepo repo = dataManager.getCachedRepoByID(navContext.getRepoID());
                     showShortToast(BrowserActivity.this, getString(R.string.added_to_upload_tasks));
-                    final String uploadDirPath = Utils.pathJoin(navContext.getDirPath(), dirName);
                     if (repo != null && repo.canLocalDecrypt()) {
-                        addUploadBlocksTask(repo.id, repo.name, uploadDirPath, file.getAbsolutePath());
+                        addUploadBlocksTask(repo.id, repo.name, navContext.getDirPath(), file.getRelativePath(), file.getFile().getAbsolutePath());
                     } else {
-                        addUploadTask(navContext.getRepoID(), navContext.getRepoName(), uploadDirPath, file.getAbsolutePath());
+                        addUploadTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), file.getRelativePath(), file.getFile().getAbsolutePath());
                     }
                 }
             }

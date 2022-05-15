@@ -20,7 +20,7 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DEBUG_TAG = "DatabaseHelper";
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 9;
+    public static final int DATABASE_VERSION = 10;
     public static final String DATABASE_NAME = "data.db";
 
     // FileCache table
@@ -32,6 +32,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String FILECACHE_COLUMN_REPO_ID = "repo_id";
     private static final String FILECACHE_COLUMN_PATH = "path";
     private static final String FILECACHE_COLUMN_ACCOUNT = "account";
+    private static final String FILECACHE_COLUMN_RELATIVE_PATH = "relative_path";
 
     private static final String STARRED_FILECACHE_TABLE_NAME = "StarredFileCache";
 
@@ -75,6 +76,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         + FILECACHE_COLUMN_PATH + " TEXT NOT NULL, "
         + FILECACHE_COLUMN_REPO_NAME + " TEXT NOT NULL, "
         + FILECACHE_COLUMN_REPO_ID + " TEXT NOT NULL, "
+        + FILECACHE_COLUMN_RELATIVE_PATH + " TEXT , "
         + FILECACHE_COLUMN_ACCOUNT + " TEXT NOT NULL);";
 
     private static final String SQL_CREATE_STARRED_FILECACHE_TABLE =
@@ -196,7 +198,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
-
         File dir = StorageManager.getInstance().getJsonCacheDir();
         for (File f : dir.listFiles()) {
             if (f.isFile()) {
@@ -261,6 +262,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(FILECACHE_COLUMN_FILEID, item.fileID);
         values.put(FILECACHE_COLUMN_REPO_NAME, item.repoName);
         values.put(FILECACHE_COLUMN_REPO_ID, item.repoID);
+        values.put(FILECACHE_COLUMN_RELATIVE_PATH, item.relativePath);
         values.put(FILECACHE_COLUMN_PATH, item.path);
         values.put(FILECACHE_COLUMN_ACCOUNT, item.accountSignature);
 

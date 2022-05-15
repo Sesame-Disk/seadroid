@@ -67,8 +67,12 @@ public class AutoUpdateManager implements Runnable, CachedFileChangedListener {
     }
 
     public void addTask(Account account, SeafCachedFile cachedFile, File localFile) {
-        AutoUpdateInfo info = new AutoUpdateInfo(account, cachedFile.repoID, cachedFile.repoName,
-                Utils.getParentPath(cachedFile.path), localFile.getPath());
+        AutoUpdateInfo info = new AutoUpdateInfo(account,
+                cachedFile.repoID,
+                cachedFile.repoName,
+                Utils.getParentPath(cachedFile.path),
+                cachedFile.relativePath,
+                localFile.getPath());
 
         synchronized (infos) {
             if (infos.contains(info)) {
@@ -95,7 +99,7 @@ public class AutoUpdateManager implements Runnable, CachedFileChangedListener {
                 for (AutoUpdateInfo info : infos) {
                     if (info.canLocalDecrypt()) {
                         txService.addTaskToUploadQue(info.account, info.repoID, info.repoName,
-                                info.parentDir, info.localPath, true, true);
+                                info.parentDir, info.relativePath, info.localPath, true, true);
                     } else {
                         txService.addUploadTask(info.account, info.repoID, info.repoName,
                                 info.parentDir, info.localPath, true, true);
@@ -108,10 +112,10 @@ public class AutoUpdateManager implements Runnable, CachedFileChangedListener {
     /**
      * This callback in called in the main thread when the transfer service broadcast is received
      */
-    public void onFileUpdateSuccess(Account account, String repoID, String repoName,
+    public void onFileUpdateSuccess(Account account, String repoID, String repoName, String relativePath,
                                     String parentDir, String localPath, int version) {
         // This file has already been updated on server, so we abort auto update task
-        if (removeAutoUpdateInfo(account, repoID, repoName, parentDir, localPath)) {
+        if (removeAutoUpdateInfo(account, repoID, repoName, parentDir, relativePath, localPath)) {
             Log.d(DEBUG_TAG, "auto updated " + localPath);
         }
     }
@@ -120,8 +124,8 @@ public class AutoUpdateManager implements Runnable, CachedFileChangedListener {
     private ConcurrentHashMultiset<AutoUpdateInfo> uploadFailuresByFile = ConcurrentHashMultiset.create();
 
     private boolean maxFailureReached(Account account, String repoID, String repoName,
-                                      String parentDir, String localPath, int version) {
-        AutoUpdateInfo info = new AutoUpdateInfo(account, repoID, repoName, parentDir, localPath);
+                                      String parentDir,String relativePath, String localPath, int version) {
+        AutoUpdateInfo info = new AutoUpdateInfo(account, repoID, repoName, parentDir, relativePath,localPath);
         int failures = uploadFailuresByFile.count(info) + 1;
         if (failures >= MAX_UPLOAD_FAILURES) {
             uploadFailuresByFile.remove(info);
@@ -135,6 +139,7 @@ public class AutoUpdateManager implements Runnable, CachedFileChangedListener {
                                     String repoID,
                                     String repoName,
                                     String parentDir,
+                                    String relativePath,
                                     String localPath,
                                     SeafException e,
                                     int version) {
@@ -145,10 +150,10 @@ public class AutoUpdateManager implements Runnable, CachedFileChangedListener {
         }
 
         if (!shouldAbortUpload
-            && maxFailureReached(account, repoID, repoName, parentDir, localPath, version)) {
+                && maxFailureReached(account, repoID, repoName, parentDir, relativePath,localPath, version)) {
             Log.d(DEBUG_TAG,
-                String.format("abort auto updating %s because failed for more than %s times",
-                    localPath, MAX_UPLOAD_FAILURES));
+                    String.format("abort auto updating %s because failed for more than %s times",
+                            localPath, MAX_UPLOAD_FAILURES));
             shouldAbortUpload = true;
         }
 
@@ -156,28 +161,21 @@ public class AutoUpdateManager implements Runnable, CachedFileChangedListener {
             return;
         }
 
-        if (removeAutoUpdateInfo(account, repoID, repoName, parentDir, localPath)) {
+        if (removeAutoUpdateInfo(account, repoID, repoName, parentDir, relativePath,localPath)) {
             Log.d(DEBUG_TAG, String.format("failed to auto update %s, error %s", localPath, e));
         } else {
             Log.d(DEBUG_TAG, String.format("failed to remove auto update task for %s", localPath));
         }
     }
 
-    private boolean removeAutoUpdateInfo(Account account, String repoID, String repoName, String parentDir, String localPath) {
-        final AutoUpdateInfo info = new AutoUpdateInfo(account, repoID, repoName, parentDir, localPath);
+    private boolean removeAutoUpdateInfo(Account account, String repoID, String repoName, String parentDir, String relativePath, String localPath) {
+        final AutoUpdateInfo info = new AutoUpdateInfo(account, repoID, repoName, parentDir, relativePath, localPath);
         boolean exist = false;
-
         synchronized (infos) {
             exist = infos.remove(info);
         }
-
         if (exist) {
-            ConcurrentAsyncTask.submit(new Runnable() {
-                @Override
-                public void run() {
-                    db.removeAutoUpdateInfo(info);
-                }
-            });
+            ConcurrentAsyncTask.submit(() -> db.removeAutoUpdateInfo(info));
         }
         return exist;
     }
@@ -213,7 +211,6 @@ public class AutoUpdateManager implements Runnable, CachedFileChangedListener {
         synchronized (infos) {
             infos.addAll(db.getAutoUploadInfos());
         }
-
         while (running) {
             scheduleUpdateTasks();
             if (!running) {

@@ -68,7 +68,6 @@ public class DownloadTask extends TransferTask {
             } else
                 return dataManager.getFile(repoName, repoID, path,
                         new ProgressMonitor() {
-
                             @Override
                             public void onProgressNotify(long total, boolean updateTotal) {
                                 publishProgress(total);

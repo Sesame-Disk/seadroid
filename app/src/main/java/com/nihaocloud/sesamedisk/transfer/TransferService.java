@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+
 import com.nihaocloud.sesamedisk.account.Account;
 import com.nihaocloud.sesamedisk.notification.DownloadNotificationProvider;
 import com.nihaocloud.sesamedisk.notification.UploadNotificationProvider;
@@ -78,8 +79,9 @@ public class TransferService extends Service {
     /**
      * Call this method to handle upload request, like file upload or camera upload.
      * Uploading tasks are managed in a queue.
-     *
+     * <p>
      * Note: use isCopyToLocal to mark automatic camera upload if false, or file upload if true.
+     *
      * @param account
      * @param repoID
      * @param repoName
@@ -89,15 +91,16 @@ public class TransferService extends Service {
      * @param isCopyToLocal
      * @return
      */
-    public int addTaskToUploadQue(Account account, String repoID, String repoName, String dir, String filePath, boolean isUpdate, boolean isCopyToLocal) {
-        return uploadTaskManager.addTaskToQue(account, repoID, repoName, dir, filePath, isUpdate, isCopyToLocal,false);
+    public int addTaskToUploadQue(Account account, String repoID, String repoName, String dir, String relativePath, String filePath, boolean isUpdate, boolean isCopyToLocal) {
+        return uploadTaskManager.addTaskToQue(account, repoID, repoName, dir, relativePath, filePath, isUpdate, isCopyToLocal, false);
     }
 
     /**
      * Call this method to handle upload request, like file upload or camera upload.
      * Uploading tasks are managed in a queue.
-     *
+     * <p>
      * Note: use isCopyToLocal to mark automatic camera upload if false, or file upload if true.
+     *
      * @param account
      * @param repoID
      * @param repoName
@@ -108,15 +111,16 @@ public class TransferService extends Service {
      * @param version
      * @return
      */
-    public int addTaskToUploadQueBlock(Account account, String repoID, String repoName, String dir,
+    public int addTaskToUploadQueBlock(Account account, String repoID, String repoName, String dir, String relativePath,
                                        String filePath, boolean isUpdate, boolean isCopyToLocal) {
-        return uploadTaskManager.addTaskToQue(account, repoID, repoName, dir, filePath, isUpdate, isCopyToLocal, true);
+        return uploadTaskManager.addTaskToQue(account, repoID, repoName, dir, relativePath, filePath, isUpdate, isCopyToLocal, true);
     }
 
     /**
      * Call this method to handle upload request, like file upload or camera upload.
-     *
+     * <p>
      * Note: use isCopyToLocal to mark automatic camera upload if false, or file upload if true.
+     *
      * @param account
      * @param repoID
      * @param repoName
@@ -127,8 +131,8 @@ public class TransferService extends Service {
      * @return
      */
     public int addUploadTask(Account account, String repoID, String repoName, String dir,
-            String filePath, boolean isUpdate, boolean isCopyToLocal) {
-        return addTaskToUploadQue(account, repoID, repoName, dir, filePath, isUpdate, isCopyToLocal);
+                             String filePath, boolean isUpdate, boolean isCopyToLocal) {
+        return addTaskToUploadQue(account, repoID, repoName, dir, null,filePath, isUpdate, isCopyToLocal);
     }
 
     public UploadTaskInfo getUploadTaskInfo(int taskID) {
@@ -185,7 +189,7 @@ public class TransferService extends Service {
 
     /**
      * remove all upload tasks by their taskIds.
-     *
+     * <p>
      * Note: when deleting all tasks whose state is {@link com.nihaocloud.sesamedisk.transfer.TaskState#TRANSFERRING} in the queue,
      * other tasks left will never be executed, because they are all in the {@link com.nihaocloud.sesamedisk.transfer.TaskState#INIT} state.
      * In this case, explicitly call doNext to start processing the queue.
@@ -211,7 +215,7 @@ public class TransferService extends Service {
     }
 
     public void addTaskToDownloadQue(Account account, String repoName, String repoID, String path) {
-       downloadTaskManager.addTaskToQue(account, repoName, repoID, path);
+        downloadTaskManager.addTaskToQue(account, repoName, repoID, path);
     }
 
     public List<DownloadTaskInfo> getAllDownloadTaskInfos() {
@@ -252,7 +256,7 @@ public class TransferService extends Service {
 
     /**
      * remove all download tasks by their taskIds.
-     *
+     * <p>
      * Note: when deleting all tasks whose state is {@link com.nihaocloud.sesamedisk.transfer.TaskState#TRANSFERRING} in the queue,
      * other tasks left will never be executed, because they are all in the {@link com.nihaocloud.sesamedisk.transfer.TaskState#INIT} state.
      * In this case, explicitly call doNext to start processing the queue.

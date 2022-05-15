@@ -1,5 +1,6 @@
 package com.nihaocloud.sesamedisk.monitor;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -22,7 +23,7 @@ public class MonitorDBHelper extends SQLiteOpenHelper {
 
     // If you change the database schema, you must increment the database
     // version.
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
     public static final String DATABASE_NAME = "monitor.db";
 
     // FileCache table
@@ -33,8 +34,10 @@ public class MonitorDBHelper extends SQLiteOpenHelper {
     private static final String AUTO_UPDATE_INFO_COLUMN_REPO_ID = "repo_id";
     private static final String AUTO_UPDATE_INFO_COLUMN_REPO_NAME = "repo_name";
     private static final String AUTO_UPDATE_INFO_COLUMN_PARENT_DIR = "parent_dir";
+    private static final String AUTO_UPDATE_INFO_COLUMN_RELATIVE_PATH = "relative_path";
     private static final String AUTO_UPDATE_INFO_COLUMN_LOCAL_PATH = "local_path";
     private static final String AUTO_UPDATE_INFO_COLUMN_VERSION = "version";
+
 
     private static final String SQL_CREATE_AUTO_UPDATE_INFO_TABLE = "CREATE TABLE "
             + AUTO_UPDATE_INFO_TABLE_NAME
@@ -49,18 +52,20 @@ public class MonitorDBHelper extends SQLiteOpenHelper {
             + " TEXT NOT NULL, "
             + AUTO_UPDATE_INFO_COLUMN_PARENT_DIR
             + " TEXT NOT NULL, "
+            + AUTO_UPDATE_INFO_COLUMN_RELATIVE_PATH
+            + " TEXT , "
             + AUTO_UPDATE_INFO_COLUMN_LOCAL_PATH
             + " TEXT NOT NULL, "
             + AUTO_UPDATE_INFO_COLUMN_VERSION
             + " TEXT NOT NULL);";
 
     private static final String[] FULL_PROJECTION = {
-        AUTO_UPDATE_INFO_COLUMN_ACCOUNT,
-        AUTO_UPDATE_INFO_COLUMN_REPO_ID,
-        AUTO_UPDATE_INFO_COLUMN_REPO_NAME,
-        AUTO_UPDATE_INFO_COLUMN_PARENT_DIR,
-        AUTO_UPDATE_INFO_COLUMN_LOCAL_PATH,
-        AUTO_UPDATE_INFO_COLUMN_VERSION,};
+            AUTO_UPDATE_INFO_COLUMN_ACCOUNT,
+            AUTO_UPDATE_INFO_COLUMN_REPO_ID,
+            AUTO_UPDATE_INFO_COLUMN_REPO_NAME,
+            AUTO_UPDATE_INFO_COLUMN_PARENT_DIR,
+            AUTO_UPDATE_INFO_COLUMN_LOCAL_PATH,
+            AUTO_UPDATE_INFO_COLUMN_VERSION,};
 
     // Use only single dbHelper to prevent multi-thread issue and db is closed exception
     // Reference
@@ -174,21 +179,21 @@ public class MonitorDBHelper extends SQLiteOpenHelper {
         return accounts;
     }
 
+    @SuppressLint("Range")
     private AutoUpdateInfo cursorToAutoUpdateInfo(Cursor c, Map<String, Account> accounts) {
-        String accountSignature = c.getString(0);
-        String repoID = c.getString(1);
-        String repoName = c.getString(2);
-        String parentDir = c.getString(3);
-        String localPath = c.getString(4);
-
+        String accountSignature = c.getString(c.getColumnIndex(AUTO_UPDATE_INFO_COLUMN_ACCOUNT));
+        String repoID = c.getString(c.getColumnIndex(AUTO_UPDATE_INFO_COLUMN_REPO_ID));
+        String repoName = c.getString(c.getColumnIndex(AUTO_UPDATE_INFO_COLUMN_REPO_NAME));
+        String parentDir = c.getString(c.getColumnIndex(AUTO_UPDATE_INFO_COLUMN_PARENT_DIR));
+        String relativePath = c.getString(c.getColumnIndex(AUTO_UPDATE_INFO_COLUMN_RELATIVE_PATH));
+        String localPath = c.getString(c.getColumnIndex(AUTO_UPDATE_INFO_COLUMN_LOCAL_PATH));
         // infos whose account or file has been deleted would be removed in the
         // while loop
         if (!new File(localPath).exists()) {
             localPath = null;
         }
-
         Account account = accounts.get(accountSignature);
-        AutoUpdateInfo info = new AutoUpdateInfo(account, repoID, repoName, parentDir, localPath);
+        AutoUpdateInfo info = new AutoUpdateInfo(account, repoID, repoName, parentDir, relativePath, localPath);
         return info;
     }
 }

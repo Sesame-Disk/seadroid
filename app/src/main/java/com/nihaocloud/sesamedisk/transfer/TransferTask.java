@@ -1,6 +1,7 @@
 package com.nihaocloud.sesamedisk.transfer;
 
 import android.os.AsyncTask;
+
 import com.nihaocloud.sesamedisk.SeafException;
 import com.nihaocloud.sesamedisk.account.Account;
 
@@ -13,15 +14,16 @@ import java.io.File;
  * <p/>
  */
 public abstract class TransferTask extends AsyncTask<Void, Long, File> {
-
     protected int taskID;
     protected Account account;
     protected String repoName;
     protected String repoID;
     protected String path;
+    protected String relativePath;
     protected long totalSize, finished;
     protected TaskState state;
     protected SeafException err;
+
 
     public TransferTask(int taskID, Account account, String repoName, String repoID, String path) {
         this.account = account;
@@ -29,11 +31,23 @@ public abstract class TransferTask extends AsyncTask<Void, Long, File> {
         this.repoID = repoID;
         this.path = path;
         this.state = TaskState.INIT;
-
         // The size of the file would be known in the first progress update
         this.totalSize = -1;
         this.taskID = taskID;
     }
+
+    public TransferTask(int taskID, Account account, String repoName, String repoID, String relativePath, String path) {
+        this.account = account;
+        this.repoName = repoName;
+        this.repoID = repoID;
+        this.path = path;
+        this.relativePath = relativePath;
+        this.state = TaskState.INIT;
+        // The size of the file would be known in the first progress update
+        this.totalSize = -1;
+        this.taskID = taskID;
+    }
+
 
     protected void cancel() {
         if (state != TaskState.INIT && state != TaskState.TRANSFERRING) {
@@ -88,7 +102,8 @@ public abstract class TransferTask extends AsyncTask<Void, Long, File> {
         if ((obj == null) || (obj.getClass() != this.getClass()))
             return false;
         TransferTask tt = (TransferTask) obj;
-        return (account.getSignature() == tt.account.getSignature() || (account.getSignature() != null && account.getSignature().equals(tt.account.getSignature())))
+        return (account.getSignature() == tt.account.getSignature() || (account.getSignature() != null
+                && account.getSignature().equals(tt.account.getSignature())))
                 && (repoID == tt.repoID || (repoID != null && repoID.equals(tt.repoID)))
                 && (path == tt.path || (path != null && path.equals(tt.path)));
     }
@@ -96,7 +111,7 @@ public abstract class TransferTask extends AsyncTask<Void, Long, File> {
     @Override
     public String toString() {
         return "email " + account.getEmail() + " server " + account.getServer() + " taskID " + taskID + " repoID " + repoID +
-                " repoName " + repoName + " path " + path;
+                " repoName " + repoName + " relativePath " + relativePath + " path " + path;
     }
 
     @Override

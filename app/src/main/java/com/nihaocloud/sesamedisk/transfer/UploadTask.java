@@ -18,24 +18,21 @@ import java.security.NoSuchAlgorithmException;
 
 /**
  * Upload task
- *
  */
 public class UploadTask extends TransferTask {
     public static final String DEBUG_TAG = "UploadTask";
-
     private String dir;   // parent dir
     private boolean isUpdate;  // true if update an existing file
     private boolean isCopyToLocal; // false to turn off copy operation
     private boolean byBlock;
     private UploadStateListener uploadStateListener;
-
     private DataManager dataManager;
     public static final int HTTP_ABOVE_QUOTA = 443;
 
     public UploadTask(int taskID, Account account, String repoID, String repoName,
-                      String dir, String filePath, boolean isUpdate, boolean isCopyToLocal, boolean byBlock,
+                      String dir, String relativePath, String filePath, boolean isUpdate, boolean isCopyToLocal, boolean byBlock,
                       UploadStateListener uploadStateListener) {
-        super(taskID, account, repoName, repoID, filePath);
+        super(taskID, account, repoName, repoID, relativePath, filePath);
         this.dir = dir;
         this.isUpdate = isUpdate;
         this.isCopyToLocal = isCopyToLocal;
@@ -48,7 +45,7 @@ public class UploadTask extends TransferTask {
 
     public UploadTaskInfo getTaskInfo() {
         UploadTaskInfo info = new UploadTaskInfo(account, taskID, state, repoID,
-                repoName, dir, path, isUpdate, isCopyToLocal,
+                repoName, dir, relativePath, path, isUpdate, isCopyToLocal,
                 finished, totalSize, err);
         return info;
     }
@@ -90,9 +87,9 @@ public class UploadTask extends TransferTask {
             };
 
             if (byBlock) {
-                dataManager.uploadByBlocks(repoName, repoID, dir, path, monitor, isUpdate, isCopyToLocal);
+                dataManager.uploadByBlocks(repoName, repoID, dir, relativePath, path, monitor, isUpdate, isCopyToLocal);
             } else {
-                dataManager.uploadFile(repoName, repoID, dir, path, monitor, isUpdate, isCopyToLocal);
+                dataManager.uploadFile(repoName, repoID, dir, relativePath, path, monitor, isUpdate, isCopyToLocal);
             }
 
         } catch (SeafException e) {
@@ -115,8 +112,7 @@ public class UploadTask extends TransferTask {
             if (err == null) {
                 SettingsManager.instance().saveUploadCompletedTime(Utils.getSyncCompletedTime());
                 uploadStateListener.onFileUploaded(taskID);
-            }
-            else {
+            } else {
                 if (err.getCode() == HTTP_ABOVE_QUOTA) {
 
                     Toast.makeText(NihaoApplication.getAppContext(), R.string.above_quota, Toast.LENGTH_SHORT).show();

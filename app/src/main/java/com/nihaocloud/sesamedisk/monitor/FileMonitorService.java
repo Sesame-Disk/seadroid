@@ -25,7 +25,6 @@ import com.nihaocloud.sesamedisk.util.ConcurrentAsyncTask;
  */
 public class FileMonitorService extends Service {
     private static final String DEBUG_TAG = "FileMonitorService";
-
     private SeafileMonitor monitor;
     private TransferService mTransferService;
     private AutoUpdateManager updateMgr = new AutoUpdateManager();
@@ -128,9 +127,10 @@ public class FileMonitorService extends Service {
                 int taskID = intent.getIntExtra("taskID", 0);
                 UploadTaskInfo info = mTransferService.getUploadTaskInfo(taskID);
 
+
                 if (info != null && info.isUpdate) {
                     updateMgr.onFileUpdateSuccess(info.account, info.repoID, info.repoName,
-                            info.parentDir, info.localFilePath, info.version);
+                            info.parentDir, info.relativePath,info.localFilePath, info.version);
                 }
             } else if (type.equals(UploadTaskManager.BROADCAST_FILE_UPLOAD_FAILED)) {
                 int taskID = intent.getIntExtra("taskID", 0);
@@ -138,7 +138,7 @@ public class FileMonitorService extends Service {
 
                 if (info != null && info.isUpdate) {
                     updateMgr.onFileUpdateFailure(info.account, info.repoID, info.repoName,
-                            info.parentDir, info.localFilePath, info.err, info.version);
+                            info.parentDir, info.relativePath,info.localFilePath, info.err, info.version);
                 }
             }
         }
