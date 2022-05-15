@@ -21,10 +21,10 @@ import java.security.NoSuchAlgorithmException;
  */
 public class UploadTask extends TransferTask {
     public static final String DEBUG_TAG = "UploadTask";
-    private String dir;   // parent dir
-    private boolean isUpdate;  // true if update an existing file
-    private boolean isCopyToLocal; // false to turn off copy operation
-    private boolean byBlock;
+    private final String dir;   // parent dir
+    private final boolean isUpdate;  // true if update an existing file
+    private final boolean isCopyToLocal; // false to turn off copy operation
+    private final boolean byBlock;
     private UploadStateListener uploadStateListener;
     private DataManager dataManager;
     public static final int HTTP_ABOVE_QUOTA = 443;
@@ -140,5 +140,4 @@ public class UploadTask extends TransferTask {
     public boolean isUpdate() {
         return isUpdate;
     }
-
 }

@@ -18,6 +18,7 @@
     <string name="move_folder">Ordner verschieben</string>
     <string name="delete_dir">Ordner löschen</string>
     <string name="name_hint">Name</string>
+    <string name="name_hint_clone">Name :&#160;</string>
     <string name="server_hint">Server, z.B. cloud.NiHao.com</string>
     <string name="email_hint">E-Mail oder Benutzername</string>
     <string name="passwd_hint">Passwort</string>

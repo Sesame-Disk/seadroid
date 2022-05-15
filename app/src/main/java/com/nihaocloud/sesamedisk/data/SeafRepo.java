@@ -13,6 +13,7 @@ import java.util.Comparator;
 
 /**
  * SeafRepo: A Seafile library
+ *
  * @author plt
  */
 public class SeafRepo implements SeafItem {
@@ -27,10 +28,10 @@ public class SeafRepo implements SeafItem {
     public String permission;
     public String magic;
     public String encKey;
-    public long    size;
-    public String  root; // the id of root directory
+    public long size;
+    public String root; // the id of root directory
 
-    static SeafRepo fromJson(JSONObject obj) throws JSONException{
+    static SeafRepo fromJson(JSONObject obj) throws JSONException {
         SeafRepo repo = new SeafRepo();
         repo.id = obj.getString("id");
         repo.name = obj.getString("name");

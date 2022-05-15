@@ -12,6 +12,7 @@
     <string name="delete_file_f">Usuń plik</string>
     <string name="delete_dir">Usuń folder</string>
     <string name="name_hint">Nazwa</string>
+    <string name="name_hint_clone">Nazwa :&#160;</string>
     <string name="server_hint">Adres serwera</string>
     <string name="email_hint">E-mail lub nazwa użytkownika</string>
     <string name="passwd_hint">Hasło</string>

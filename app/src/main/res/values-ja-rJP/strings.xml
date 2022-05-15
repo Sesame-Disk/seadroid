@@ -18,6 +18,7 @@
   <string name="move_folder">フォルダーを移動</string>
   <string name="delete_dir">フォルダーを削除</string>
   <string name="name_hint">名前</string>
+  <string name="name_hint_clone">名前 :&#160;</string>
   <string name="server_hint">サーバーアドレス</string>
   <string name="email_hint">メールアドレスまたはユーザー名</string>
   <string name="passwd_hint">パスワード</string>

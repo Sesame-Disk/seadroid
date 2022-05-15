@@ -18,6 +18,7 @@
     <string name="move_folder">Déplacer le dossier</string>
     <string name="delete_dir">Effacer le dossier</string>
     <string name="name_hint">Nom</string>
+    <string name="name_hint_clone">Nom :&#160;</string>
     <string name="server_hint">Serveur, par exemple cloud.NiHao.com</string>
     <string name="email_hint">E-mail ou nom d\'utilisateur</string>
     <string name="passwd_hint">Mot de passe</string>

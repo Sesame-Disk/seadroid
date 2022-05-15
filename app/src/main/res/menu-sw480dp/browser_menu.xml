@@ -38,6 +38,12 @@
                 app:showAsAction="ifRoom" />
 
             <item
+                android:id="@+id/upload_folder_library"
+                android:title="@string/upload_folder"
+                android:visible="true"
+                app:showAsAction="ifRoom" />
+
+            <item
                 android:id="@+id/edit"
                 android:title="@string/edit"
                 android:visible="false"

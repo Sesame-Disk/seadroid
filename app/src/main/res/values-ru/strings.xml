@@ -18,6 +18,7 @@
     <string name="move_folder">Переместить папку</string>
     <string name="delete_dir">Удалить папку</string>
     <string name="name_hint">Имя</string>
+    <string name="name_hint_clone">Имя :&#160;</string>
     <string name="server_hint">Адрес сервера</string>
     <string name="email_hint">Email или Логин</string>
     <string name="passwd_hint">Пароль</string>

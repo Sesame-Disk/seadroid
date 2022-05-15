@@ -111,8 +111,6 @@ public class SeafConnection {
             HttpsURLConnection sconn = (HttpsURLConnection) conn;
             sconn.setSSLSocketFactory(SSLTrustManager.instance().getSSLSocketFactory(account));
         }
-
-
         return req;
     }
 
@@ -218,7 +216,7 @@ public class SeafConnection {
             req.form("client_version", appVersion);
             req.form("platform_version", Build.VERSION.RELEASE);
 
-            Log.d(DEBUG_TAG, req.toString());
+            //  Log.d(DEBUG_TAG, req.toString());
 
             checkRequestResponseStatus(req, HttpURLConnection.HTTP_OK, withAuthToken);
             String sessionKey = req.header("x-seafile-s2fa");
@@ -782,10 +780,10 @@ public class SeafConnection {
             checkRequestResponseStatus(req, HttpURLConnection.HTTP_OK);
             return true;
         } catch (SeafException e) {
-            Log.d(DEBUG_TAG, "Set Password err: " + e.getCode());
+            Log.e(DEBUG_TAG, "Set Password err: " + e.getCode());
             throw e;
         } catch (Exception e) {
-            Log.d(DEBUG_TAG, "Exception in setPassword ");
+            Log.e(DEBUG_TAG, "Exception in setPassword ");
             e.printStackTrace();
         }
         return false;
@@ -811,14 +809,14 @@ public class SeafConnection {
             } else
                 throw SeafException.unknownException;
         } catch (SeafException e) {
-            Log.d(DEBUG_TAG, e.getCode() + e.getMessage());
+            Log.e(DEBUG_TAG, e.getCode() + e.getMessage());
             throw e;
         } catch (Exception e) {
             String msg = e.getMessage();
             if (msg != null)
-                Log.d(DEBUG_TAG, msg);
+                Log.e(DEBUG_TAG, msg);
             else
-                Log.d(DEBUG_TAG, "get upload link error", e);
+                Log.e(DEBUG_TAG, "get upload link error", e);
             throw SeafException.unknownException;
         }
     }
@@ -834,14 +832,14 @@ public class SeafConnection {
             checkRequestResponseStatus(req, HttpURLConnection.HTTP_OK);
             return new String(req.bytes(), "UTF-8");
         } catch (SeafException e) {
-            Log.d(DEBUG_TAG, e.getCode() + e.getMessage());
+            Log.e(DEBUG_TAG, e.getCode() + e.getMessage());
             throw e;
         } catch (Exception e) {
             String msg = e.getMessage();
             if (msg != null)
-                Log.d(DEBUG_TAG, msg);
+                Log.e(DEBUG_TAG, msg);
             else
-                Log.d(DEBUG_TAG, "get upload link error", e);
+                Log.e(DEBUG_TAG, "get upload link error", e);
             throw SeafException.unknownException;
         }
     }
@@ -995,6 +993,27 @@ public class SeafConnection {
         }
 
         checkRequestResponseStatus(req, HttpURLConnection.HTTP_OK);
+    }
+
+    public String createNewRepoWithResponse(String repoName, String description, String password) throws SeafException {
+        try {
+
+            HttpRequest req = prepareApiPostRequest("api2/repos/", true, null);
+            req.form("name", repoName);
+            if (description.length() > 0) req.form("desc", description);
+            if (password.length() > 0) req.form("passwd", password);
+
+            checkRequestResponseStatus(req, HttpURLConnection.HTTP_OK);
+            return new String(req.bytes(), "UTF-8");
+        } catch (SeafException e) {
+            Log.e(DEBUG_TAG, e.getCode() + e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            String msg = e.getMessage();
+            if (msg != null) Log.e(DEBUG_TAG, msg);
+            else Log.e(DEBUG_TAG, "get upload link error", e);
+            throw SeafException.unknownException;
+        }
     }
 
     public Pair<String, String> createNewDir(String repoID,
@@ -1543,10 +1562,9 @@ public class SeafConnection {
             mm.append(s.getClassName() + " " + s.getMethodName() + " " + s.getLineNumber());
         }
 
-        Log.v(DEBUG_TAG, "StackTraceElement :  " + mm);
+        //  Log.d(DEBUG_TAG, "StackTraceElement :  " + mm);
 
-        Log.v(DEBUG_TAG, "HTTP request : url : " + req.url() + ", code : " + req.code() + ", message : " +
-                "" + req.message() + "," + builder.toString());
+        //     Log.d(DEBUG_TAG, "HTTP request : url : " + req.url() + ", code : " + req.code() + ", message : " + req.message() + "," + builder.toString());
 
         if (req.code() != expectedStatusCode) {
             //Log.d(DEBUG_TAG, "HTTP request failed : " + req.url() + ", " + req.code() + ", " + req.message());
@@ -1582,7 +1600,7 @@ public class SeafConnection {
 
     private void checkRequestResponseStatus(HttpRequest req, int expectedStatusCode, boolean withAuthToken) throws SeafException {
         if (req.code() != expectedStatusCode) {
-            Log.d(DEBUG_TAG, "HTTP request failed : " + req.url() + ", " + req.code() + ", " + req.message());
+            // Log.d(DEBUG_TAG, "HTTP request failed : " + req.url() + ", " + req.code() + ", " + req.message());
 
             if (req.message() == null) {
                 throw SeafException.networkException;

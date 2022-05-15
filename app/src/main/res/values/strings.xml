@@ -19,6 +19,7 @@
     <string name="move_folder">Move folder</string>
     <string name="delete_dir">Delete folder</string>
     <string name="name_hint">Name</string>
+    <string name="name_hint_clone">Name :&#160;</string>
     <string name="server_hint">Server address</string>
     <string name="email_hint">Email or Username</string>
     <string name="passwd_hint">Password</string>

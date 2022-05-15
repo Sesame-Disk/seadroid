@@ -224,60 +224,47 @@ public abstract class TaskDialog extends DialogFragment {
         builder.setView(view);
 
         if (hasOkButton()) {
-            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                }
+            builder.setPositiveButton(R.string.ok, (dialog, which) -> {
             });
         }
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (task != null && task.getStatus() != AsyncTask.Status.FINISHED) {
-                    task.cancel(true);
-                }
-                if (mListener != null) {
-                    mListener.onTaskCancelled();
-                }
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
+            if (task != null && task.getStatus() != AsyncTask.Status.FINISHED) {
+                task.cancel(true);
+            }
+            if (mListener != null) {
+                mListener.onTaskCancelled();
             }
         });
 
         final AlertDialog dialog = builder.create();
 
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface d) {
-                if (hasOkButton()) {
-                    okButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                    //okButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.dialog_btn_txt_size));
-                    cancelButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-                    //cancelButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.dialog_btn_txt_size));
-                    View.OnClickListener onOKButtonClickedListener = new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            try {
-                                onValidateUserInput();
-                            } catch (Exception e) {
-                                showError(e.getMessage());
-                                return;
-                            }
-
-                            task = prepareTask();
-                            executeTask();
-                        }
-                    };
-                    okButton.setOnClickListener(onOKButtonClickedListener);
-                }
-
-                if (savedInstanceState != null) {
-                    dialog.onRestoreInstanceState(savedInstanceState);
-                    restoreTask(savedInstanceState);
-                }
-
-                if (executeTaskImmediately()) {
+        dialog.setOnShowListener(d -> {
+            if (hasOkButton()) {
+                okButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                //okButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.dialog_btn_txt_size));
+                cancelButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+                //cancelButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.dialog_btn_txt_size));
+                View.OnClickListener onOKButtonClickedListener = view1 -> {
+                    try {
+                        onValidateUserInput();
+                    } catch (Exception e) {
+                        showError(e.getMessage());
+                        return;
+                    }
                     task = prepareTask();
                     executeTask();
-                }
+                };
+                okButton.setOnClickListener(onOKButtonClickedListener);
+            }
+
+            if (savedInstanceState != null) {
+                dialog.onRestoreInstanceState(savedInstanceState);
+                restoreTask(savedInstanceState);
+            }
+
+            if (executeTaskImmediately()) {
+                task = prepareTask();
+                executeTask();
             }
         });
 

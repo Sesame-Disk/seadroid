@@ -12,6 +12,7 @@
     <string name="delete_file_f">Poista tiedosto</string>
     <string name="delete_dir">Poista kansio</string>
     <string name="name_hint">Nimi</string>
+    <string name="name_hint_clone">Nimi :&#160;</string>
     <string name="server_hint">Palvelimen osoite</string>
     <string name="email_hint">Sähköposti tai Käyttäjätunnus</string>
     <string name="passwd_hint">Salasana</string>

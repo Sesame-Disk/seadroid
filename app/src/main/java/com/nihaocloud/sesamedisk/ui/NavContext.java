@@ -47,6 +47,17 @@ public class NavContext {
         return dirPath;
     }
 
+    @Override
+    public String toString() {
+        return "NavContext{" +
+                "repoID='" + repoID + '\'' +
+                ", repoName='" + repoName + '\'' +
+                ", dirPath='" + dirPath + '\'' +
+                ", dirID='" + dirID + '\'' +
+                ", dirPermission='" + dirPermission + '\'' +
+                '}';
+    }
+
     public String getDirID() {
         return dirID;
     }
@@ -58,4 +69,6 @@ public class NavContext {
     public void setDirPermission(String dirPermission) {
         this.dirPermission = dirPermission;
     }
+
+
 }

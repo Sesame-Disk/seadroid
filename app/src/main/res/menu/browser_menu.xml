@@ -31,6 +31,12 @@
                 app:showAsAction="ifRoom" />
 
             <item
+                android:id="@+id/upload_folder_library"
+                android:title="@string/upload_folder"
+                android:visible="true"
+                app:showAsAction="ifRoom" />
+
+            <item
                 android:id="@+id/add"
                 android:title="@string/add_file"
                 android:visible="true"
@@ -53,7 +59,6 @@
                 android:title="@string/accounts"
                 android:visible="true"
                 app:showAsAction="never" />
-
 
             <item
                 android:id="@+id/settings"

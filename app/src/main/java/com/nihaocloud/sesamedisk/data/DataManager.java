@@ -326,6 +326,20 @@ public class DataManager {
         }
     }
 
+    private CreateRepo parseCreateNewRepoRepos(String json) {
+        try {
+            JSONObject jsonObject = Utils.parseJsonObject(json);
+            return CreateRepo.fromJson(jsonObject);
+        } catch (JSONException e) {
+            Log.e(DEBUG_TAG, "parse json error" +e.getMessage());
+            return null;
+        } catch (Exception e) {
+            // other exception, for example ClassCastException
+            Log.e(DEBUG_TAG, "parseRepos exception" +e.getMessage());
+            return null;
+        }
+    }
+
     private SeafRepoEncrypt parseRepoEncrypt(String json) {
         try {
             JSONObject object = Utils.parseJsonObject(json);
@@ -735,6 +749,11 @@ public class DataManager {
 
     public void createNewRepo(String repoName, String password) throws SeafException {
         sc.createNewRepo(repoName, "", password);
+    }
+
+    public CreateRepo createNewRepoWithResponse(String repoName, String password) throws SeafException {
+        String response = sc.createNewRepoWithResponse(repoName, "", password);
+        return parseCreateNewRepoRepos(response);
     }
 
     public void createNewDir(String repoID, String parentDir, String dirName) throws SeafException {

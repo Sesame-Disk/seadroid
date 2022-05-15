@@ -40,7 +40,6 @@ class NewRepoTask extends TaskDialog.Task {
 public class NewRepoDialog extends TaskDialog {
 
     private final static String STATE_ACCOUNT = "new_repo_dialog.account";
-
     // The input fields of the dialog
     private EditText mRepoNameText;
     private SwitchCompat mEncryptSwitch;
@@ -48,7 +47,6 @@ public class NewRepoDialog extends TaskDialog {
     private EditText mPasswordText;
     private EditText mPasswordConfirmationText;
     private NestedScrollView mNestedScrollView;
-
     private Account mAccount;
     private DataManager mDataManager;
 
@@ -58,10 +56,7 @@ public class NewRepoDialog extends TaskDialog {
     }
 
     private DataManager getDataManager() {
-        if (mDataManager == null) {
-            mDataManager = new DataManager(mAccount);
-        }
-
+        if (mDataManager == null) mDataManager = new DataManager(mAccount);
         return mDataManager;
     }
 
@@ -94,14 +89,12 @@ public class NewRepoDialog extends TaskDialog {
                     mNestedScrollView.setVisibility(View.VISIBLE);
                 } else {
                     mNestedScrollView.setVisibility(View.GONE);
-
                     // Delete entered passwords so hiding the input fields creates an unencrypted repo
                     mPasswordText.setText("");
                     mPasswordConfirmationText.setText("");
                 }
             }
         });
-
         return view;
     }
 

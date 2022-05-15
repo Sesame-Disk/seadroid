@@ -43,9 +43,9 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/list_item_title"
-        android:paddingLeft="@dimen/lv_subtitle_padding_left"
-        android:layout_toRightOf="@id/list_item_icon"
         android:layout_toLeftOf="@id/list_item_checkbox"
+        android:layout_toRightOf="@id/list_item_icon"
+        android:paddingLeft="@dimen/lv_subtitle_padding_left"
         android:text="Subtitle"
         android:textSize="@dimen/lv_subtitle_txt_size" />
 

@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class UploadFolder {
@@ -33,6 +34,15 @@ public class UploadFolder {
 
     public File getFile() {
         return file;
+    }
+
+    public static UploadFolder[] getUploadCashFiles(final Context context, final DocumentFile[] documentFiles) {
+        final List<UploadFolder> uploadFolders = new ArrayList<UploadFolder>();
+        for (DocumentFile file : documentFiles) {
+            UploadFolder[] uploadCashFiles = getUploadCashFiles(context, file);
+            uploadFolders.addAll(Arrays.asList(uploadCashFiles));
+        }
+        return uploadFolders.toArray(new UploadFolder[]{});
     }
 
     public static UploadFolder[] getUploadCashFiles(final Context context, final DocumentFile documentFile) {

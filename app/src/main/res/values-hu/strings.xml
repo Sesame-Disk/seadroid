@@ -12,6 +12,7 @@
     <string name="delete_file_f">Fájl törlés</string>
     <string name="delete_dir">Könyvtár törlés</string>
     <string name="name_hint">Név</string>
+    <string name="name_hint_clone">Név :&#160;</string>
     <string name="server_hint">Szerver cím</string>
     <string name="email_hint">Email vagy felhasználónév</string>
     <string name="passwd_hint">Jelszó</string>

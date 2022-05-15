@@ -12,6 +12,7 @@
     <string name="delete_file_f">Bestand verwijderen</string>
     <string name="delete_dir">Map verwijderen</string>
     <string name="name_hint">Naam</string>
+    <string name="name_hint_clone">Naam :&#160;</string>
     <string name="server_hint">Server, zoals cloud.seafile.com</string>
     <string name="email_hint">E-mailadres of gebruikersnaam</string>
     <string name="passwd_hint">Wachtwoord</string>

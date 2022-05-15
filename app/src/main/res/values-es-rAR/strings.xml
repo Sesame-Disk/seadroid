@@ -18,6 +18,7 @@
     <string name="move_folder">Mover carpeta</string>
     <string name="delete_dir">Eliminar carpeta</string>
     <string name="name_hint">Nombre</string>
+    <string name="name_hint_clone">Nombre :&#160;</string>
     <string name="server_hint">Dirección del servidor</string>
     <string name="email_hint">Email o Nombre de usuario</string>
     <string name="passwd_hint">Contraseña</string>

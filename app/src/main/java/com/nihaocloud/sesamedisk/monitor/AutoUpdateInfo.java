@@ -40,7 +40,7 @@ class AutoUpdateInfo {
 
         return that.account.equals(this.account) && that.repoID.equals(this.repoID) &&
                 that.repoName.equals(this.repoName) && that.parentDir.equals(this.parentDir) &&
-                that.localPath.equals(this.localPath) && (that.relativePath == null || that.relativePath == relativePath);
+                that.localPath.equals(this.localPath) && (that.relativePath == null || that.relativePath.equals(relativePath));
     }
 
     private volatile int hashCode = 0;

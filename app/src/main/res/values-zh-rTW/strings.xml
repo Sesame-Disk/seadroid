@@ -12,6 +12,7 @@
     <string name="delete_file_f">刪除文件</string>
     <string name="delete_dir">刪除文件夾</string>
     <string name="name_hint">名稱</string>
+    <string name="name_hint_clone">名稱 :&#160;</string>
     <string name="server_hint">NiHao伺服器位址</string>
     <string name="email_hint">郵箱或帳號</string>
     <string name="passwd_hint">密碼</string>
