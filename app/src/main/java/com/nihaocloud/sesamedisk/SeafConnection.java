@@ -194,8 +194,13 @@ public class SeafConnection {
             if (rememberDevice) {
                 req.header("X-SEAFILE-2FA-TRUST-DEVICE", 1);
             }
-            req.form("username", account.email);
-            req.form("password", passwd);
+
+            try {
+                req.form("username", account.email);
+                req.form("password", passwd);
+            } catch (Exception e) {
+                throw SeafException.networkException;
+            }
 
             String appVersion = "";
             Context context = NihaoApplication.getAppContext();
@@ -210,11 +215,17 @@ public class SeafConnection {
             @SuppressLint("HardwareIds")
             String deviceId = Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);
 
-            req.form("platform", "android");
-            req.form("device_id", deviceId);
-            req.form("device_name", Build.MODEL);
-            req.form("client_version", appVersion);
-            req.form("platform_version", Build.VERSION.RELEASE);
+
+            try {
+                req.form("platform", "android");
+                req.form("device_id", deviceId);
+                req.form("device_name", Build.MODEL);
+                req.form("client_version", appVersion);
+                req.form("platform_version", Build.VERSION.RELEASE);
+            } catch (Exception e) {
+                throw SeafException.networkException;
+            }
+
 
             //  Log.d(DEBUG_TAG, req.toString());
 
@@ -776,7 +787,12 @@ public class SeafConnection {
         try {
             HttpRequest req = prepareApiPostRequest("api2/repos/" + repoID + "/", true, null);
 
-            req.form("password", passwd);
+            try {
+                req.form("password", passwd);
+            } catch (Exception e) {
+                throw SeafException.networkException;
+            }
+
             checkRequestResponseStatus(req, HttpURLConnection.HTTP_OK);
             return true;
         } catch (SeafException e) {
@@ -828,7 +844,14 @@ public class SeafConnection {
             apiPath = "api2/repos/" + repoID + "/upload-blks-link/";
             HttpRequest req = prepareApiPostRequest(apiPath, true, null);
             String ids = blocksId.toString().replace("[", "").replace("]", "").replace(" ", "");
-            req.form("blklist", ids);
+
+
+            try {
+                req.form("blklist", ids);
+            } catch (Exception e) {
+                throw SeafException.networkException;
+            }
+
             checkRequestResponseStatus(req, HttpURLConnection.HTTP_OK);
             return new String(req.bytes(), "UTF-8");
         } catch (SeafException e) {
@@ -980,18 +1003,21 @@ public class SeafConnection {
         throw new SeafException(SeafException.OTHER_EXCEPTION, "File upload failed");
     }
 
-    public void createNewRepo(String repoName, String description, String password) throws SeafException {
+    public void createNewRepo(String repoName, String description, String password) throws SeafException, HttpRequestException {
         HttpRequest req = prepareApiPostRequest("api2/repos/", true, null);
-        req.form("name", repoName);
+        try {
+            req.form("name", repoName);
 
-        if (description.length() > 0) {
-            req.form("desc", description);
+            if (description.length() > 0) {
+                req.form("desc", description);
+            }
+
+            if (password.length() > 0) {
+                req.form("passwd", password);
+            }
+        } catch (Exception e) {
+            throw SeafException.networkException;
         }
-
-        if (password.length() > 0) {
-            req.form("passwd", password);
-        }
-
         checkRequestResponseStatus(req, HttpURLConnection.HTTP_OK);
     }
 
@@ -999,9 +1025,19 @@ public class SeafConnection {
         try {
 
             HttpRequest req = prepareApiPostRequest("api2/repos/", true, null);
-            req.form("name", repoName);
-            if (description.length() > 0) req.form("desc", description);
-            if (password.length() > 0) req.form("passwd", password);
+
+            try {
+                req.form("name", repoName);
+            } catch (Exception e) {
+                throw SeafException.networkException;
+            }
+
+            try {
+                if (description.length() > 0) req.form("desc", description);
+                if (password.length() > 0) req.form("passwd", password);
+            } catch (Exception e) {
+                throw SeafException.networkException;
+            }
 
             checkRequestResponseStatus(req, HttpURLConnection.HTTP_OK);
             return new String(req.bytes(), "UTF-8");
@@ -1030,7 +1066,11 @@ public class SeafConnection {
 
             req = prepareApiPostRequest("api2/repos/" + repoID + "/dir/", true, params, false);
 
-            req.form("operation", "mkdir");
+            try {
+                req.form("operation", "mkdir");
+            } catch (Exception e) {
+                throw SeafException.networkException;
+            }
 
             checkRequestResponseStatus(req, HttpURLConnection.HTTP_OK);
 
@@ -1070,7 +1110,12 @@ public class SeafConnection {
 
             HttpRequest req = prepareApiPostRequest("api2/repos/" + repoID + "/file/", true, params, false);
 
-            req.form("operation", "create");
+            try {
+                req.form("operation", "create");
+            } catch (Exception e) {
+                throw SeafException.networkException;
+            }
+
 
             checkRequestResponseStatus(req, HttpURLConnection.HTTP_OK);
 
@@ -1245,7 +1290,12 @@ public class SeafConnection {
         params.put("op", "rename");
 
         HttpRequest req = prepareApiPostRequest(String.format("api2/repos/%s/", repoID), true, params);
-        req.form("repo_name", newName);
+
+        try {
+            req.form("repo_name", newName);
+        } catch (Exception e) {
+            throw SeafException.networkException;
+        }
 
         checkRequestResponseStatus(req, HttpURLConnection.HTTP_OK);
     }
@@ -1302,14 +1352,20 @@ public class SeafConnection {
         try {
             Map<String, Object> params = Maps.newHashMap();
             HttpRequest req = prepareApiPostRequest("api/v2.1/share-links/", true, params, false);
-            req.form("repo_id", repoID);
-            req.form("path", path);
-            if (!TextUtils.isEmpty(password)) {
-                req.form("password", password);
+
+            try {
+                req.form("repo_id", repoID);
+                req.form("path", path);
+                if (!TextUtils.isEmpty(password)) {
+                    req.form("password", password);
+                }
+                if (!TextUtils.isEmpty(days)) {
+                    req.form("expire_days", days);
+                }
+            } catch (Exception e) {
+                throw SeafException.networkException;
             }
-            if (!TextUtils.isEmpty(days)) {
-                req.form("expire_days", days);
-            }
+
             checkRequestResponseStatus(req, HttpURLConnection.HTTP_OK);
             String result = new String(req.bytes(), "UTF-8");
             if (result != null && Utils.parseJsonObject(result) != null) {
@@ -1334,7 +1390,11 @@ public class SeafConnection {
     public void completeRemoteWipe(String token) throws SeafException {
         try {
             HttpRequest req = prepareApiPostRequest("api2/device-wiped/", true, null);
-            req.form("token", token);
+            try {
+                req.form("token", token);
+            } catch (Exception e) {
+                throw SeafException.networkException;
+            }
             checkRequestResponseStatus(req, HttpURLConnection.HTTP_CREATED);
         } catch (SeafException e) {
             throw e;
@@ -1347,8 +1407,12 @@ public class SeafConnection {
         try {
             HttpRequest req = prepareApiPostRequest("api2/starredfiles/", true, null);
 
-            req.form("repo_id", repoID);
-            req.form("p", path);
+            try {
+                req.form("repo_id", repoID);
+                req.form("p", path);
+            } catch (Exception e) {
+                throw SeafException.networkException;
+            }
 
             checkRequestResponseStatus(req, HttpURLConnection.HTTP_CREATED);
 
@@ -1384,8 +1448,12 @@ public class SeafConnection {
             String suffix = isdir ? "/dir/" : "/file/";
             HttpRequest req = prepareApiPostRequest("api2/repos/" + repoID + suffix, true, params);
 
-            req.form("operation", "rename");
-            req.form("newname", newName);
+            try {
+                req.form("operation", "rename");
+                req.form("newname", newName);
+            } catch (Exception e) {
+                throw SeafException.networkException;
+            }
 
             checkRequestResponseStatus(req, HttpURLConnection.HTTP_OK);
 
@@ -1458,9 +1526,13 @@ public class SeafConnection {
 
             HttpRequest req = prepareApiPostRequest("api2/repos/" + srcRepoId + "/fileops/copy/", true, params);
 
-            req.form("dst_repo", dstRepoId);
-            req.form("dst_dir", dstDir);
-            req.form("file_names", srcFn);
+            try {
+                req.form("dst_repo", dstRepoId);
+                req.form("dst_dir", dstDir);
+                req.form("file_names", srcFn);
+            } catch (Exception e) {
+                throw SeafException.networkException;
+            }
 
             checkRequestResponseStatus(req, HttpURLConnection.HTTP_OK);
 
@@ -1491,9 +1563,14 @@ public class SeafConnection {
 
             HttpRequest req = prepareApiPostRequest("api2/repos/" + srcRepoId + "/fileops/move/", true, params);
 
-            req.form("dst_repo", dstRepoId);
-            req.form("dst_dir", dstDir);
-            req.form("file_names", srcFn);
+            try {
+                req.form("dst_repo", dstRepoId);
+                req.form("dst_dir", dstDir);
+                req.form("file_names", srcFn);
+            } catch (Exception e) {
+                throw SeafException.networkException;
+            }
+
 
             checkRequestResponseStatus(req, HttpURLConnection.HTTP_OK);
 
@@ -1522,9 +1599,13 @@ public class SeafConnection {
             String suffix = "/file/";
             HttpRequest req = prepareApiPostRequest("api2/repos/" + srcRepoId + suffix, true, params);
 
-            req.form("operation", "move");
-            req.form("dst_repo", dstRepoId);
-            req.form("dst_dir", dstDir);
+            try {
+                req.form("operation", "move");
+                req.form("dst_repo", dstRepoId);
+                req.form("dst_dir", dstDir);
+            } catch (Exception e) {
+                throw SeafException.networkException;
+            }
 
             checkRequestResponseStatus(req, HttpURLConnection.HTTP_OK);
 
