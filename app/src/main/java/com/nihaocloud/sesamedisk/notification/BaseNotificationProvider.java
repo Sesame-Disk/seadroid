@@ -1,7 +1,7 @@
 package com.nihaocloud.sesamedisk.notification;
 
 import android.app.NotificationManager;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
 import com.nihaocloud.sesamedisk.R;
 import com.nihaocloud.sesamedisk.NihaoApplication;
 import com.nihaocloud.sesamedisk.transfer.TransferManager;

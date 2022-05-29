@@ -1,7 +1,7 @@
 package com.nihaocloud.sesamedisk.ui.adapter;
 
 import android.graphics.Bitmap;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
