@@ -12,7 +12,7 @@ public class SeafCachedFile implements SeafItem {
     public String path;
     public String accountSignature;
     public long fileOriginalSize;
-    protected File file;
+    public File file;
     public String relativePath;
 
     public SeafCachedFile() {

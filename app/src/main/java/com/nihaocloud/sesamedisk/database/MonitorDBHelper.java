@@ -1,4 +1,4 @@
-package com.nihaocloud.sesamedisk.monitor;
+package com.nihaocloud.sesamedisk.database;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
@@ -13,6 +13,7 @@ import com.google.common.collect.Maps;
 import com.nihaocloud.sesamedisk.NihaoApplication;
 import com.nihaocloud.sesamedisk.account.Account;
 import com.nihaocloud.sesamedisk.account.AccountManager;
+import com.nihaocloud.sesamedisk.monitor.AutoUpdateInfo;
 
 import java.io.File;
 import java.util.List;

@@ -33,7 +33,7 @@ import com.nihaocloud.sesamedisk.cameraupload.CameraUploadManager;
 import com.nihaocloud.sesamedisk.cameraupload.GalleryBucketUtils;
 import com.nihaocloud.sesamedisk.data.CameraSyncEvent;
 import com.nihaocloud.sesamedisk.data.DataManager;
-import com.nihaocloud.sesamedisk.data.DatabaseHelper;
+import com.nihaocloud.sesamedisk.database.DatabaseHelper;
 import com.nihaocloud.sesamedisk.data.ServerInfo;
 import com.nihaocloud.sesamedisk.data.StorageManager;
 import com.nihaocloud.sesamedisk.gesturelock.LockPatternUtils;

@@ -1,4 +1,4 @@
-package com.nihaocloud.sesamedisk.cameraupload;
+package com.nihaocloud.sesamedisk.database;
 
 import android.content.ContentValues;
 import android.content.Context;

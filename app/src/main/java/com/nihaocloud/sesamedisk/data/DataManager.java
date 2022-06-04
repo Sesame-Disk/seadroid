@@ -13,6 +13,7 @@ import com.nihaocloud.sesamedisk.SeafException;
 import com.nihaocloud.sesamedisk.account.Account;
 import com.nihaocloud.sesamedisk.account.AccountInfo;
 import com.nihaocloud.sesamedisk.crypto.Crypto;
+import com.nihaocloud.sesamedisk.database.DatabaseHelper;
 import com.nihaocloud.sesamedisk.util.Utils;
 
 import org.apache.commons.io.FileUtils;

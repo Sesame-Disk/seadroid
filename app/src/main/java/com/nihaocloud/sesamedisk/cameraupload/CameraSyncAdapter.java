@@ -31,6 +31,7 @@ import com.nihaocloud.sesamedisk.data.DataManager;
 import com.nihaocloud.sesamedisk.data.SeafDirent;
 import com.nihaocloud.sesamedisk.data.SeafRepo;
 import com.nihaocloud.sesamedisk.data.StorageManager;
+import com.nihaocloud.sesamedisk.database.CameraUploadDBHelper;
 import com.nihaocloud.sesamedisk.transfer.TaskState;
 import com.nihaocloud.sesamedisk.transfer.TransferService;
 import com.nihaocloud.sesamedisk.transfer.UploadTaskInfo;

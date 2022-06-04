@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.nihaocloud.sesamedisk.NihaoApplication;
 import com.nihaocloud.sesamedisk.account.Account;
 import com.nihaocloud.sesamedisk.account.AccountManager;
+import com.nihaocloud.sesamedisk.database.AvatarDBHelper;
 import com.nihaocloud.sesamedisk.util.Utils;
 
 import org.json.JSONObject;

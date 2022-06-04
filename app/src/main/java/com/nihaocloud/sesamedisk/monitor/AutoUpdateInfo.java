@@ -4,13 +4,13 @@ import com.google.common.base.Objects;
 import com.nihaocloud.sesamedisk.SettingsManager;
 import com.nihaocloud.sesamedisk.account.Account;
 
-class AutoUpdateInfo {
-    final Account account;
-    final String repoID;
-    final String repoName;
-    final String parentDir;
-    final String relativePath;
-    final String localPath;
+public class AutoUpdateInfo {
+    public final Account account;
+    public  final String repoID;
+    public final String repoName;
+    public final String parentDir;
+    public final String relativePath;
+    public final String localPath;
 
     public AutoUpdateInfo(Account account, String repoID, String repoName,
                           String parentDir, String relativePath, String localPath) {

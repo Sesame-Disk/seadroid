@@ -55,7 +55,7 @@ import com.nihaocloud.sesamedisk.cameraupload.MediaObserverService;
 import com.nihaocloud.sesamedisk.data.CheckUploadServiceEvent;
 import com.nihaocloud.sesamedisk.data.CreateRepo;
 import com.nihaocloud.sesamedisk.data.DataManager;
-import com.nihaocloud.sesamedisk.data.DatabaseHelper;
+import com.nihaocloud.sesamedisk.database.DatabaseHelper;
 import com.nihaocloud.sesamedisk.data.SeafDirent;
 import com.nihaocloud.sesamedisk.data.SeafRepo;
 import com.nihaocloud.sesamedisk.data.SeafStarredFile;

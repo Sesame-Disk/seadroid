@@ -8,7 +8,7 @@ import android.view.View;
 import com.bumptech.glide.Glide;
 import com.nihaocloud.sesamedisk.R;
 import com.nihaocloud.sesamedisk.NihaoApplication;
-import com.nihaocloud.sesamedisk.data.DatabaseHelper;
+import com.nihaocloud.sesamedisk.database.DatabaseHelper;
 import com.nihaocloud.sesamedisk.data.StorageManager;
 
 class ClearCacheTask extends TaskDialog.Task {

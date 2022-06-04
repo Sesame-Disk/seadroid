@@ -1,4 +1,4 @@
-package com.nihaocloud.sesamedisk.avatar;
+package com.nihaocloud.sesamedisk.database;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.google.common.collect.Lists;
 import com.nihaocloud.sesamedisk.NihaoApplication;
 import com.nihaocloud.sesamedisk.account.Account;
+import com.nihaocloud.sesamedisk.avatar.Avatar;
 
 public class AvatarDBHelper extends SQLiteOpenHelper {
     private static final String DEBUG_TAG = "AvatarDBHelper";

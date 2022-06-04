@@ -1,4 +1,4 @@
-package com.nihaocloud.sesamedisk.data;
+package com.nihaocloud.sesamedisk.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -13,6 +13,9 @@ import android.util.Pair;
 import com.google.common.collect.Lists;
 import com.nihaocloud.sesamedisk.NihaoApplication;
 import com.nihaocloud.sesamedisk.account.Account;
+import com.nihaocloud.sesamedisk.data.DataManager;
+import com.nihaocloud.sesamedisk.data.SeafCachedFile;
+import com.nihaocloud.sesamedisk.data.StorageManager;
 
 import java.io.File;
 import java.util.List;

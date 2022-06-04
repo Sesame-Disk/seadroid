@@ -7,6 +7,7 @@ import java.util.Map;
 import android.util.Log;
 
 import com.google.common.collect.Maps;
+import com.nihaocloud.sesamedisk.database.CertsDBHelper;
 import com.nihaocloud.sesamedisk.util.ConcurrentAsyncTask;
 import com.nihaocloud.sesamedisk.account.Account;
 

@@ -9,6 +9,7 @@ import com.google.common.collect.Lists;
 import com.nihaocloud.sesamedisk.BuildConfig;
 import com.nihaocloud.sesamedisk.cameraupload.CameraUploadManager;
 import com.nihaocloud.sesamedisk.data.ServerInfo;
+import com.nihaocloud.sesamedisk.database.AccountDBHelper;
 
 import java.util.ArrayList;
 import java.util.List;

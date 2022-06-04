@@ -7,7 +7,7 @@ import android.view.View;
 
 import com.nihaocloud.sesamedisk.R;
 import com.nihaocloud.sesamedisk.data.DataManager;
-import com.nihaocloud.sesamedisk.data.DatabaseHelper;
+import com.nihaocloud.sesamedisk.database.DatabaseHelper;
 
 public class ClearPasswordTaskDialog extends TaskDialog {
 

@@ -1,4 +1,4 @@
-package com.nihaocloud.sesamedisk.account;
+package com.nihaocloud.sesamedisk.database;
 
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
@@ -12,6 +12,9 @@ import android.util.Log;
 
 import com.google.common.collect.Lists;
 import com.nihaocloud.sesamedisk.SettingsManager;
+import com.nihaocloud.sesamedisk.account.Account;
+import com.nihaocloud.sesamedisk.account.AccountManager;
+import com.nihaocloud.sesamedisk.account.Authenticator;
 import com.nihaocloud.sesamedisk.cameraupload.CameraUploadManager;
 import com.nihaocloud.sesamedisk.data.ServerInfo;
 
