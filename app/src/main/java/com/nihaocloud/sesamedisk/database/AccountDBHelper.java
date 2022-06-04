@@ -261,5 +261,4 @@ public class AccountDBHelper extends SQLiteOpenHelper {
         ServerInfo serverInfo = new ServerInfo(url, version, features);
         return serverInfo;
     }
-
 }
