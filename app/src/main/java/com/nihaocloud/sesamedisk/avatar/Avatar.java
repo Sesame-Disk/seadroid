@@ -65,14 +65,5 @@ public class Avatar {
     public void setSignature(String signature) {
         this.signature = signature;
     }
-    
-    @Override
-    public String toString() {
-        return Objects.toStringHelper(this)
-                .add("signature", signature)
-                .add("url", url)
-                .add("mtime", mtime)
-                /*.add("is_default", is_default)*/
-                .toString();
-    }
+
 }

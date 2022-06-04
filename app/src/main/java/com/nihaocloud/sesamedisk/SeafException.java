@@ -34,10 +34,4 @@ public class SeafException extends Exception {
         return code;
     }
 
-    public String toString() {
-        return Objects.toStringHelper(this)
-            .add("code", code)
-            .add("msg", getMessage())
-            .toString();
-    }
 }
