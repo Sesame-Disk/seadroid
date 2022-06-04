@@ -23,17 +23,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.provider.MediaStore;
-import com.google.android.material.tabs.TabLayout;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.core.content.FileProvider;
-import androidx.documentfile.provider.DocumentFile;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.util.Pair;
 import android.view.KeyEvent;
@@ -43,6 +32,18 @@ import android.view.View;
 import android.view.Window;
 import android.widget.FrameLayout;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
+import androidx.documentfile.provider.DocumentFile;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
 import com.google.common.collect.Lists;
 import com.nihaocloud.sesamedisk.R;
 import com.nihaocloud.sesamedisk.SeafConnection;
@@ -55,14 +56,13 @@ import com.nihaocloud.sesamedisk.cameraupload.MediaObserverService;
 import com.nihaocloud.sesamedisk.data.CheckUploadServiceEvent;
 import com.nihaocloud.sesamedisk.data.CreateRepo;
 import com.nihaocloud.sesamedisk.data.DataManager;
-import com.nihaocloud.sesamedisk.database.DatabaseHelper;
 import com.nihaocloud.sesamedisk.data.SeafDirent;
 import com.nihaocloud.sesamedisk.data.SeafRepo;
 import com.nihaocloud.sesamedisk.data.SeafStarredFile;
 import com.nihaocloud.sesamedisk.data.ServerInfo;
 import com.nihaocloud.sesamedisk.data.StorageManager;
 import com.nihaocloud.sesamedisk.data.UploadFolder;
-import com.nihaocloud.sesamedisk.fileschooser.MultiFileChooserActivity;
+import com.nihaocloud.sesamedisk.database.DatabaseHelper;
 import com.nihaocloud.sesamedisk.monitor.FileMonitorService;
 import com.nihaocloud.sesamedisk.notification.DownloadNotificationProvider;
 import com.nihaocloud.sesamedisk.notification.UploadNotificationProvider;
@@ -94,7 +94,6 @@ import com.nihaocloud.sesamedisk.ui.dialog.RenameRepoDialog;
 import com.nihaocloud.sesamedisk.ui.dialog.SortFilesDialogFragment;
 import com.nihaocloud.sesamedisk.ui.dialog.SslConfirmDialog;
 import com.nihaocloud.sesamedisk.ui.dialog.TaskDialog;
-import com.nihaocloud.sesamedisk.ui.dialog.UploadChoiceDialog;
 import com.nihaocloud.sesamedisk.ui.dialog.UploadFolderRepoDialog;
 import com.nihaocloud.sesamedisk.ui.fragment.ActivitiesFragment;
 import com.nihaocloud.sesamedisk.ui.fragment.ReposFragment;
@@ -102,7 +101,6 @@ import com.nihaocloud.sesamedisk.ui.fragment.StarredFragment;
 import com.nihaocloud.sesamedisk.util.ConcurrentAsyncTask;
 import com.nihaocloud.sesamedisk.util.PermissionUtils;
 import com.nihaocloud.sesamedisk.util.Utils;
-import com.nihaocloud.sesamedisk.util.UtilsJellyBean;
 import com.viewpagerindicator.IconPagerAdapter;
 
 import org.apache.commons.io.IOUtils;
@@ -125,6 +123,7 @@ public class BrowserActivity extends BaseActivity
         implements ReposFragment.OnFileSelectedListener, StarredFragment.OnStarredFileSelectedListener,
         FragmentManager.OnBackStackChangedListener, Toolbar.OnMenuItemClickListener,
         SortFilesDialogFragment.SortItemClickListener {
+    public static final String MULTI_FILES_PATHS = "com.seafile.seadroid2.fileschooser.paths";
     private static final String DEBUG_TAG = "BrowserActivity";
     public static final String ACTIONBAR_PARENT_PATH = "/";
 
@@ -574,6 +573,7 @@ public class BrowserActivity extends BaseActivity
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         // Log.i(DEBUG_TAG, "Received response for permission request.");
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case REQUEST_PERMISSIONS_WRITE_EXTERNAL_STORAGE: {
                 // Check if the only required permission has been granted
@@ -826,6 +826,7 @@ public class BrowserActivity extends BaseActivity
 
     @Override
     protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
         Log.d(DEBUG_TAG, "onNewIntent");
 
         // if the user started the Seadroid app from the Launcher, keep the old Activity
@@ -1278,15 +1279,9 @@ public class BrowserActivity extends BaseActivity
             showShortToast(this, R.string.library_read_only);
             return;
         }
-        // Starting with kitkat (or earlier?), the document picker has integrated image and local file support
-        if (SDK_INT < Build.VERSION_CODES.KITKAT) {
-            UploadChoiceDialog dialog = new UploadChoiceDialog();
-            dialog.show(getSupportFragmentManager(), PICK_FILE_DIALOG_FRAGMENT_TAG);
-        } else {
-            Intent target = Utils.createGetContentIntent();
-            Intent intent = Intent.createChooser(target, getString(R.string.choose_file));
-            startActivityForResult(intent, PICK_FILE_REQUEST);
-        }
+        Intent target = Utils.createGetContentIntent();
+        Intent intent = Intent.createChooser(target, getString(R.string.choose_file));
+        startActivityForResult(intent, PICK_FILE_REQUEST);
     }
 
     private void pickFolder() {
@@ -1308,7 +1303,7 @@ public class BrowserActivity extends BaseActivity
         switch (requestCode) {
             case PICK_FILES_REQUEST:
                 if (resultCode == RESULT_OK) {
-                    String[] paths = data.getStringArrayExtra(MultiFileChooserActivity.MULTI_FILES_PATHS);
+                    String[] paths = data.getStringArrayExtra(MULTI_FILES_PATHS);
                     if (paths == null)
                         return;
                     showShortToast(this, getString(R.string.added_to_upload_tasks));
@@ -1376,20 +1371,11 @@ public class BrowserActivity extends BaseActivity
                         showShortToast(this, R.string.network_down);
                         return;
                     }
-                    if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        List<Uri> uriList = UtilsJellyBean.extractUriListFromIntent(data);
-                        if (uriList.size() > 0) {
-                            ConcurrentAsyncTask.execute(new SAFLoadRemoteFileTask(), uriList.toArray(new Uri[]{}));
-                        } else {
-                            showShortToast(BrowserActivity.this, R.string.saf_upload_path_not_available);
-                        }
+                    Uri uri = data.getData();
+                    if (uri != null) {
+                        ConcurrentAsyncTask.execute(new SAFLoadRemoteFileTask(), uri);
                     } else {
-                        Uri uri = data.getData();
-                        if (uri != null) {
-                            ConcurrentAsyncTask.execute(new SAFLoadRemoteFileTask(), uri);
-                        } else {
-                            showShortToast(BrowserActivity.this, R.string.saf_upload_path_not_available);
-                        }
+                        showShortToast(BrowserActivity.this, R.string.saf_upload_path_not_available);
                     }
                 }
                 break;
@@ -1501,9 +1487,7 @@ public class BrowserActivity extends BaseActivity
                     out = new FileOutputStream(tempFile);
                     IOUtils.copy(in, out);
                     fileList.add(tempFile);
-                } catch (IOException e) {
-                    Log.d(DEBUG_TAG, "Could not open requested document", e);
-                } catch (RuntimeException e) {
+                } catch (IOException | RuntimeException e) {
                     Log.d(DEBUG_TAG, "Could not open requested document", e);
                 } finally {
                     IOUtils.closeQuietly(in);

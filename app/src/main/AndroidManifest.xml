@@ -127,13 +127,6 @@
             android:label="@string/app_name"
             android:parentActivityName=".ui.activity.AccountsActivity" />
 
-        <!-- MultipleImageSelectionActivity uses the default theme, instead of
-             ActionBarSherlock -->
-        <activity
-            android:name=".gallery.MultipleImageSelectionActivity"
-            android:exported="false"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.Multiple" />
 
         <activity
             android:name=".ui.activity.ShareToSeafileActivity"
@@ -171,11 +164,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activity.AccountsActivity" />
         </activity>
-
-        <activity
-            android:name=".fileschooser.MultiFileChooserActivity"
-            android:exported="false"
-            android:label="@string/app_name" />
 
         <activity
             android:name=".ui.activity.TransferActivity"

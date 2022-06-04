@@ -24,14 +24,15 @@ import android.os.Bundle;
 import android.os.LocaleList;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -40,7 +41,6 @@ import com.nihaocloud.sesamedisk.R;
 import com.nihaocloud.sesamedisk.SettingsManager;
 import com.nihaocloud.sesamedisk.cameraupload.MediaSchedulerService;
 import com.nihaocloud.sesamedisk.data.SeafRepo;
-import com.nihaocloud.sesamedisk.fileschooser.SelectableFile;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -75,7 +75,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -506,64 +505,19 @@ public class Utils {
         out.close();
     }
 
-    /************ MutiFileChooser ************/
-    private static Comparator<SelectableFile> mComparator = new Comparator<SelectableFile>() {
-        public int compare(SelectableFile f1, SelectableFile f2) {
-            // Sort alphabetically by lower case, which is much cleaner
-            return f1.getName().toLowerCase().compareTo(
-                    f2.getName().toLowerCase());
-        }
+
+
+    private static FileFilter mFileFilter = file -> {
+        final String fileName = file.getName();
+        // Return files only (not directories) and skip hidden files
+        return file.isFile() && !fileName.startsWith(HIDDEN_PREFIX);
     };
 
-    private static FileFilter mFileFilter = new FileFilter() {
-        public boolean accept(File file) {
-            final String fileName = file.getName();
-            // Return files only (not directories) and skip hidden files
-            return file.isFile() && !fileName.startsWith(HIDDEN_PREFIX);
-        }
+    private static FileFilter mDirFilter = file -> {
+        final String fileName = file.getName();
+        // Return directories only and skip hidden directories
+        return file.isDirectory() && !fileName.startsWith(HIDDEN_PREFIX);
     };
-
-    private static FileFilter mDirFilter = new FileFilter() {
-        public boolean accept(File file) {
-            final String fileName = file.getName();
-            // Return directories only and skip hidden directories
-            return file.isDirectory() && !fileName.startsWith(HIDDEN_PREFIX);
-        }
-    };
-
-    public static List<SelectableFile> getFileList(String path, List<File> selectedFile) {
-        ArrayList<SelectableFile> list = Lists.newArrayList();
-
-        // Current directory File instance
-        final SelectableFile pathDir = new SelectableFile(path);
-
-        // List file in this directory with the directory filter
-        final SelectableFile[] dirs = pathDir.listFiles(mDirFilter);
-        if (dirs != null) {
-            // Sort the folders alphabetically
-            Arrays.sort(dirs, mComparator);
-            // Add each folder to the File list for the list adapter
-            for (SelectableFile dir : dirs) list.add(dir);
-        }
-
-        // List file in this directory with the file filter
-        final SelectableFile[] files = pathDir.listFiles(mFileFilter);
-        if (files != null) {
-            // Sort the files alphabetically
-            Arrays.sort(files, mComparator);
-            // Add each file to the File list for the list adapter
-            for (SelectableFile file : files) {
-                if (selectedFile != null) {
-                    if (selectedFile.contains(file.getFile())) {
-                        file.setSelected(true);
-                    }
-                }
-                list.add(file);
-            }
-        }
-
-        return list;
-    }
 
     public static Intent createGetContentIntent() {
         // Implicitly allow the user to select a particular kind of data
@@ -790,7 +744,7 @@ public class Utils {
      * SslCertificate class does not has a public getter for the underlying
      * X509Certificate, we can only do this by hack. This only works for andorid 4.0+
      *
-     * @see https://groups.google.com/forum/#!topic/android-developers/eAPJ6b7mrmg
+     * @see <a href="https://groups.google.com/forum/#!topic/android-developers/eAPJ6b7mrmg">...</a>
      */
     public static X509Certificate getX509CertFromSslCertHack(SslCertificate sslCert) {
         X509Certificate x509Certificate = null;

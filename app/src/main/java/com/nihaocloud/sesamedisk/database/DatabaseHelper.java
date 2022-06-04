@@ -28,7 +28,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // FileCache table
     private static final String FILECACHE_TABLE_NAME = "FileCache";
-
     private static final String FILECACHE_COLUMN_ID = "id";
     private static final String FILECACHE_COLUMN_FILEID = "fileid";
     private static final String FILECACHE_COLUMN_REPO_NAME = "repo_name";
