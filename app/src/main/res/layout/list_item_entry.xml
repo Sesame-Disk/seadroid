@@ -24,9 +24,9 @@
             android:layout_width="@dimen/lv_icon_width"
             android:layout_height="@dimen/lv_icon_height"
             android:layout_centerVertical="true"
-            android:src="@drawable/repo_encrypted"
             android:layout_toRightOf="@id/list_item_multi_select_btn"
-            android:paddingLeft="@dimen/lv_item_padding_left" />
+            android:paddingLeft="@dimen/lv_item_padding_left"
+            android:src="@drawable/repo_encrypted" />
 
         <ImageView
             android:id="@+id/list_item_space"

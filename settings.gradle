@@ -1,1 +1,26 @@
+pluginManagement {
+
+    plugins {
+        id 'com.google.devtools.ksp' version "1.6.21-1.0.5"
+//        kotlin("jvm") version kotlinVersion
+    }
+    repositories {
+        gradlePluginPortal()
+        google()
+        jcenter()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+}
+rootProject.name = "Nihao"
 include ':app'

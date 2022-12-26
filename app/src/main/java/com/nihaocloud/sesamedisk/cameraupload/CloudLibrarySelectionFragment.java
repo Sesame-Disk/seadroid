@@ -1,10 +1,10 @@
 package com.nihaocloud.sesamedisk.cameraupload;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,14 +18,14 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+
 import com.google.common.collect.Lists;
 import com.nihaocloud.sesamedisk.R;
 import com.nihaocloud.sesamedisk.SeafConnection;
 import com.nihaocloud.sesamedisk.SeafException;
 import com.nihaocloud.sesamedisk.account.Account;
 import com.nihaocloud.sesamedisk.account.AccountManager;
-import com.nihaocloud.sesamedisk.avatar.Avatar;
-import com.nihaocloud.sesamedisk.avatar.AvatarManager;
 import com.nihaocloud.sesamedisk.data.DataManager;
 import com.nihaocloud.sesamedisk.data.SeafDirent;
 import com.nihaocloud.sesamedisk.data.SeafRepo;
@@ -43,6 +43,8 @@ import java.util.List;
 /**
  * Choose account and library for camera upload
  */
+
+@SuppressLint("LongLogTag")
 public class CloudLibrarySelectionFragment extends Fragment {
     public static final String DEBUG_TAG = "CloudLibrarySelectionFragment";
 
@@ -72,7 +74,6 @@ public class CloudLibrarySelectionFragment extends Fragment {
     private LoadAccountsTask mLoadAccountsTask;
     private LoadReposTask mLoadReposTask;
     private LoadDirTask mLoadDirTask;
-    private AvatarManager avatarManager;
 
     private RelativeLayout mUpLayout;
     private TextView mCurrentFolderText;
@@ -94,7 +95,6 @@ public class CloudLibrarySelectionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mActivity = (CameraUploadConfigActivity) getActivity();
         Intent intent = mActivity.getIntent();
-        avatarManager = new AvatarManager();
         Account account = intent.getParcelableExtra("account");
         if (account == null) {
             canChooseAccount = true;
@@ -150,12 +150,6 @@ public class CloudLibrarySelectionFragment extends Fragment {
         }
 
         return rootView;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        loadAvatarUrls(48);
     }
 
     private void refreshList(final boolean forceRefresh) {
@@ -676,104 +670,6 @@ public class CloudLibrarySelectionFragment extends Fragment {
         }
     }
 
-    /**
-     * asynchronously load avatars
-     *
-     * @param avatarSize set a avatar size in one of 24*24, 32*32, 48*48, 64*64, 72*72, 96*96
-     */
-    public void loadAvatarUrls(int avatarSize) {
-        List<Avatar> avatars;
-
-        if (!Utils.isNetworkOn() || !avatarManager.isNeedToLoadNewAvatars()) {
-            // Toast.makeText(AccountsActivity.this, getString(R.string.network_down), Toast.LENGTH_SHORT).show();
-
-            // use cached avatars
-            avatars = avatarManager.getAvatarList();
-
-            if (avatars == null) {
-                return;
-            }
-
-            // set avatars url to adapter
-            mAccountAdapter.setAvatars((ArrayList<Avatar>) avatars);
-
-            // notify adapter data changed
-            mAccountAdapter.notifyDataSetChanged();
-
-            return;
-        }
-
-        LoadAvatarUrlsTask task = new LoadAvatarUrlsTask(avatarSize);
-
-        ConcurrentAsyncTask.execute(task);
-
-    }
-
-    private class LoadAvatarUrlsTask extends AsyncTask<Void, Void, List<Avatar>> {
-
-        private List<Avatar> avatars;
-        private int avatarSize;
-        private SeafConnection httpConnection;
-
-        public LoadAvatarUrlsTask(int avatarSize) {
-            this.avatarSize = avatarSize;
-            this.avatars = Lists.newArrayList();
-        }
-
-        @Override
-        protected List<Avatar> doInBackground(Void... params) {
-            // reuse cached avatars
-            avatars = avatarManager.getAvatarList();
-
-            // contains accounts who don`t have avatars yet
-            List<Account> acts = avatarManager.getAccountsWithoutAvatars();
-
-            // contains new avatars in order to persist them to database
-            List<Avatar> newAvatars = new ArrayList<Avatar>(acts.size());
-
-            // load avatars from server
-            for (Account account : acts) {
-                httpConnection = new SeafConnection(account);
-
-                String avatarRawData = null;
-                try {
-                    avatarRawData = httpConnection.getAvatar(account.getEmail(), avatarSize);
-                } catch (SeafException e) {
-                    e.printStackTrace();
-                    return avatars;
-                }
-
-                Avatar avatar = avatarManager.parseAvatar(avatarRawData);
-                if (avatar == null)
-                    continue;
-
-                avatar.setSignature(account.getSignature());
-
-                avatars.add(avatar);
-
-                newAvatars.add(avatar);
-            }
-
-            // save new added avatars to database
-            avatarManager.saveAvatarList(newAvatars);
-
-            return avatars;
-        }
-
-        @Override
-        protected void onPostExecute(List<Avatar> avatars) {
-            if (avatars == null) {
-                return;
-            }
-
-            // set avatars url to adapter
-            mAccountAdapter.setAvatars((ArrayList<Avatar>) avatars);
-
-            // notify adapter data changed
-            mAccountAdapter.notifyDataSetChanged();
-        }
-    }
-
     private void setErrorMessage(int resID) {
         //mContentArea.setVisibility(View.GONE);
         mErrorText.setVisibility(View.VISIBLE);
@@ -805,6 +701,4 @@ public class CloudLibrarySelectionFragment extends Fragment {
             mListContainer.setVisibility(View.VISIBLE);
         }
     }
-
 }
-

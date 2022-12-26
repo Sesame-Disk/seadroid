@@ -245,22 +245,19 @@ public class SettingsFragment extends CustomPreferenceFragment {
             cPrivacyCategory = (PreferenceCategory) findPreference(SettingsManager.PRIVACY_CATEGORY_KEY);
             // Client side encryption for encrypted Library
             clientEncPref = findPreference(SettingsManager.CLIENT_ENC_SWITCH_KEY);
-            clientEncPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    if (newValue instanceof Boolean) {
-                        boolean isChecked = (Boolean) newValue;
-                        // inverse checked status
-                        settingsMgr.setupEncrypt(!isChecked);
-                        return true;
-                    }
-
-                    return false;
+            clientEncPref.setOnPreferenceChangeListener((preference, newValue) -> {
+                if (newValue instanceof Boolean) {
+                    boolean isChecked = (Boolean) newValue;
+                    // inverse checked status
+                    settingsMgr.setupEncrypt(!isChecked);
+                    return true;
                 }
+
+                return false;
             });
 
             if (serverInfo != null && !serverInfo.canLocalDecrypt()) {
-                cPrivacyCategory.removePreference(clientEncPref);
+               // cPrivacyCategory.removePreference(clientEncPref);
             }
         }
         // Camera Upload

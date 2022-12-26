@@ -43,8 +43,6 @@ public class AuthImageDownloader extends BaseImageDownloader {
             HttpsURLConnection sconn = (HttpsURLConnection)conn;
             sconn.setSSLSocketFactory(SSLTrustManager.instance().getSSLSocketFactory((Account)extra));
         }
-
-        return new FlushedInputStream(new BufferedInputStream(
-                req.stream()));
+        return new FlushedInputStream(new BufferedInputStream(req.stream()));
     }
 }

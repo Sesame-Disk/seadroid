@@ -9,4 +9,5 @@ public interface UploadStateListener {
     void onFileUploaded(int taskID);
     void onFileUploadCancelled(int taskID);
     void onFileUploadFailed(int taskID);
+    void onPrepareFileUpload(int taskID);
 }

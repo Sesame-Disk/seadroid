@@ -1,23 +1,16 @@
 package com.nihaocloud.sesamedisk.util;
 
-import android.annotation.TargetApi;
 import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Utils that depend on JellyBean API (16)
- */
-@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class UtilsJellyBean {
 
     public static List<Uri> extractUriListFromIntent(Intent intent) {
         List<Uri> list = new ArrayList<Uri>();
-
         // if only one file is selected, get it this way
         Uri singleUri = intent.getData();
         if (singleUri != null) {

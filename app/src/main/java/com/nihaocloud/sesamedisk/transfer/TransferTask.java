@@ -1,11 +1,9 @@
 package com.nihaocloud.sesamedisk.transfer;
-
 import android.os.AsyncTask;
-
 import com.nihaocloud.sesamedisk.SeafException;
 import com.nihaocloud.sesamedisk.account.Account;
-
 import java.io.File;
+import java.util.Objects;
 
 /**
  * Base class for transferring data
@@ -23,7 +21,6 @@ public abstract class TransferTask extends AsyncTask<Void, Long, File> {
     protected long totalSize, finished;
     protected TaskState state;
     protected SeafException err;
-
 
     public TransferTask(int taskID, Account account, String repoName, String repoID, String path) {
         this.account = account;
@@ -102,9 +99,9 @@ public abstract class TransferTask extends AsyncTask<Void, Long, File> {
         if ((obj == null) || (obj.getClass() != this.getClass()))
             return false;
         TransferTask tt = (TransferTask) obj;
-        return (account.getSignature() == tt.account.getSignature() || (account.getSignature() != null
+        return (account.getSignature().equals(tt.account.getSignature()) || (account.getSignature() != null
                 && account.getSignature().equals(tt.account.getSignature())))
-                && (repoID == tt.repoID || (repoID != null && repoID.equals(tt.repoID)))
+                && (Objects.equals(repoID, tt.repoID) || (repoID != null && repoID.equals(tt.repoID)))
                 && (path == tt.path || (path != null && path.equals(tt.path)));
     }
 

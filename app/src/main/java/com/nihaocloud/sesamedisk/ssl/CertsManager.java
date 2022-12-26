@@ -7,7 +7,9 @@ import java.util.Map;
 import android.util.Log;
 
 import com.google.common.collect.Maps;
+import com.nihaocloud.sesamedisk.NihaoApplication;
 import com.nihaocloud.sesamedisk.database.CertsDBHelper;
+import com.nihaocloud.sesamedisk.database.NihaoDatabase;
 import com.nihaocloud.sesamedisk.util.ConcurrentAsyncTask;
 import com.nihaocloud.sesamedisk.account.Account;
 
@@ -16,12 +18,14 @@ import com.nihaocloud.sesamedisk.account.Account;
  */
 public final class CertsManager {
     private static final String DEBUG_TAG = "CertsManager";
-
     private final CertsDBHelper db = CertsDBHelper.getDatabaseHelper();
-
     private final Map<Account, X509Certificate> cachedCerts = Maps.newConcurrentMap();
-
     private static CertsManager instance;
+    private final NihaoDatabase database;
+
+    public CertsManager() {
+        database= NihaoApplication.database;
+    }
 
     public static synchronized CertsManager instance() {
         if (instance == null) {
@@ -41,12 +45,7 @@ public final class CertsManager {
         cachedCerts.put(account, cert);
 
         if (rememberChoice) {
-            ConcurrentAsyncTask.submit(new Runnable() {
-                @Override
-                public void run() {
-                    db.saveCertificate(account.server, cert);
-                }
-            });
+            ConcurrentAsyncTask.submit(() -> db.saveCertificate(account.server, cert));
         }
 
         Log.d(DEBUG_TAG, "saved cert for account " + account);

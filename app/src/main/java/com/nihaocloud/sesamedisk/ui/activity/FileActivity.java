@@ -7,7 +7,6 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.widget.Toolbar;
 
 import com.nihaocloud.sesamedisk.R;
 import com.nihaocloud.sesamedisk.SeafConnection;
@@ -43,22 +44,21 @@ public class FileActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     private TextView mFileNameText;
     private ImageView mFileIcon;
     private Button mButtonCancel;
-
     private TextView mProgressText;
     private ProgressBar mProgressBar;
-
     private String mRepoName, mRepoID, mFilePath;
     private DataManager mDataManager;
     private Account mAccount;
-
     private int mTaskID = -1;
     private TransferService mTransferService;
     private boolean timerStarted;
+    private final Handler mTimer = new Handler();
+    private boolean isOpenWith;
+
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {
             Log.d(DEBUG_TAG, "TransferService connected");
-
             TransferBinder binder = (TransferBinder) service;
             mTransferService = binder.getService();
             onTransferServiceConnected();
@@ -69,13 +69,10 @@ public class FileActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         }
     };
 
-    private final Handler mTimer = new Handler();
-    private boolean isOpenWith;
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.file_activity);
         Intent intent = getIntent();
-
         mAccount = intent.getParcelableExtra("account");
         mRepoName = intent.getStringExtra("repoName");
         mRepoID = intent.getStringExtra("repoID");
@@ -83,8 +80,6 @@ public class FileActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         mTaskID = intent.getIntExtra("taskID", 0);
         isOpenWith = intent.getBooleanExtra("is_open_with", false);
         mDataManager = new DataManager(mAccount);
-
-        setContentView(R.layout.file_activity);
         initWidgets();
         bindTransferService();
     }
@@ -123,21 +118,21 @@ public class FileActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
         mProgressText = (TextView) findViewById(R.id.progress_text);
 
+        Log.d(DEBUG_TAG, "filePath : "+mFilePath);
+
         String fileName = Utils.fileNameFromPath(mFilePath);
+        Log.d(DEBUG_TAG, "fileName : "+fileName);
         mFileNameText.setText(fileName);
 
         // icon
         mFileIcon.setImageResource(Utils.getFileIcon(fileName));
 
-        mButtonCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mTaskID > 0) {
-                    mTransferService.cancelDownloadTask(mTaskID);
-                    mTransferService.cancelNotification();
-                }
-                finish();
+        mButtonCancel.setOnClickListener(view -> {
+            if (mTaskID > 0) {
+                mTransferService.cancelDownloadTask(mTaskID);
+                mTransferService.cancelNotification();
             }
+            finish();
         });
 
         Toolbar toolbar = getActionBarToolbar();
@@ -151,7 +146,6 @@ public class FileActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         mProgressBar.setVisibility(View.VISIBLE);
         mProgressBar.setIndeterminate(true);
         mProgressText.setVisibility(View.VISIBLE);
-
         startTimer();
     }
 
@@ -159,7 +153,6 @@ public class FileActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         Intent txIntent = new Intent(this, TransferService.class);
         startService(txIntent);
         Log.d(DEBUG_TAG, "start TransferService");
-
         // bind transfer service
         // Intent bIntent = new Intent(this, TransferService.class);
         bindService(txIntent, mConnection, Context.BIND_AUTO_CREATE);
@@ -236,10 +229,7 @@ public class FileActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         passwordDialog.setTaskDialogLisenter(new TaskDialog.TaskDialogListener() {
             @Override
             public void onTaskSuccess() {
-                mTaskID = mTransferService.addDownloadTask(mAccount,
-                        mRepoName,
-                        mRepoID,
-                        mFilePath);
+                mTaskID = mTransferService.addDownloadTask(mAccount, mRepoName, mRepoID, mFilePath);
             }
 
             @Override
@@ -271,12 +261,9 @@ public class FileActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 
             @Override
             public void run() {
-                if (mTransferService == null)
-                    return;
-
+                if (mTransferService == null) return;
                 DownloadTaskInfo downloadTaskInfo = mTransferService.getDownloadTaskInfo(mTaskID);
-                if (downloadTaskInfo.state == TaskState.INIT
-                        || downloadTaskInfo.state == TaskState.TRANSFERRING)
+                if (downloadTaskInfo.state == TaskState.INIT || downloadTaskInfo.state == TaskState.TRANSFERRING)
                     onFileDownloadProgress(downloadTaskInfo);
                 else if (downloadTaskInfo.state == TaskState.FAILED)
                     onFileDownloadFailed(downloadTaskInfo);

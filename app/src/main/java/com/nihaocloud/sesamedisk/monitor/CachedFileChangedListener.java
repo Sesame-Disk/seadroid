@@ -1,7 +1,7 @@
 package com.nihaocloud.sesamedisk.monitor;
 
 import com.nihaocloud.sesamedisk.account.Account;
-import com.nihaocloud.sesamedisk.data.SeafCachedFile;
+import com.nihaocloud.sesamedisk.database.table.SeafCachedFile;
 
 import java.io.File;
 

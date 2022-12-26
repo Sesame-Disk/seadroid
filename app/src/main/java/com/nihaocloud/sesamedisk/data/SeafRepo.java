@@ -85,7 +85,8 @@ public class SeafRepo implements SeafItem {
     }
 
     public boolean canLocalDecrypt() {
-        return encrypted && SettingsManager.instance().isEncryptEnabled();
+        boolean encryptEnabled = SettingsManager.instance().isEncryptEnabled();
+        return encrypted && encryptEnabled;
     }
 
     public boolean hasWritePermission() {

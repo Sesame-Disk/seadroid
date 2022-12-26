@@ -14,6 +14,7 @@ import com.nihaocloud.sesamedisk.account.Account;
 import com.nihaocloud.sesamedisk.account.AccountInfo;
 import com.nihaocloud.sesamedisk.crypto.Crypto;
 import com.nihaocloud.sesamedisk.database.DatabaseHelper;
+import com.nihaocloud.sesamedisk.database.table.SeafCachedFile;
 import com.nihaocloud.sesamedisk.util.Utils;
 
 import org.apache.commons.io.FileUtils;
@@ -43,7 +44,6 @@ public class DataManager {
     private static final String DEBUG_TAG = "DataManager";
     private static final long SET_PASSWORD_INTERVAL = 59 * 60 * 1000; // 59 min
     // private static final long SET_PASSWORD_INTERVAL = 5 * 1000; // 5s
-
     // pull to refresh
     public static final String PULL_TO_REFRESH_LAST_TIME_FOR_REPOS_FRAGMENT = "repo fragment last update";
     public static final String PULL_TO_REFRESH_LAST_TIME_FOR_STARRED_FRAGMENT = "starred fragment last update ";
@@ -68,6 +68,10 @@ public class DataManager {
         account = act;
         sc = new SeafConnection(act);
         dbHelper = DatabaseHelper.getDatabaseHelper();
+    }
+
+    public SeafConnection getSc() {
+        return sc;
     }
 
     /**
@@ -145,6 +149,7 @@ public class DataManager {
 
     public AccountInfo getAccountInfo() throws SeafException, JSONException {
         String json = sc.getAccountInfo();
+        Log.d("FFFFFFF", "json : "+json);
         return parseAccountInfo(json);
     }
 
@@ -178,6 +183,7 @@ public class DataManager {
         return new File(storageManager.getJsonCacheDir(), filename);
     }
 
+    // library or repo cashe
     private File getFileForReposCache() {
         String filename = "repos-" + (account.server + account.email).hashCode() + ".dat";
         return new File(storageManager.getJsonCacheDir(), filename);
@@ -1192,6 +1198,50 @@ public class DataManager {
         }
     }
 
+    private FileBlocks chunkFile( String filePath) throws IOException {
+        File file = new File(filePath);
+        InputStream in = null;
+        DataInputStream dis;
+        OutputStream out = null;
+        byte[] buffer = new byte[BUFFER_SIZE];
+        FileBlocks seafBlock = new FileBlocks();
+        try {
+            in = new FileInputStream(file);
+            dis = new DataInputStream(in);
+            
+            // Log.d(DEBUG_TAG, "file size " + file.length());
+            int byteRead;
+            while ((byteRead = dis.read(buffer, 0, BUFFER_SIZE)) != -1) {
+//                byte[] cipher;
+//                if (byteRead < BUFFER_SIZE)
+//                    cipher = Crypto.encrypt(buffer, byteRead, encKey, enkIv);
+//                else
+//                    cipher = Crypto.encrypt(buffer, encKey, enkIv);
+
+               // final String blkid = Crypto.sha1(cipher);
+                final String blkid =UUID.randomUUID().toString();
+                File blk = new File(storageManager.getTempDir(), blkid);
+                Block block = new Block(blkid, blk.getAbsolutePath(), blk.length(), 0L);
+                seafBlock.blocks.add(block);
+                out = new FileOutputStream(blk);
+                out.write(buffer);
+                out.close();
+            }
+
+            in.close();
+
+            return seafBlock;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            if (out != null) out.close();
+            if (in != null) in.close();
+        }
+    }
     private FileBlocks chunkFile(String encKey, String enkIv, String filePath) throws IOException {
         File file = new File(filePath);
         InputStream in = null;
@@ -1251,17 +1301,17 @@ public class DataManager {
                                       boolean isCopyToLocal)
             throws NoSuchAlgorithmException, IOException, SeafException {
 
-        final Pair<String, String> pair = getRepoEncKey(repoID);
-        if (pair == null) return;
-        final String encKey = pair.first;
-        final String encIv = pair.second;
-        // Log.d(DEBUG_TAG, "encKey " + encKey + " encIv " + encIv);
-        if (TextUtils.isEmpty(encKey) || TextUtils.isEmpty(encIv)) {
-            // TODO calculate them and continue
-            throw SeafException.encryptException;
-        }
+//        final Pair<String, String> pair = getRepoEncKey(repoID);
+//        if (pair == null) return;
+//        final String encKey = pair.first;
+//        final String encIv = pair.second;
+//        // Log.d(DEBUG_TAG, "encKey " + encKey + " encIv " + encIv);
+//        if (TextUtils.isEmpty(encKey) || TextUtils.isEmpty(encIv)) {
+//            // TODO calculate them and continue
+//            throw SeafException.encryptException;
+//        }
 
-        final FileBlocks chunkFile = chunkFile(encKey, encIv, filePath);
+        final FileBlocks chunkFile = chunkFile( filePath);
         if (chunkFile.blocks.isEmpty()) {
             throw SeafException.blockListNullPointerException;
         }

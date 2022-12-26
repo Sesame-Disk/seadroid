@@ -29,7 +29,7 @@ import com.nihaocloud.sesamedisk.SeafException;
 import com.nihaocloud.sesamedisk.SettingsManager;
 import com.nihaocloud.sesamedisk.account.Account;
 import com.nihaocloud.sesamedisk.data.DataManager;
-import com.nihaocloud.sesamedisk.data.SeafCachedFile;
+import com.nihaocloud.sesamedisk.database.table.SeafCachedFile;
 import com.nihaocloud.sesamedisk.data.SeafDirent;
 import com.nihaocloud.sesamedisk.data.SeafGroup;
 import com.nihaocloud.sesamedisk.data.SeafItem;
@@ -51,10 +51,8 @@ import java.util.Map;
 
 
 public class ReposFragment extends ListFragment {
-
     private static final String DEBUG_TAG = "ReposFragment";
     private static final String KEY_REPO_SCROLL_POSITION = "repo_scroll_position";
-
     private static final int REFRESH_ON_RESUME = 0;
     private static final int REFRESH_ON_PULL = 1;
     private static final int REFRESH_ON_CLICK = 2;
@@ -64,25 +62,16 @@ public class ReposFragment extends ListFragment {
      * flag to stop refreshing when nav to other directory
      */
     private static int mPullToRefreshStopRefreshing = 0;
-
     private SeafItemAdapter adapter;
     private BrowserActivity mActivity = null;
     private ActionMode mActionMode;
-    private CopyMoveContext copyMoveContext;
     private Map<String, ScrollState> scrollPostions;
-
-    public static final int FILE_ACTION_EXPORT = 0;
-    public static final int FILE_ACTION_COPY = 1;
-    public static final int FILE_ACTION_MOVE = 2;
-    public static final int FILE_ACTION_STAR = 3;
-
     private SwipeRefreshLayout refreshLayout;
     private ListView mListView;
     private ImageView mEmptyView;
     private View mProgressContainer;
     private View mListContainer;
     private TextView mErrorText;
-
     private boolean isTimerStarted;
     private final Handler mTimer = new Handler();
 
@@ -134,7 +123,6 @@ public class ReposFragment extends ListFragment {
             mRefreshType = REFRESH_ON_PULL;
             refreshView(true, true);
         });
-
         return root;
     }
 
@@ -315,19 +303,12 @@ public class ReposFragment extends ListFragment {
         Log.d(DEBUG_TAG, "ReposFragment onActivityCreated");
         scrollPostions = Maps.newHashMap();
         adapter = new SeafItemAdapter(mActivity);
-
         mListView.setAdapter(adapter);
     }
 
-    @Override
-    public void onStart() {
-        // Log.d(DEBUG_TAG, "ReposFragment onStart");
-        super.onStart();
-    }
 
     @Override
     public void onStop() {
-        // Log.d(DEBUG_TAG, "ReposFragment onStop");
         super.onStop();
         stopTimer();
     }
@@ -335,21 +316,14 @@ public class ReposFragment extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
-        // Log.d(DEBUG_TAG, "ReposFragment onResume");
-        // refresh the view (loading data)
         refreshView(true);
         mRefreshType = REFRESH_ON_RESUME;
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
 
     @Override
     public void onDetach() {
         mActivity = null;
-        // Log.d(DEBUG_TAG, "ReposFragment detached");
         super.onDetach();
     }
 
@@ -367,8 +341,7 @@ public class ReposFragment extends ListFragment {
     }
 
     public void refreshView(boolean forceRefresh, boolean restorePosition) {
-        if (mActivity == null)
-            return;
+        if (mActivity == null) return;
 
         mErrorText.setVisibility(View.GONE);
         mListContainer.setVisibility(View.VISIBLE);
@@ -387,8 +360,6 @@ public class ReposFragment extends ListFragment {
     }
 
     public void navToReposView(boolean forceRefresh, boolean restorePosition) {
-        //stopTimer();
-
         mPullToRefreshStopRefreshing++;
 
         if (mPullToRefreshStopRefreshing > 1) {
@@ -409,7 +380,6 @@ public class ReposFragment extends ListFragment {
                 return;
             }
         }
-
         ConcurrentAsyncTask.execute(new LoadTask(getDataManager()));
     }
 
@@ -588,13 +558,13 @@ public class ReposFragment extends ListFragment {
 
     @Override
     public void onListItemClick(final ListView l, final View v, final int position, final long id) {
-        if (Utils.isFastTapping()) return;
 
+        Log.d(DEBUG_TAG, "onListItemClick");
+        if (Utils.isFastTapping()) return;
         // handle action mode selections
         if (mActionMode != null) {
             // add or remove selection for current list item
             if (adapter == null) return;
-
             adapter.toggleSelection(position);
             updateContextualActionBar();
             return;
@@ -602,21 +572,25 @@ public class ReposFragment extends ListFragment {
 
         SeafRepo repo = null;
         final NavContext nav = getNavContext();
+        Log.d(DEBUG_TAG, "nav.inRepo()"+nav.inRepo());
         if (nav.inRepo()) {
             repo = getDataManager().getCachedRepoByID(nav.getRepoID());
             mActivity.setUpButtonTitle(repo.getName());
         } else {
             SeafItem item = adapter.getItem(position);
             if (item instanceof SeafRepo) {
+                Log.d(DEBUG_TAG, "SeafItem instance of"+item.toString());
                 repo = (SeafRepo) item;
             }
         }
 
         if (repo == null) {
+            Log.d(DEBUG_TAG, "nav.inRepo()==null");
             return;
         }
 
         if (repo.encrypted && !getDataManager().getRepoPasswordSet(repo.id)) {
+            Log.d(DEBUG_TAG, "nav.inRepo() encrypted");
             String password = getDataManager().getRepoPassword(repo.id);
             mActivity.showPasswordDialog(repo.name, repo.id,
                     new TaskDialog.TaskDialogListener() {
@@ -630,9 +604,11 @@ public class ReposFragment extends ListFragment {
         }
 
         mRefreshType = REFRESH_ON_CLICK;
+        Log.d(DEBUG_TAG, "nav.inRepo()"+nav.inRepo());
         if (nav.inRepo()) {
             if (adapter.getItem(position) instanceof SeafDirent) {
                 final SeafDirent dirent = (SeafDirent) adapter.getItem(position);
+                Log.d(DEBUG_TAG, "dirent.isDir()"+dirent.isDir());
                 if (dirent.isDir()) {
                     String currentPath = nav.getDirPath();
                     String newPath = currentPath.endsWith("/") ?
@@ -649,7 +625,8 @@ public class ReposFragment extends ListFragment {
                 }
             } else
                 return;
-        } else {
+        }
+        else {
             nav.setDirPermission(repo.permission);
             nav.setRepoID(repo.id);
             nav.setRepoName(repo.getName());
@@ -947,6 +924,8 @@ public class ReposFragment extends ListFragment {
                 for (SeafDirent sd : dirents) {
                     if (!sd.isDir()) {
                         String path = Utils.pathJoin(getNavContext().getDirPath(), sd.name);
+
+                        //check database file size and remove if size is not match file
                         SeafCachedFile scf = dataManager.getCachedFile(repoName, repoID, path);
                         if (scf != null && scf.getSize() != sd.getFileSize()) {
                             dataManager.removeCachedFile(scf);

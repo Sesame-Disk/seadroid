@@ -8,10 +8,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
-import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -22,24 +20,18 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.google.common.collect.Lists;
+import androidx.appcompat.widget.Toolbar;
+
 import com.nihaocloud.sesamedisk.R;
-import com.nihaocloud.sesamedisk.SeafConnection;
-import com.nihaocloud.sesamedisk.SeafException;
 import com.nihaocloud.sesamedisk.SettingsManager;
 import com.nihaocloud.sesamedisk.account.Account;
 import com.nihaocloud.sesamedisk.account.AccountManager;
 import com.nihaocloud.sesamedisk.account.Authenticator;
-import com.nihaocloud.sesamedisk.avatar.Avatar;
-import com.nihaocloud.sesamedisk.avatar.AvatarManager;
 import com.nihaocloud.sesamedisk.monitor.FileMonitorService;
 import com.nihaocloud.sesamedisk.ui.adapter.AccountAdapter;
 import com.nihaocloud.sesamedisk.ui.adapter.NihaoAccountAdapter;
 import com.nihaocloud.sesamedisk.ui.dialog.PolicyDialog;
-import com.nihaocloud.sesamedisk.util.ConcurrentAsyncTask;
-import com.nihaocloud.sesamedisk.util.Utils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -50,7 +42,6 @@ public class AccountsActivity extends BaseActivity implements Toolbar.OnMenuItem
     public final int DETAIL_ACTIVITY_REQUEST = 1;
     private android.accounts.AccountManager mAccountManager;
     private AccountManager accountManager;
-    private AvatarManager avatarManager;
     private AccountAdapter adapter;
     private List<Account> accounts;
     private FileMonitorService mMonitorService;
@@ -92,7 +83,6 @@ public class AccountsActivity extends BaseActivity implements Toolbar.OnMenuItem
 
         mAccountManager = android.accounts.AccountManager.get(this);
         accountManager = new AccountManager(this);
-        avatarManager = new AvatarManager();
         currentDefaultAccount = accountManager.getCurrentAccount();
 
         // updates toolbar back button
@@ -201,8 +191,6 @@ public class AccountsActivity extends BaseActivity implements Toolbar.OnMenuItem
             Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
         }
 
-        loadAvatarUrls(160);
-
         adapter.notifyChanged();
     }
 
@@ -244,6 +232,7 @@ public class AccountsActivity extends BaseActivity implements Toolbar.OnMenuItem
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == DETAIL_ACTIVITY_REQUEST) {
             if (resultCode == RESULT_OK) {
                 startFilesActivity();
@@ -293,98 +282,6 @@ public class AccountsActivity extends BaseActivity implements Toolbar.OnMenuItem
             finish();
         } else
             super.onBackPressed();
-    }
-
-    /**
-     * asynchronously load avatars
-     *
-     * @param avatarSize set a avatar size in one of 24*24, 32*32, 48*48, 64*64, 72*72, 96*96
-     */
-    public void loadAvatarUrls(int avatarSize) {
-        List<Avatar> avatars;
-
-        if (!Utils.isNetworkOn() || !avatarManager.isNeedToLoadNewAvatars()) {
-            // Toast.makeText(AccountsActivity.this, getString(R.string.network_down), Toast.LENGTH_SHORT).show();
-
-            // use cached avatars
-            avatars = avatarManager.getAvatarList();
-
-            if (avatars == null) {
-                return;
-            }
-            // set avatars url to adapter
-            adapter.setAvatars((ArrayList<Avatar>) avatars);
-            // notify adapter data changed
-            adapter.notifyDataSetChanged();
-            return;
-        }
-
-        LoadAvatarUrlsTask task = new LoadAvatarUrlsTask(avatarSize);
-        ConcurrentAsyncTask.execute(task);
-
-    }
-
-    @SuppressLint("StaticFieldLeak")
-    private class LoadAvatarUrlsTask extends AsyncTask<Void, Void, List<Avatar>> {
-        private List<Avatar> avatars;
-        private final int avatarSize;
-
-        public LoadAvatarUrlsTask(int avatarSize) {
-            this.avatarSize = avatarSize;
-            this.avatars = Lists.newArrayList();
-        }
-
-        @Override
-        protected List<Avatar> doInBackground(Void... params) {
-            // reuse cached avatars
-            avatars = avatarManager.getAvatarList();
-
-            // contains accounts who don`t have avatars yet
-            List<Account> acts = avatarManager.getAccountsWithoutAvatars();
-
-            // contains new avatars in order to persist them to database
-            List<Avatar> newAvatars = new ArrayList<>(acts.size());
-
-            // load avatars from server
-            for (Account account : acts) {
-                final SeafConnection httpConnection = new SeafConnection(account);
-                String avatarRawData;
-                try {
-                    avatarRawData = httpConnection.getAvatar(account.getEmail(), avatarSize);
-                } catch (SeafException e) {
-                    e.printStackTrace();
-                    return avatars;
-                }
-
-                Avatar avatar = avatarManager.parseAvatar(avatarRawData);
-                if (avatar == null)
-                    continue;
-
-                avatar.setSignature(account.getSignature());
-
-                avatars.add(avatar);
-
-                newAvatars.add(avatar);
-            }
-
-            // save new added avatars to database
-            avatarManager.saveAvatarList(newAvatars);
-
-            return avatars;
-        }
-
-        @Override
-        protected void onPostExecute(List<Avatar> avatars) {
-            if (avatars == null) {
-                return;
-            }
-
-            // set avatars url to adapter
-            adapter.setAvatars((ArrayList<Avatar>) avatars);
-
-            // notify adapter data changed
-            adapter.notifyDataSetChanged();
-        }
     }
 
     private void showDialog() {

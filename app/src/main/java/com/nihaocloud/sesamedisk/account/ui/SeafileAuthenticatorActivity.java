@@ -41,6 +41,7 @@ public class SeafileAuthenticatorActivity extends BaseAuthenticatorActivity {
     public final static String ARG_SHIB = "SHIB";
     public final static String ARG_AUTH_SESSION_KEY = "TWO_FACTOR_AUTH";
     public final static String ARG_IS_EDITING = "isEdited";
+    public final static String ARG_AVATAR_URL = "avatarUrl";
     private static final int REQ_SIGNUP = 1;
     private AccountManager mAccountManager;
 
@@ -117,6 +118,7 @@ public class SeafileAuthenticatorActivity extends BaseAuthenticatorActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         Log.d(DEBUG_TAG, "onActivityResult");
         // The sign up activity returned that the user has successfully created an account
         if (requestCode == REQ_SIGNUP && resultCode == RESULT_OK) {
@@ -134,6 +136,7 @@ public class SeafileAuthenticatorActivity extends BaseAuthenticatorActivity {
         String serveruri = intent.getStringExtra(ARG_SERVER_URI);
         String email = intent.getStringExtra(ARG_EMAIL);
         String name = intent.getStringExtra(ARG_NAME);
+        String avatarUrl = intent.getStringExtra(ARG_AVATAR_URL);
         String sessionKey = intent.getStringExtra(ARG_AUTH_SESSION_KEY);
         boolean shib = intent.getBooleanExtra(ARG_SHIB, false);
         int cameraIsSyncable = 0;
@@ -147,6 +150,7 @@ public class SeafileAuthenticatorActivity extends BaseAuthenticatorActivity {
                 mAccountManager.setAuthToken(newAccount, Authenticator.AUTHTOKEN_TYPE, authtoken);
                 mAccountManager.setUserData(newAccount, Authenticator.SESSION_KEY, sessionKey);
                 mAccountManager.setUserData(newAccount, Authenticator.KEY_NAME, name);
+                mAccountManager.setUserData(newAccount, Authenticator.AVATAR_URL, avatarUrl);
                 Bundle result = new Bundle();
                 result.putBoolean(AccountManager.KEY_BOOLEAN_RESULT, true);
                 result.putString(AccountManager.KEY_ACCOUNT_NAME, newAccountName);
@@ -169,6 +173,7 @@ public class SeafileAuthenticatorActivity extends BaseAuthenticatorActivity {
         mAccountManager.setUserData(newAccount, Authenticator.KEY_EMAIL, email);
         mAccountManager.setUserData(newAccount, Authenticator.KEY_NAME, name);
         mAccountManager.setUserData(newAccount, Authenticator.SESSION_KEY, sessionKey);
+        mAccountManager.setUserData(newAccount, Authenticator.AVATAR_URL, avatarUrl);
         if (shib) {
             mAccountManager.setUserData(newAccount, Authenticator.KEY_SHIB, "shib");
         }

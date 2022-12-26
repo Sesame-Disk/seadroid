@@ -65,6 +65,8 @@ public class Authenticator extends AbstractAccountAuthenticator {
      */
     public final static String SESSION_KEY = "sessionKey";
 
+    public final static String AVATAR_URL = "avatarUrl";
+
     public Authenticator(Context context) {
         super(context);
         this.context = context;

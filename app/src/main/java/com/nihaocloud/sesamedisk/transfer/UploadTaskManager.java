@@ -1,10 +1,12 @@
 package com.nihaocloud.sesamedisk.transfer;
 
+import android.content.Context;
 import android.content.Intent;
 
 import com.google.common.collect.Lists;
 import com.nihaocloud.sesamedisk.NihaoApplication;
 import com.nihaocloud.sesamedisk.account.Account;
+import com.nihaocloud.sesamedisk.model.file.UploadRequest;
 import com.nihaocloud.sesamedisk.notification.UploadNotificationProvider;
 
 import java.util.List;
@@ -15,23 +17,30 @@ import java.util.List;
  */
 public class UploadTaskManager extends TransferManager implements UploadStateListener {
     private static final String DEBUG_TAG = "UploadTaskManager";
-
     public static final String BROADCAST_FILE_UPLOAD_SUCCESS = "uploaded";
     public static final String BROADCAST_FILE_UPLOAD_FAILED = "uploadFailed";
     public static final String BROADCAST_FILE_UPLOAD_PROGRESS = "uploadProgress";
+    public static final String BROADCAST_FILE_UPLOAD_PREPARE = "uploadPrepare";
     public static final String BROADCAST_FILE_UPLOAD_CANCELLED = "uploadCancelled";
-
     private static UploadNotificationProvider mNotifyProvider;
+    private final Context context;
 
+    public UploadTaskManager(Context context) {
+        this.context=context.getApplicationContext();
+    }
+
+    public int addTaskToQue(UploadRequest request) {
+        UploadTaskNew task = new UploadTaskNew(context,++notificationID, request, this);
+        addTaskToQue(task);
+        return task.getTaskID();
+    }
 
     public int addTaskToQue(Account account, String repoID, String repoName, String dir, String relativePath,
                             String filePath, boolean isUpdate, boolean isCopyToLocal, boolean byBlock) {
         if (repoID == null || repoName == null)
             return 0;
-
         // create a new one to avoid IllegalStateException
-        UploadTask task = new UploadTask(++notificationID, account, repoID, repoName, dir,
-                relativePath, filePath, isUpdate, isCopyToLocal, byBlock, this);
+        UploadTask task = new UploadTask(++notificationID, account, repoID, repoName, dir, relativePath, filePath, isUpdate, isCopyToLocal, byBlock, this);
         addTaskToQue(task);
         return task.getTaskID();
     }
@@ -39,15 +48,16 @@ public class UploadTaskManager extends TransferManager implements UploadStateLis
     public List<UploadTaskInfo> getNoneCameraUploadTaskInfos() {
         List<UploadTaskInfo> noneCameraUploadTaskInfos = Lists.newArrayList();
         List<UploadTaskInfo> uploadTaskInfos = (List<UploadTaskInfo>) getAllTaskInfoList();
-        for (UploadTaskInfo uploadTaskInfo : uploadTaskInfos) {
-            // use isCopyToLocal as a flag to mark a camera photo upload task if false
-            // mark a file upload task if true
-            if (!uploadTaskInfo.isCopyToLocal) {
-                continue;
-            }
-            noneCameraUploadTaskInfos.add(uploadTaskInfo);
-        }
+//        for (UploadTaskInfo uploadTaskInfo : uploadTaskInfos) {
+//            // use isCopyToLocal as a flag to mark a camera photo upload task if false
+//            // mark a file upload task if true
+//            if (!uploadTaskInfo.isCopyToLocal) {
+//                continue;
+//            }
+//            noneCameraUploadTaskInfos.add(uploadTaskInfo);
+//        }
 
+        noneCameraUploadTaskInfos.addAll(uploadTaskInfos);
         return noneCameraUploadTaskInfos;
     }
 
@@ -55,7 +65,8 @@ public class UploadTaskManager extends TransferManager implements UploadStateLis
         UploadTask task = (UploadTask) getTask(taskID);
         if (task == null || !task.canRetry())
             return;
-        addTaskToQue(task.getAccount(), task.getRepoID(), task.getRepoName(), task.getDir(), task.relativePath, task.getPath(), task.isUpdate(), task.isCopyToLocal(), false);
+        addTaskToQue(task.getAccount(), task.getRepoID(), task.getRepoName(), task.getDir(), task.relativePath,
+                task.getPath(), task.isUpdate(), task.isCopyToLocal(), false);
     }
 
     private void notifyProgress(int taskID) {
@@ -63,7 +74,7 @@ public class UploadTaskManager extends TransferManager implements UploadStateLis
         if (info == null) return;
         // use isCopyToLocal as a flag to mark a camera photo upload task if false
         // mark a file upload task if true
-        if (!info.isCopyToLocal) return;
+      //  if (!info.isCopyToLocal) return;
 
         //Log.d(DEBUG_TAG, "notify key " + info.repoID);
         if (mNotifyProvider != null) {
@@ -92,6 +103,16 @@ public class UploadTaskManager extends TransferManager implements UploadStateLis
     }
 
     // -------------------------- listener method --------------------//
+
+    @Override
+    public void onPrepareFileUpload(int taskID) {
+        Intent localIntent = new Intent(BROADCAST_ACTION).putExtra("type",
+                BROADCAST_FILE_UPLOAD_PREPARE).putExtra("taskID", taskID);
+        NihaoApplication.getAppContext().sendBroadcast(localIntent);
+        notifyProgress(taskID);
+
+    }
+
     @Override
     public void onFileUploadProgress(int taskID) {
         Intent localIntent = new Intent(BROADCAST_ACTION).putExtra("type",

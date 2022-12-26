@@ -16,6 +16,7 @@ public class AccountInfo {
     private String email;
     private String server;
     private String name;
+    private String avatarUrl;
 
     private AccountInfo() {
     }
@@ -27,8 +28,12 @@ public class AccountInfo {
         info.total = accountInfo.getLong("total");
         info.email = accountInfo.getString("email");
         info.name = accountInfo.optString("name");
-
+        info.avatarUrl = accountInfo.optString("avatar_url");
         return info;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
     }
 
     public long getUsage() {

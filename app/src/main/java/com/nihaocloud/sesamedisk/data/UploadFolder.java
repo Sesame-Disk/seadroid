@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import okio.Path;
+
 public class UploadFolder {
     private final String relativePath;
     private final File file;
@@ -111,5 +113,42 @@ public class UploadFolder {
             files.add(file);
         }
         return files;
+    }
+//    public void createUploadRequest(List<Uri>fileUri,){
+//       //// Path.get()
+//    }
+
+    public static File getUploadCashFile(final Context context, final DocumentFile file) {
+
+        final Context applicationContext = context.getApplicationContext();
+        final ContentResolver resolver = applicationContext.getContentResolver();
+
+            InputStream in = null;
+            OutputStream out = null;
+            try {
+                final File tempDir = DataManager.createTempDir();
+                final Uri uri = file.getUri();
+                final String name = file.getName();
+                final String path = uri.getPath();
+
+                final File tempFile = new File(tempDir, Utils.getFilenamefromUri(applicationContext, uri));
+                if (!tempFile.createNewFile()) {
+                    throw new RuntimeException("could not create temporary file");
+                }
+                in = resolver.openInputStream(uri);
+                out = new FileOutputStream(tempFile);
+                IOUtils.copy(in, out);
+
+               return tempFile;
+
+            } catch (IOException e) {
+                Log.d("UploadFolder", "Could not open requested document", e);
+            } catch (RuntimeException e) {
+                Log.d("UploadFolder", "Could not open requested document", e);
+            } finally {
+                IOUtils.closeQuietly(in);
+                IOUtils.closeQuietly(out);
+            }
+        return null;
     }
 }

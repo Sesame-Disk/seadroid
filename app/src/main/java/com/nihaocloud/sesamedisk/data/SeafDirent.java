@@ -125,4 +125,16 @@ public class SeafDirent implements SeafItem, Serializable {
             return strA.compareTo(strB);
         }
     }
+
+    @Override
+    public String toString() {
+        return "SeafDirent{" +
+                "permission='" + permission + '\'' +
+                ", id='" + id + '\'' +
+                ", type=" + type +
+                ", name='" + name + '\'' +
+                ", size=" + size +
+                ", mtime=" + mtime +
+                '}';
+    }
 }

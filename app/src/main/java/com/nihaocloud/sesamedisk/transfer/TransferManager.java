@@ -24,7 +24,6 @@ import java.util.Map;
  */
 public abstract class TransferManager {
     private static final String DEBUG_TAG = "TransferManager";
-
     public static final String BROADCAST_ACTION = "com.seafile.seadroid.TX_BROADCAST";
 
     /**
@@ -77,14 +76,10 @@ public abstract class TransferManager {
             // remove the cancelled or failed task if any
             synchronized (this) {
                 allTaskList.remove(task);
-
                 // add new created task
                 allTaskList.put(task.getTaskID(),task);
-
                 // Log.d(DEBUG_TAG, "add Que  " + taskID + " " + repoName + path);
                 waitingList.add(task);
-
-
             }
             doNext();
         }

@@ -177,7 +177,7 @@ public class SingleSignOnAuthorizeActivity extends BaseActivity implements Toolb
         @Override
         public void onReceivedSslError(WebView view, final SslErrorHandler handler, SslError error) {
             Log.d(DEBUG_TAG, "onReceivedSslError " + error.getCertificate().toString());
-            final Account account = new Account(serverUrl, null, null, null, false);
+            final Account account = new Account(null, serverUrl, null, null, false,null, null);
             SslCertificate sslCert = error.getCertificate();
             X509Certificate savedCert = CertsManager.instance().getCertificate(account);
 
@@ -245,7 +245,7 @@ public class SingleSignOnAuthorizeActivity extends BaseActivity implements Toolb
             return null;
         Log.d(DEBUG_TAG, "email: " + email);
         Log.d(DEBUG_TAG, "token: " + token);
-        return new Account(url, email, "", token, true);
+        return new Account("",url, email, token, true, null,null);
     }
 
     private class AccountInfoTask extends AsyncTask<Void, Void, String> {
@@ -300,6 +300,7 @@ public class SingleSignOnAuthorizeActivity extends BaseActivity implements Toolb
             retData.putExtra(SeafileAuthenticatorActivity.ARG_NAME, account.getName());
             retData.putExtra(SeafileAuthenticatorActivity.ARG_SHIB, account.is_shib);
             retData.putExtra(SeafileAuthenticatorActivity.ARG_SERVER_URI, account.getServer());
+            retData.putExtra(SeafileAuthenticatorActivity.ARG_AVATAR_URL, account.getAvatarUrl());
             setResult(RESULT_OK, retData);
             finish();
         }
@@ -310,7 +311,10 @@ public class SingleSignOnAuthorizeActivity extends BaseActivity implements Toolb
                 AccountInfo accountInfo = manager.getAccountInfo();
                 if (accountInfo == null)
                     return "Unknown error";
-                loginAccount = new Account(accountInfo.getName(), loginAccount.server, accountInfo.getEmail(), loginAccount.token, loginAccount.is_shib, loginAccount.sessionKey);
+                loginAccount = new Account(accountInfo.getName(), loginAccount.server,
+                        accountInfo.getEmail(), loginAccount.token, loginAccount.is_shib,
+                        loginAccount.sessionKey, accountInfo.getAvatarUrl()
+                );
                 return "Success";
 
             } catch (SeafException e) {
@@ -318,11 +322,11 @@ public class SingleSignOnAuthorizeActivity extends BaseActivity implements Toolb
                 if (e == SeafException.sslException) {
                     return getString(R.string.ssl_error);
                 } else {
-                    showShortToast(SingleSignOnAuthorizeActivity.this, e.getMessage());
+                  //  showShortToast(SingleSignOnAuthorizeActivity.this, e.getMessage());
                     return e.getMessage();
                 }
             } catch (JSONException e) {
-                showShortToast(SingleSignOnAuthorizeActivity.this, e.getMessage());
+                //showShortToast(SingleSignOnAuthorizeActivity.this, e.getMessage());
                 return e.getMessage();
             }
         }

@@ -8,38 +8,30 @@ import com.google.common.base.Objects;
 import com.nihaocloud.sesamedisk.BuildConfig;
 import com.nihaocloud.sesamedisk.util.Utils;
 
-public class Account implements Parcelable, Comparable<Account> {
+public class Account implements Comparable<Account>, Parcelable {
     private static final String DEBUG_TAG = "Account";
-
-    /**
-     * Type of the account (currently there is only one type)
-     */
     public final static String ACCOUNT_TYPE = BuildConfig.ACCOUNT_TYPE;
-    // The full URL of the server, like 'http://gonggeng.org/seahub/' or 'http://gonggeng.org/'
     public final String server;
     public final String name;
     public final String email;
     public final Boolean is_shib;
     public String token;
     public String sessionKey;
+    public String avatarUrl;
 
-    public Account(String server, String email, String name, String token, Boolean is_shib) {
-        this.name = name;
-        this.server = server;
-        this.email = email;
-        this.token = token;
-        this.is_shib = is_shib;
-    }
-
-    public Account(String name, String server, String email, String token, Boolean is_shib, String sessionKey) {
+    public Account(String name, String server, String email, String token, Boolean is_shib, String sessionKey, String avatarUrl) {
         this.server = server;
         this.name = name;
         this.email = email;
         this.token = token;
         this.sessionKey = sessionKey;
         this.is_shib = is_shib;
+        this.avatarUrl = avatarUrl;
     }
 
+    public int getAccountId() {
+        return Objects.hashCode(server, email);
+    }
 
     public String getServerHost() {
         String s = server.substring(server.indexOf("://") + 3);
@@ -64,6 +56,10 @@ public class Account implements Parcelable, Comparable<Account> {
 
     public String getServer() {
         return server;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
     }
 
     public String getServerNoProtocol() {
@@ -129,19 +125,36 @@ public class Account implements Parcelable, Comparable<Account> {
         return !TextUtils.isEmpty(token);
     }
 
+
+    @Override
+    public int compareTo(Account other) {
+        return this.toString().compareTo(other.toString());
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel out, int flags) {
-        out.writeString(this.server);
-        out.writeString(this.name);
-        out.writeString(this.email);
-        out.writeString(this.token);
-        out.writeString(this.sessionKey);
-        out.writeValue(this.is_shib);
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.server);
+        dest.writeString(this.name);
+        dest.writeString(this.email);
+        dest.writeValue(this.is_shib);
+        dest.writeString(this.token);
+        dest.writeString(this.sessionKey);
+        dest.writeString(this.avatarUrl);
+    }
+
+    protected Account(Parcel in) {
+        this.server = in.readString();
+        this.name = in.readString();
+        this.email = in.readString();
+        this.is_shib = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.token = in.readString();
+        this.sessionKey = in.readString();
+        this.avatarUrl = in.readString();
     }
 
     public static final Parcelable.Creator<Account> CREATOR = new Parcelable.Creator<Account>() {
@@ -156,19 +169,5 @@ public class Account implements Parcelable, Comparable<Account> {
         }
     };
 
-    protected Account(Parcel in) {
-        this.server = in.readString();
-        this.name = in.readString();
-        this.email = in.readString();
-        this.token = in.readString();
-        this.sessionKey = in.readString();
-        this.is_shib = (Boolean) in.readValue(Boolean.class.getClassLoader());
-        // Log.d(DEBUG_TAG, String.format("%s %s %s %b", server, email, token ,is_shib));
-    }
 
-
-    @Override
-    public int compareTo(Account other) {
-        return this.toString().compareTo(other.toString());
-    }
 }

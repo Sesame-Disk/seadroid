@@ -5,7 +5,7 @@ import android.util.Log;
 import com.google.common.collect.Maps;
 import com.nihaocloud.sesamedisk.account.Account;
 import com.nihaocloud.sesamedisk.data.DataManager;
-import com.nihaocloud.sesamedisk.data.SeafCachedFile;
+import com.nihaocloud.sesamedisk.database.table.SeafCachedFile;
 import com.nihaocloud.sesamedisk.data.SeafRepo;
 import com.nihaocloud.sesamedisk.util.Utils;
 

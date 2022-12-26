@@ -2,6 +2,7 @@ package com.nihaocloud.sesamedisk.ui.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,6 @@ import android.widget.TextView;
 import com.google.common.collect.Lists;
 import com.nihaocloud.sesamedisk.R;
 import com.nihaocloud.sesamedisk.account.Account;
-import com.nihaocloud.sesamedisk.avatar.Avatar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
@@ -33,13 +33,11 @@ public abstract class AccountAdapter extends BaseAdapter {
     private static final String DEBUG_TAG = "AccountAdapter";
     private final ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
     private ArrayList<Account> items;
-    private ArrayList<Avatar> avatars;
     private final Context context;
 
     public AccountAdapter(Context context) {
         this.context = context;
         items = Lists.newArrayList();
-        avatars = Lists.newArrayList();
     }
 
     @Override
@@ -69,10 +67,6 @@ public abstract class AccountAdapter extends BaseAdapter {
         this.items = (ArrayList<Account>) items;
         notifyDataSetChanged();
 
-    }
-
-    public void setAvatars(ArrayList<Avatar> avatars) {
-        this.avatars = avatars;
     }
 
     @Override
@@ -109,7 +103,11 @@ public abstract class AccountAdapter extends BaseAdapter {
         Account account = items.get(position);
         viewHolder.subtitle.setText(account.getServerHost());
         viewHolder.title.setText(account.getName());
-        if (getAvatarUrl(account) != null) {
+        String avatarUrl =account.getAvatarUrl();
+
+        Log.d("FFFFFFF"," avatarUrl "+avatarUrl);
+
+        if (avatarUrl != null) {
             // .delayBeforeLoading(1000)
             DisplayImageOptions options = new DisplayImageOptions.Builder()
                     .extraForDownloader(account)
@@ -126,24 +124,11 @@ public abstract class AccountAdapter extends BaseAdapter {
                     .bitmapConfig(Bitmap.Config.RGB_565)
                     .displayer(new RoundedBitmapDisplayer(1000))
                     .build();
-            ImageLoader.getInstance().displayImage(getAvatarUrl(account), viewHolder.icon, options, animateFirstListener);
+            ImageLoader.getInstance().displayImage(avatarUrl, viewHolder.icon, options, animateFirstListener);
         }
         ImageLoader.getInstance().handleSlowNetwork(true);
 
         return view;
-    }
-
-    private String getAvatarUrl(Account account) {
-        if (avatars == null) {
-            return null;
-        }
-        for (Avatar avatar : avatars) {
-            if (avatar.getSignature().equals(account.getSignature())) {
-                return avatar.getUrl();
-            }
-        }
-
-        return null;
     }
 
     private static class AnimateFirstDisplayListener extends SimpleImageLoadingListener {

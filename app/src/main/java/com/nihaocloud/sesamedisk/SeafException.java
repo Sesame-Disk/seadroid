@@ -4,11 +4,8 @@ import com.google.common.base.Objects;
 
 public class SeafException extends Exception {
     private static final long serialVersionUID = 1L;
-
     public static final int OTHER_EXCEPTION = 599;
-
     private int code;
-
     public static final SeafException unknownException = new SeafException(1, "Unknown Error");
     public static final SeafException networkException = new SeafException(2, "Network Error");
     public static final SeafException encodingException = new SeafException(3, "Encoding Error");

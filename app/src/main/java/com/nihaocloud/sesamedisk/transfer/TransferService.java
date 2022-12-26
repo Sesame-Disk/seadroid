@@ -1,20 +1,29 @@
 package com.nihaocloud.sesamedisk.transfer;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
+import android.os.Parcelable;
+import android.telephony.mbms.DownloadRequest;
 import android.util.Log;
 
 import com.nihaocloud.sesamedisk.account.Account;
+import com.nihaocloud.sesamedisk.model.file.UploadRequest;
 import com.nihaocloud.sesamedisk.notification.DownloadNotificationProvider;
 import com.nihaocloud.sesamedisk.notification.UploadNotificationProvider;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
+
+import org.spongycastle.crypto.tls.PRFAlgorithm;
 
 import java.util.List;
+import java.util.Objects;
 
 public class TransferService extends Service {
     private static final String DEBUG_TAG = "TransferService";
-
     private final IBinder mBinder = new TransferBinder();
 
     public DownloadTaskManager getDownloadTaskManager() {
@@ -31,7 +40,7 @@ public class TransferService extends Service {
     @Override
     public void onCreate() {
         downloadTaskManager = new DownloadTaskManager();
-        uploadTaskManager = new UploadTaskManager();
+        uploadTaskManager = new UploadTaskManager(this);
     }
 
     @Override
@@ -41,6 +50,13 @@ public class TransferService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        final String action = intent.getAction();
+        if (Objects.equals(action, ACTION_ADD_UPLOAD)) {
+            final UploadRequest request = intent.getParcelableExtra(EXTRA_ARG_UPLOAD_REQUEST);
+            if (request != null) {
+                uploadTaskManager.addTaskToQue(request);
+            }
+        }
         return START_STICKY;
     }
 
@@ -64,7 +80,6 @@ public class TransferService extends Service {
                     || info.state.equals(TaskState.TRANSFERRING))
                 return true;
         }
-
         return false;
     }
 
@@ -91,7 +106,8 @@ public class TransferService extends Service {
      * @param isCopyToLocal
      * @return
      */
-    public int addTaskToUploadQue(Account account, String repoID, String repoName, String dir, String relativePath, String filePath, boolean isUpdate, boolean isCopyToLocal) {
+    public int addTaskToUploadQue(Account account, String repoID, String repoName, String dir,
+                                  String relativePath, String filePath, boolean isUpdate, boolean isCopyToLocal) {
         return uploadTaskManager.addTaskToQue(account, repoID, repoName, dir, relativePath, filePath, isUpdate, isCopyToLocal, false);
     }
 
@@ -132,7 +148,7 @@ public class TransferService extends Service {
      */
     public int addUploadTask(Account account, String repoID, String repoName, String dir,
                              String filePath, boolean isUpdate, boolean isCopyToLocal) {
-        return addTaskToUploadQue(account, repoID, repoName, dir, null,filePath, isUpdate, isCopyToLocal);
+        return addTaskToUploadQue(account, repoID, repoName, dir, null, filePath, isUpdate, isCopyToLocal);
     }
 
     public UploadTaskInfo getUploadTaskInfo(int taskID) {
@@ -149,7 +165,6 @@ public class TransferService extends Service {
 
     public void removeAllUploadTasksByState(TaskState taskState) {
         uploadTaskManager.removeByState(taskState);
-
     }
 
     public void restartAllUploadTasksByState(TaskState taskState) {
@@ -330,5 +345,21 @@ public class TransferService extends Service {
     public DownloadNotificationProvider getDownloadNotifProvider() {
         return downloadTaskManager.getNotifProvider();
     }
+
+
+    public static void sendAddUpload(Context context, UploadRequest request) {
+        Intent intent = new Intent(context, TransferService.class)
+                .setAction(ACTION_ADD_UPLOAD)
+                .putExtra(EXTRA_ARG_UPLOAD_REQUEST, request);
+
+        if (Build.VERSION.SDK_INT >= 26) {
+            context.startForegroundService(intent);
+        } else {
+            context.startService(intent);
+        }
+    }
+
+    private static final String ACTION_ADD_UPLOAD = "TransferService.ACTION_ADD_UPLOAD";
+    private static final String EXTRA_ARG_UPLOAD_REQUEST = "TransferService.EXTRA_ARG_UPLOAD_REQUEST";
 
 }

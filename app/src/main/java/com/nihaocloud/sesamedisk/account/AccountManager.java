@@ -4,12 +4,12 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.common.collect.Lists;
 import com.nihaocloud.sesamedisk.BuildConfig;
 import com.nihaocloud.sesamedisk.cameraupload.CameraUploadManager;
 import com.nihaocloud.sesamedisk.data.ServerInfo;
-import com.nihaocloud.sesamedisk.database.AccountDBHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,8 +40,6 @@ public class AccountManager {
         // used to manage multi Accounts when user switch between different Accounts
         actMangeSharedPref = ctx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         editor = actMangeSharedPref.edit();
-        // migrate old accounts
-        AccountDBHelper.migrateAccounts(context);
     }
 
     public List<Account> getAccountList() {
@@ -87,7 +85,8 @@ public class AccountManager {
         boolean is_shib = accountManager.getUserData(androidAccount, Authenticator.KEY_SHIB) != null;
         String token = accountManager.peekAuthToken(androidAccount, Authenticator.AUTHTOKEN_TYPE);
         String session_key = accountManager.getUserData(androidAccount, Authenticator.SESSION_KEY);
-        return new Account(name, server, email, token, is_shib, session_key);
+        String avatarUrl = accountManager.getUserData(androidAccount, Authenticator.AVATAR_URL);
+        return new Account(name, server, email, token, is_shib, session_key, avatarUrl);
     }
 
     public void setServerInfo(Account account, ServerInfo serverInfo) {
@@ -116,7 +115,6 @@ public class AccountManager {
      * @param accountName name
      */
     public void saveCurrentAccount(String accountName) {
-
         editor.putString(SHARED_PREF_ACCOUNT_NAME, accountName);
         editor.commit();
     }

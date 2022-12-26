@@ -1,5 +1,6 @@
-package com.nihaocloud.sesamedisk.data;
+package com.nihaocloud.sesamedisk.database.table;
 
+import com.nihaocloud.sesamedisk.data.SeafItem;
 import com.nihaocloud.sesamedisk.util.Utils;
 
 import java.io.File;

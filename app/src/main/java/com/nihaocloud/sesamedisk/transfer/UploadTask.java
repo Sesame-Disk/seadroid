@@ -30,7 +30,8 @@ public class UploadTask extends TransferTask {
     public static final int HTTP_ABOVE_QUOTA = 443;
 
     public UploadTask(int taskID, Account account, String repoID, String repoName,
-                      String dir, String relativePath, String filePath, boolean isUpdate, boolean isCopyToLocal, boolean byBlock,
+                      String dir, String relativePath, String filePath,
+                      boolean isUpdate, boolean isCopyToLocal, boolean byBlock,
                       UploadStateListener uploadStateListener) {
         super(taskID, account, repoName, repoID, relativePath, filePath);
         this.dir = dir;

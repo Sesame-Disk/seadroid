@@ -63,7 +63,6 @@ public class AccountDetailActivity extends BaseActivity implements Toolbar.OnMen
     private RelativeLayout rlEye;
     private TextInputLayout authTokenLayout;
     private EditText authTokenText;
-
     private boolean isPasswddVisible;
     private CheckBox cbRemDevice;
     private String mSessionKey;
@@ -99,7 +98,8 @@ public class AccountDetailActivity extends BaseActivity implements Toolbar.OnMen
             String account_name = intent.getStringExtra(SeafileAuthenticatorActivity.ARG_ACCOUNT_NAME);
             String account_type = intent.getStringExtra(SeafileAuthenticatorActivity.ARG_ACCOUNT_TYPE);
             android.accounts.Account account = new android.accounts.Account(account_name, account_type);
-            @SuppressLint("MissingPermission") String email = mAccountManager.getUserData(account, Authenticator.KEY_EMAIL);
+            @SuppressLint("MissingPermission")
+            String email = mAccountManager.getUserData(account, Authenticator.KEY_EMAIL);
             mSessionKey = mAccountManager.getUserData(account, Authenticator.SESSION_KEY);
             emailText.setText(email);
             emailText.requestFocus();
@@ -255,8 +255,7 @@ public class AccountDetailActivity extends BaseActivity implements Toolbar.OnMen
         String email = emailText.getText().toString().trim();
         String passwd = passwdText.getText().toString();
 
-        ConnectivityManager connMgr = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
         if (networkInfo != null && networkInfo.isConnected()) {
@@ -299,7 +298,7 @@ public class AccountDetailActivity extends BaseActivity implements Toolbar.OnMen
             }
 
             loginButton.setEnabled(false);
-            Account tmpAccount = new Account(null, serverURL, email, null, false, mSessionKey);
+            Account tmpAccount = new Account(null, serverURL, email, null, false,mSessionKey,null );
             progressDialog = new ProgressDialog(this);
             progressDialog.setMessage(getString(R.string.settings_cuc_loading));
             progressDialog.setCancelable(false);
@@ -393,6 +392,7 @@ public class AccountDetailActivity extends BaseActivity implements Toolbar.OnMen
                 retData.putExtra(SeafileAuthenticatorActivity.ARG_NAME, loginAccount.getName());
                 retData.putExtra(SeafileAuthenticatorActivity.ARG_AUTH_SESSION_KEY, loginAccount.getSessionKey());
                 retData.putExtra(SeafileAuthenticatorActivity.ARG_SERVER_URI, loginAccount.getServer());
+                retData.putExtra(SeafileAuthenticatorActivity.ARG_AVATAR_URL, loginAccount.getAvatarUrl());
                 retData.putExtra(TWO_FACTOR_AUTH, cbRemDevice.isChecked());
                 setResult(RESULT_OK, retData);
                 finish();
@@ -419,7 +419,9 @@ public class AccountDetailActivity extends BaseActivity implements Toolbar.OnMen
 
                 // replace email address/username given by the user with the address known by the server.
 //                loginAccount = new Account(loginAccount.server, accountInfo.getEmail(), loginAccount.token, false, loginAccount.sessionKey);
-                loginAccount = new Account(accountInfo.getName(), loginAccount.server, accountInfo.getEmail(), loginAccount.token, false, loginAccount.sessionKey);
+                loginAccount = new Account(accountInfo.getName(),
+                        loginAccount.server, accountInfo.getEmail(), loginAccount.token,
+                        false, loginAccount.sessionKey, loginAccount.avatarUrl);
 
                 return "Success";
 

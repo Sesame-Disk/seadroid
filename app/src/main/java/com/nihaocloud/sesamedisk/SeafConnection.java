@@ -28,6 +28,7 @@ import com.nihaocloud.sesamedisk.data.BlockInfoBean;
 import com.nihaocloud.sesamedisk.data.DataManager;
 import com.nihaocloud.sesamedisk.data.FileBlocks;
 import com.nihaocloud.sesamedisk.data.ProgressMonitor;
+import com.nihaocloud.sesamedisk.database.table.UploadFileBlock;
 import com.nihaocloud.sesamedisk.httputils.RequestManager;
 import com.nihaocloud.sesamedisk.ssl.SSLTrustManager;
 import com.nihaocloud.sesamedisk.util.Utils;
@@ -49,10 +50,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLHandshakeException;
 
+import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -120,7 +124,6 @@ public class SeafConnection {
 
     private HttpRequest prepareApiFileGetRequest(String url) throws HttpRequestException {
         HttpRequest req = HttpRequest.get(url).connectTimeout(CONNECTION_TIMEOUT).followRedirects(true);
-
         return prepareHttpsCheck(req);
     }
 
@@ -148,13 +151,30 @@ public class SeafConnection {
      */
     private HttpRequest prepareApiPostRequest(String apiPath, boolean withToken, Map<String, ?> params, boolean encode)
             throws HttpRequestException {
-        HttpRequest req = HttpRequest.post(account.server + apiPath, params, encode)
+        String baseUrl = account.server + apiPath;
+
+        Log.d("HHHHHHHHHHHH", "post : "+baseUrl);
+        HttpRequest req = HttpRequest.post(baseUrl, params, encode)
                 .followRedirects(true)
                 .connectTimeout(CONNECTION_TIMEOUT);
 
         if (withToken) {
             req.header("Authorization", "Token " + account.token);
         }
+
+//        Map<String, List<String>> headers = req.headers();
+//        Set<String> strings = headers.keySet();
+//
+//        StringBuilder builder = new StringBuilder();
+
+//        for (String s : strings) {
+//            builder.append(s + " : " + headers.toString()).append("\n");
+//        }
+
+      //  Log.d("HHHHHHHHHHHHHHH", "toString : " + req.toString());
+//        Log.d("HHHHHHHHHHHHHHH", "server : " + req.server());
+//        Log.d("HHHHHHHHHHHHHHH", "header : " + builder.toString());
+//        Log.d("HHHHHHHHHHHHHHH", "req.body() : " + req.body());
 
         return prepareHttpsCheck(req);
     }
@@ -579,7 +599,10 @@ public class SeafConnection {
         }
     }
 
-    public String uploadByBlocks(String repoID, String dir, String relativePath, String filePath, List<Block> blocks, boolean update, ProgressMonitor monitor) throws IOException, SeafException {
+    public String uploadByBlocks(String repoID, String dir, String relativePath,
+                                 String filePath, List<Block> blocks,
+                                 boolean update, ProgressMonitor monitor)
+            throws IOException, SeafException {
 
         try {
             LinkedList<String> blkListId = new LinkedList<>();
@@ -838,12 +861,14 @@ public class SeafConnection {
     }
 
 
-    private String getBlockUploadLink(String repoID, List<String> blocksId) throws SeafException {
+    public String getBlockUploadLink(String repoID, List<String> blocksId) throws SeafException {
         try {
             String apiPath;
             apiPath = "api2/repos/" + repoID + "/upload-blks-link/";
             HttpRequest req = prepareApiPostRequest(apiPath, true, null);
-            String ids = blocksId.toString().replace("[", "").replace("]", "").replace(" ", "");
+            String ids = blocksId.toString().replace("[", "")
+                    .replace("]", "")
+                    .replace(" ", "");
 
 
             try {
@@ -871,7 +896,8 @@ public class SeafConnection {
     /**
      * commit blocks to server
      */
-    private String commitUpload(String link, List<String> blkIds, String dir, String relativePath, String filePath, boolean update)
+    private String commitUpload(String link, List<String> blkIds, String dir, String relativePath,
+                                String filePath, boolean update)
             throws SeafException, IOException {
         File file = new File(filePath);
         if (!file.exists()) {
@@ -890,6 +916,39 @@ public class SeafConnection {
         builder.addFormDataPart("parent_dir", dir);
         builder.addFormDataPart("file_size", file.length() + "");
         builder.addFormDataPart("file_name", file.getName());
+
+        if (relativePath != null && !relativePath.isEmpty()) {
+            builder.addFormDataPart("relative_path", relativePath);
+        }
+
+        JSONArray jsonArray = new JSONArray(blkIds);
+        builder.addFormDataPart("blockids", jsonArray.toString());
+        RequestBody body = builder.build();
+        Request request = new Request.Builder().url(link).post(body).build();
+        Response response = RequestManager.getInstance(account).getClient().newCall(request).execute();
+        if (response.isSuccessful()) {
+            return response.body().string();
+        }
+        throw new SeafException(SeafException.OTHER_EXCEPTION, "File upload failed");
+    }
+
+
+    public String commitUpload(String link, List<String> blkIds, String dir, String relativePath,
+                               String fileName, String size, boolean update)
+            throws SeafException, IOException {
+
+        MultipartBody.Builder builder = new MultipartBody.Builder();
+        //set type
+        builder.setType(MultipartBody.FORM);
+        //set header ,to replace file
+        if (update) {
+            builder.addFormDataPart("replace", "1");
+        } else {
+            builder.addFormDataPart("replace", "0");
+        }
+        builder.addFormDataPart("parent_dir", dir);
+        builder.addFormDataPart("file_size", size);
+        builder.addFormDataPart("file_name", fileName);
 
         if (relativePath != null && !relativePath.isEmpty()) {
             builder.addFormDataPart("relative_path", relativePath);
@@ -971,8 +1030,7 @@ public class SeafConnection {
      * Upload file blocks to server
      */
     private String uploadBlocksCommon(String link, List<String> needUploadId, String dir, String filePath, List<Block> blocks,
-                                      ProgressMonitor
-                                              monitor, boolean update)
+                                      ProgressMonitor monitor, boolean update)
             throws SeafException, IOException {
         File file = new File(filePath);
         if (!file.exists()) {
@@ -988,17 +1046,51 @@ public class SeafConnection {
             for (String s : needUploadId) {
                 if (s.equals(block.getBlockId())) {
                     File blk = new File(block.path);
-                    builder.addFormDataPart("file", blk.getName(), RequestManager.getInstance(account).createProgressRequestBody(monitor, blk));
+                    builder.addFormDataPart("file", blk.getName(),
+                            RequestManager.getInstance(account).createProgressRequestBody(monitor, blk));
                     break;
                 }
             }
         }
 
         RequestBody body = builder.build();
-        final Request request = new Request.Builder().url(link).post(body).header("Authorization", "Token " + account.token).build();
+        final Request request = new Request.Builder().url(link)
+                .post(body)
+                .header("Authorization", "Token " + account.token)
+                .build();
+
         Response response = RequestManager.getInstance(account).getClient().newCall(request).execute();
         if (response.isSuccessful()) {
             return response.body().string();
+        }
+        throw new SeafException(SeafException.OTHER_EXCEPTION, "File upload failed");
+    }
+
+
+    public String uploadBlocks(String link, String originalFileName, UploadFileBlock block,
+                               ProgressMonitor monitor, String id)
+            throws SeafException, IOException {
+        MultipartBody.Builder builder = new MultipartBody.Builder();
+        builder.setType(MultipartBody.FORM);
+        File blk = new File(block.getPath());
+        builder.addFormDataPart("filename", block.getBlockId());
+
+
+        // RequestBody progressRequestBody = RequestManager.getInstance(account).createProgressRequestBody(monitor, blk);
+        RequestBody progressRequestBody = RequestBody.create(blk, MediaType.Companion.get("text/xml"));
+        builder.addFormDataPart("file", blk.getName(), progressRequestBody);
+        RequestBody body = builder.build();
+        final Request request = new Request.Builder().url(link)
+                .post(body)
+                .header("Authorization", "Token " + account.token)
+                .header("content-type", "text/xml")
+                .build();
+
+        Response response = RequestManager.getInstance(account).getClient().newCall(request).execute();
+        String string = response.body().string();
+
+        if (response.isSuccessful()) {
+            return string;
         }
         throw new SeafException(SeafException.OTHER_EXCEPTION, "File upload failed");
     }
@@ -1643,12 +1735,12 @@ public class SeafConnection {
             mm.append(s.getClassName() + " " + s.getMethodName() + " " + s.getLineNumber());
         }
 
-        //  Log.d(DEBUG_TAG, "StackTraceElement :  " + mm);
+         Log.d(DEBUG_TAG, "StackTraceElement :  " + mm);
 
-        //     Log.d(DEBUG_TAG, "HTTP request : url : " + req.url() + ", code : " + req.code() + ", message : " + req.message() + "," + builder.toString());
+             Log.d(DEBUG_TAG, "HTTP request : url : " + req.url() + ", code : " + req.code() + ", message : " + req.message() + "," + builder.toString());
 
         if (req.code() != expectedStatusCode) {
-            //Log.d(DEBUG_TAG, "HTTP request failed : " + req.url() + ", " + req.code() + ", " + req.message());
+            Log.d(DEBUG_TAG, "HTTP request failed : " + req.url() + ", " + req.code() + ", " + req.message());
 
             if (req.message() == null) {
                 throw SeafException.networkException;

@@ -7,10 +7,12 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
 
+import com.facebook.stetho.Stetho;
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.MaterialCommunityModule;
 import com.nihaocloud.sesamedisk.avatar.AuthImageDownloader;
 import com.nihaocloud.sesamedisk.data.StorageManager;
+import com.nihaocloud.sesamedisk.database.NihaoDatabase;
 import com.nihaocloud.sesamedisk.gesturelock.AppLockManager;
 import com.nihaocloud.sesamedisk.ui.CustomNotificationBuilder;
 import com.nihaocloud.sesamedisk.util.Utils;
@@ -19,8 +21,11 @@ import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.google.modernstorage.storage.AndroidFileSystem;
 
 import java.io.File;
+
+import okio.FileSystem;
 
 public class NihaoApplication extends Application {
     private static Context context;
@@ -28,11 +33,16 @@ public class NihaoApplication extends Application {
     private int totalNumber;
     private int scanUploadStatus;
     private static NihaoApplication instance;
+    public static NihaoDatabase database;
+
+    public static FileSystem fileSystem;
 
     public void onCreate() {
         super.onCreate();
         Iconify.with(new MaterialCommunityModule());
+        fileSystem = new AndroidFileSystem(context);
         instance = this;
+        database = NihaoDatabase.Companion.getInstance(this);
         initImageLoader(getApplicationContext());
 
         // set gesture lock if available
@@ -40,8 +50,8 @@ public class NihaoApplication extends Application {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             initNotificationChannel();
         }
-
         Utils.logPhoneModelInfo();
+        Stetho.initializeWithDefaults(this);
     }
 
     @Override

@@ -34,16 +34,17 @@ public class UploadNotificationProvider extends BaseNotificationProvider {
 
         // failed or cancelled tasks won`t be shown in notification state
         // but failed or cancelled detailed info can be viewed in TransferList
-        if (getState().equals(NotificationState.NOTIFICATION_STATE_COMPLETED_WITH_ERRORS))
+        NotificationState state = getState();
+
+        if (state.equals(NotificationState.NOTIFICATION_STATE_COMPLETED_WITH_ERRORS))
             progressStatus = NihaoApplication.getAppContext().getString(R.string.notification_upload_completed);
-        else if (getState().equals(NotificationState.NOTIFICATION_STATE_COMPLETED))
+        else if (state.equals(NotificationState.NOTIFICATION_STATE_COMPLETED))
             progressStatus = NihaoApplication.getAppContext().getString(R.string.notification_upload_completed);
-        else if (getState().equals(NotificationState.NOTIFICATION_STATE_PROGRESS)) {
+        else if (state.equals(NotificationState.NOTIFICATION_STATE_PROGRESS)) {
             int uploadingCount = 0;
             List<UploadTaskInfo> infos = txService.getNoneCameraUploadTaskInfos();
             for (UploadTaskInfo info : infos) {
-                if (info.state.equals(TaskState.INIT)
-                        || info.state.equals(TaskState.TRANSFERRING))
+                if (info.state.equals(TaskState.INIT) || info.state.equals(TaskState.TRANSFERRING))
                     uploadingCount++;
             }
 
@@ -63,10 +64,22 @@ public class UploadNotificationProvider extends BaseNotificationProvider {
         dIntent.putExtra(NOTIFICATION_MESSAGE_KEY, NOTIFICATION_OPEN_UPLOAD_TAB);
         dIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        PendingIntent uPendingIntent = PendingIntent.getActivity(NihaoApplication.getAppContext(),
-                (int) System.currentTimeMillis(),
-                dIntent,
-                0);
+//        PendingIntent uPendingIntent = PendingIntent.getActivity(NihaoApplication.getAppContext(),
+//                (int) System.currentTimeMillis(),
+//                dIntent,
+//                PendingIntent.FLAG_ONE_SHOT);
+
+
+        PendingIntent uPendingIntent;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            uPendingIntent = PendingIntent.getActivity
+                    (NihaoApplication.getAppContext(),   (int) System.currentTimeMillis(), dIntent, PendingIntent.FLAG_MUTABLE);
+        }
+        else
+        {
+            uPendingIntent = PendingIntent.getActivity
+                    (NihaoApplication.getAppContext(),   (int) System.currentTimeMillis(), dIntent, PendingIntent.FLAG_ONE_SHOT);
+        }
         mNotifBuilder = CustomNotificationBuilder.getNotificationBuilder(NihaoApplication.getAppContext(),
                 CustomNotificationBuilder.CHANNEL_ID_UPLOAD)
                 .setSmallIcon(R.drawable.ic_nihao_notification)
@@ -114,16 +127,15 @@ public class UploadNotificationProvider extends BaseNotificationProvider {
         int errorCount = 0;
 
         for (UploadTaskInfo info : infos) {
-            if (info == null)
-                continue;
-            if (info.state.equals(TaskState.INIT)
-                    || info.state.equals(TaskState.TRANSFERRING))
+            if (info == null) continue;
+            TaskState state = info.state;
+            if (state.equals(TaskState.PREPARING)
+                    || state.equals(TaskState.INIT)
+                    || state.equals(TaskState.TRANSFERRING))
                 progressCount++;
-            else if (info.state.equals(TaskState.FAILED)
-                    || info.state.equals(TaskState.CANCELLED))
+            else if (state.equals(TaskState.FAILED) || state.equals(TaskState.CANCELLED))
                 errorCount++;
         }
-
         if (progressCount == 0 && errorCount == 0)
             return NotificationState.NOTIFICATION_STATE_COMPLETED;
         else if (progressCount == 0 && errorCount > 0)
@@ -141,5 +153,4 @@ public class UploadNotificationProvider extends BaseNotificationProvider {
     protected String getNotificationTitle() {
         return NihaoApplication.getAppContext().getString(R.string.notification_upload_started_title);
     }
-
 }

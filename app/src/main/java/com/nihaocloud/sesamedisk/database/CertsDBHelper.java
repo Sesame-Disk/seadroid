@@ -142,7 +142,6 @@ public class CertsDBHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(COLUMN_URL, url);
         values.put(COLUMN_CERT, text);
-
         database.replace(TABLE_NAME, null, values);
     }
 }

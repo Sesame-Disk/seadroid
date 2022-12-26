@@ -9,7 +9,7 @@ import com.nihaocloud.sesamedisk.util.Utils;
 import org.json.JSONObject;
 
 public class SeafStarredFile implements SeafItem {
-    public enum FileType { DIR, FILE };
+    public enum FileType { DIR, FILE }
     private static final String DEBUG_TAG = "SeafStarredFile";
 
     private String repoID;

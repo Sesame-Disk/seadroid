@@ -2,6 +2,7 @@ package com.nihaocloud.sesamedisk.httputils;
 
 import android.util.Log;
 
+import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.nihaocloud.sesamedisk.account.Account;
 import com.nihaocloud.sesamedisk.data.ProgressMonitor;
 import com.nihaocloud.sesamedisk.ssl.SSLTrustManager;
@@ -41,6 +42,7 @@ public class RequestManager {
                 .connectTimeout(TIMEOUT_COUNT, TimeUnit.MINUTES)
                 .readTimeout(TIMEOUT_COUNT, TimeUnit.MINUTES)
                 .writeTimeout(TIMEOUT_COUNT, TimeUnit.MINUTES)
+                .addNetworkInterceptor(new StethoInterceptor())
                 .build();
     }
 

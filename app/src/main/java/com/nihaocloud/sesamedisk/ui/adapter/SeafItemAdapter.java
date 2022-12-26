@@ -24,7 +24,7 @@ import com.google.common.collect.Lists;
 import com.nihaocloud.sesamedisk.NihaoApplication;
 import com.nihaocloud.sesamedisk.R;
 import com.nihaocloud.sesamedisk.data.DataManager;
-import com.nihaocloud.sesamedisk.data.SeafCachedFile;
+import com.nihaocloud.sesamedisk.database.table.SeafCachedFile;
 import com.nihaocloud.sesamedisk.data.SeafDirent;
 import com.nihaocloud.sesamedisk.data.SeafGroup;
 import com.nihaocloud.sesamedisk.data.SeafItem;
