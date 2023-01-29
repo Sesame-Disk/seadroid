@@ -208,9 +208,7 @@ public class AccountsActivity extends BaseActivity implements Toolbar.OnMenuItem
 
     private void startFilesActivity() {
         Intent intent = new Intent(this, BrowserActivity.class);
-
-        // first finish this activity, so the BrowserActivity is again "on top"
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
     }
@@ -224,7 +222,6 @@ public class AccountsActivity extends BaseActivity implements Toolbar.OnMenuItem
 
             try {
                 Bundle b = future.getResult();
-
                 if (b.getBoolean(android.accounts.AccountManager.KEY_BOOLEAN_RESULT)) {
                     String accountName = b.getString(android.accounts.AccountManager.KEY_ACCOUNT_NAME);
                     Log.d(DEBUG_TAG, "switching to account " + accountName);
@@ -244,6 +241,7 @@ public class AccountsActivity extends BaseActivity implements Toolbar.OnMenuItem
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == DETAIL_ACTIVITY_REQUEST) {
             if (resultCode == RESULT_OK) {
                 startFilesActivity();
