@@ -23,7 +23,9 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.provider.MediaStore;
+
 import com.google.android.material.tabs.TabLayout;
+
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -34,6 +36,7 @@ import androidx.documentfile.provider.DocumentFile;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
+
 import android.util.Log;
 import android.util.Pair;
 import android.view.KeyEvent;
@@ -62,7 +65,6 @@ import com.nihaocloud.sesamedisk.data.SeafStarredFile;
 import com.nihaocloud.sesamedisk.data.ServerInfo;
 import com.nihaocloud.sesamedisk.data.StorageManager;
 import com.nihaocloud.sesamedisk.data.UploadFolder;
-import com.nihaocloud.sesamedisk.fileschooser.MultiFileChooserActivity;
 import com.nihaocloud.sesamedisk.monitor.FileMonitorService;
 import com.nihaocloud.sesamedisk.notification.DownloadNotificationProvider;
 import com.nihaocloud.sesamedisk.notification.UploadNotificationProvider;
@@ -94,7 +96,6 @@ import com.nihaocloud.sesamedisk.ui.dialog.RenameRepoDialog;
 import com.nihaocloud.sesamedisk.ui.dialog.SortFilesDialogFragment;
 import com.nihaocloud.sesamedisk.ui.dialog.SslConfirmDialog;
 import com.nihaocloud.sesamedisk.ui.dialog.TaskDialog;
-import com.nihaocloud.sesamedisk.ui.dialog.UploadChoiceDialog;
 import com.nihaocloud.sesamedisk.ui.dialog.UploadFolderRepoDialog;
 import com.nihaocloud.sesamedisk.ui.fragment.ActivitiesFragment;
 import com.nihaocloud.sesamedisk.ui.fragment.ReposFragment;
@@ -125,6 +126,7 @@ public class BrowserActivity extends BaseActivity
         implements ReposFragment.OnFileSelectedListener, StarredFragment.OnStarredFileSelectedListener,
         FragmentManager.OnBackStackChangedListener, Toolbar.OnMenuItemClickListener,
         SortFilesDialogFragment.SortItemClickListener {
+    public static final String MULTI_FILES_PATHS = "com.seafile.seadroid2.fileschooser.paths";
     private static final String DEBUG_TAG = "BrowserActivity";
     public static final String ACTIONBAR_PARENT_PATH = "/";
 
@@ -574,6 +576,7 @@ public class BrowserActivity extends BaseActivity
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         // Log.i(DEBUG_TAG, "Received response for permission request.");
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case REQUEST_PERMISSIONS_WRITE_EXTERNAL_STORAGE: {
                 // Check if the only required permission has been granted
@@ -826,6 +829,7 @@ public class BrowserActivity extends BaseActivity
 
     @Override
     protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
         Log.d(DEBUG_TAG, "onNewIntent");
 
         // if the user started the Seadroid app from the Launcher, keep the old Activity
@@ -838,8 +842,7 @@ public class BrowserActivity extends BaseActivity
 
         Account selectedAccount = accountManager.getCurrentAccount();
         Log.d(DEBUG_TAG, "Current account: " + selectedAccount);
-        if (selectedAccount == null
-                || !account.equals(selectedAccount)
+        if (!account.equals(selectedAccount)
                 || !account.getToken().equals(selectedAccount.getToken())) {
             Log.d(DEBUG_TAG, "Account switched, restarting activity.");
             finish();
@@ -1278,15 +1281,9 @@ public class BrowserActivity extends BaseActivity
             showShortToast(this, R.string.library_read_only);
             return;
         }
-        // Starting with kitkat (or earlier?), the document picker has integrated image and local file support
-        if (SDK_INT < Build.VERSION_CODES.KITKAT) {
-            UploadChoiceDialog dialog = new UploadChoiceDialog();
-            dialog.show(getSupportFragmentManager(), PICK_FILE_DIALOG_FRAGMENT_TAG);
-        } else {
-            Intent target = Utils.createGetContentIntent();
-            Intent intent = Intent.createChooser(target, getString(R.string.choose_file));
-            startActivityForResult(intent, PICK_FILE_REQUEST);
-        }
+        Intent target = Utils.createGetContentIntent();
+        Intent intent = Intent.createChooser(target, getString(R.string.choose_file));
+        startActivityForResult(intent, PICK_FILE_REQUEST);
     }
 
     private void pickFolder() {
@@ -1308,7 +1305,7 @@ public class BrowserActivity extends BaseActivity
         switch (requestCode) {
             case PICK_FILES_REQUEST:
                 if (resultCode == RESULT_OK) {
-                    String[] paths = data.getStringArrayExtra(MultiFileChooserActivity.MULTI_FILES_PATHS);
+                    String[] paths = data.getStringArrayExtra(MULTI_FILES_PATHS);
                     if (paths == null)
                         return;
                     showShortToast(this, getString(R.string.added_to_upload_tasks));
