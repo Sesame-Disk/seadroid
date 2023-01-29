@@ -1,5 +1,6 @@
 package com.nihaocloud.sesamedisk;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +18,7 @@ public class BootAutostart extends BroadcastReceiver {
      * - booting the device
      * - upgrade of the Seadroid package
      */
+    @SuppressLint("UnsafeProtectedBroadcastReceiver")
     public void onReceive(Context context, Intent intent) {
         Utils.startCameraSyncJob(context);
     }
