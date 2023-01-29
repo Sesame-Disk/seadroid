@@ -71,6 +71,7 @@
     </style>
 
     <style name="TabLayoutStyle" parent="Widget.Design.TabLayout">
+        <item name="android:gravity">left|center</item>
         <item name="tabIndicatorColor">@color/fancy_orange</item>
         <item name="android:background">@color/color_primary</item>
         <item name="android:contentInsetStart">?actionBarInsetStart</item>

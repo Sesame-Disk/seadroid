@@ -109,15 +109,6 @@ public class ServerInfo implements Parcelable{
     }
 
     @Override
-    public String toString() {
-        return Objects.toStringHelper(this)
-                .add("url", url)
-                .add("version", version)
-                .add("features", features)
-                .toString();
-    }
-
-    @Override
     public int describeContents() {
         return 0;
     }

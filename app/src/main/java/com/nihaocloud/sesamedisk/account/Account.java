@@ -166,15 +166,6 @@ public class Account implements Parcelable, Comparable<Account> {
         // Log.d(DEBUG_TAG, String.format("%s %s %s %b", server, email, token ,is_shib));
     }
 
-    @Override
-    public String toString() {
-        return Objects.toStringHelper(this)
-                .add("server", server)
-                .add("user", email)
-                .add("name", name)
-                .add("sessionKey", sessionKey)
-                .toString();
-    }
 
     @Override
     public int compareTo(Account other) {

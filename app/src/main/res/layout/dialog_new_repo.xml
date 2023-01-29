@@ -23,7 +23,7 @@
         android:layout_marginTop="@dimen/margin_normal"
         android:layout_marginBottom="@dimen/margin_normal">
 
-        <android.support.v7.widget.SwitchCompat
+        <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/new_repo_encrypt_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
             android:text="@string/encrypt" />
     </RelativeLayout>
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/nsv_new_repo_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -75,5 +75,5 @@
                 android:textSize="@dimen/dialog_msg_txt_size"
                 android:inputType="textPassword" />
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 </LinearLayout>

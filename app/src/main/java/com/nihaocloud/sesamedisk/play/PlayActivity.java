@@ -6,7 +6,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.view.ViewCompat;
+import androidx.core.view.ViewCompat;
 import android.transition.Transition;
 import android.view.View;
 
