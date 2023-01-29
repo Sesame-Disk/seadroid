@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+
 import androidx.core.content.FileProvider;
+
 import android.text.ClipboardManager;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
@@ -79,7 +81,7 @@ public class WidgetUtils {
                 shareIntent.setClassName(packageName, className);
 
                 final GetShareLinkDialog gdialog = new GetShareLinkDialog();
-                gdialog.init(repoID, path, isdir, account,password, days);
+                gdialog.init(repoID, path, isdir, account, password, days);
                 gdialog.setTaskDialogLisenter(new TaskDialog.TaskDialogListener() {
                     @Override
                     public void onTaskSuccess() {
@@ -98,17 +100,17 @@ public class WidgetUtils {
                                           final String repoID,
                                           final String path,
                                           final boolean isdir,
-                                          final Account account){
+                                          final Account account) {
         final GetShareLinkEncryptDialog dialog = new GetShareLinkEncryptDialog();
         dialog.setTaskDialogLisenter(new TaskDialog.TaskDialogListener() {
             @Override
             public void onTaskSuccess() {
                 String password = dialog.getPassword();
                 String days = dialog.getDays();
-                chooseShareApp(activity,repoID,path,isdir,account,password,days);
+                chooseShareApp(activity, repoID, path, isdir, account, password, days);
             }
         });
-        dialog.show(activity.getSupportFragmentManager(),BrowserActivity.CHARE_LINK_PASSWORD_FRAGMENT_TAG);
+        dialog.show(activity.getSupportFragmentManager(), BrowserActivity.CHARE_LINK_PASSWORD_FRAGMENT_TAG);
 
     }
 
@@ -228,14 +230,12 @@ public class WidgetUtils {
         if (activity.getPackageManager().resolveActivity(open, 0) == null) {
             String message = String.format(activity.getString(R.string.op_exception_suitable_app_not_found), mime);
             activity.showShortToast(activity, message);
-            mime = "*/*";
-            open.setType(mime);
-        }
-
-        try {
-            activity.startActivity(open);
-        } catch (ActivityNotFoundException e) {
-            e.printStackTrace();
+        } else {
+            try {
+                activity.startActivity(open);
+            } catch (ActivityNotFoundException e) {
+                e.printStackTrace();
+            }
         }
     }
 
