@@ -198,10 +198,7 @@ public class WidgetUtils {
      * @param file
      */
     public static void showFile(final BaseActivity activity, File file, boolean isOpenWith) {
-
         String name = file.getName();
-        String suffix = name.substring(name.lastIndexOf('.') + 1).toLowerCase();
-
         //Open markdown and txt files in MarkdownActivity
         boolean isTextMime = Utils.isTextMimeType(name);
         if (isTextMime && !isOpenWith) {
@@ -210,33 +207,26 @@ public class WidgetUtils {
             return;
         }
 
-        String mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(suffix);
-        if (mime == null && isTextMime) {
-            mime = "text/*"; // set .md  .markdown .txt file type//
-        } else if (mime == null) {
-            mime = "*/*"; // forces app chooser dialog on unknown type//
-        }
         Intent open = new Intent(Intent.ACTION_VIEW);
         open.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
+        Uri uri;
         if (android.os.Build.VERSION.SDK_INT > 23) {
-            Uri photoURI = FileProvider.getUriForFile(activity, activity.getApplicationContext().getPackageName(), file);
-            open.setDataAndType(photoURI, mime);
+            uri = FileProvider.getUriForFile(activity, activity.getApplicationContext().getPackageName(), file);
             open.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         } else {
-            open.setDataAndType((Uri.fromFile(file)), mime);
+            uri = Uri.fromFile(file);
         }
-
-        if (activity.getPackageManager().resolveActivity(open, 0) == null) {
+        String mime = activity.getContentResolver().getType(uri);
+        open.setDataAndType(uri, mime);
+        try {
+            activity.startActivity(Intent.createChooser(open, null));
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
             String message = String.format(activity.getString(R.string.op_exception_suitable_app_not_found), mime);
             activity.showShortToast(activity, message);
-        } else {
-            try {
-                activity.startActivity(open);
-            } catch (ActivityNotFoundException e) {
-                e.printStackTrace();
-            }
         }
+
     }
 
     public static void showRepo(Context context, String repoID, String repoName, String path, String dirID) {
