@@ -12,7 +12,6 @@ import com.nihaocloud.sesamedisk.SettingsManager;
 /**
  * This service monitors the media provider content provider for new images/videos.
  */
-@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class MediaSchedulerService extends JobService {
     private SettingsManager mSettingsManager;
     private CameraUploadManager mCameraManager;

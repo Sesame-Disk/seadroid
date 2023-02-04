@@ -1,6 +1,8 @@
 package com.nihaocloud.sesamedisk.transfer;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 
 import com.google.common.collect.Lists;
 import com.nihaocloud.sesamedisk.NihaoApplication;
@@ -20,8 +22,12 @@ public class UploadTaskManager extends TransferManager implements UploadStateLis
     public static final String BROADCAST_FILE_UPLOAD_FAILED = "uploadFailed";
     public static final String BROADCAST_FILE_UPLOAD_PROGRESS = "uploadProgress";
     public static final String BROADCAST_FILE_UPLOAD_CANCELLED = "uploadCancelled";
-
     private static UploadNotificationProvider mNotifyProvider;
+    private final Context context;
+
+    public UploadTaskManager(Context context){
+        this.context=context.getApplicationContext();
+    }
 
 
     public int addTaskToQue(Account account, String repoID, String repoName, String dir, String relativePath,
@@ -32,6 +38,17 @@ public class UploadTaskManager extends TransferManager implements UploadStateLis
         // create a new one to avoid IllegalStateException
         UploadTask task = new UploadTask(++notificationID, account, repoID, repoName, dir,
                 relativePath, filePath, isUpdate, isCopyToLocal, byBlock, this);
+        addTaskToQue(task);
+        return task.getTaskID();
+    }
+
+    public int addTaskToQue(Account account, String repoID, String repoName, String dir, String relativePath,
+                            Uri uri, String fileName, Long fileSize, boolean isUpdate, boolean isCopyToLocal, boolean byBlock) {
+        if (repoID == null || repoName == null)
+            return 0;
+        // create a new one to avoid IllegalStateException
+        CopyAndUploadTask task = new CopyAndUploadTask(context,++notificationID, account, repoID, repoName, dir,
+                relativePath, uri, fileName, fileSize, isUpdate, isCopyToLocal, byBlock, this);
         addTaskToQue(task);
         return task.getTaskID();
     }

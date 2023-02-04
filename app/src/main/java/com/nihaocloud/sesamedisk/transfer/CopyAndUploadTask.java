@@ -1,25 +1,38 @@
 package com.nihaocloud.sesamedisk.transfer;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.nihaocloud.sesamedisk.R;
 import com.nihaocloud.sesamedisk.NihaoApplication;
+import com.nihaocloud.sesamedisk.R;
 import com.nihaocloud.sesamedisk.SeafException;
 import com.nihaocloud.sesamedisk.SettingsManager;
 import com.nihaocloud.sesamedisk.account.Account;
 import com.nihaocloud.sesamedisk.data.DataManager;
 import com.nihaocloud.sesamedisk.data.ProgressMonitor;
+import com.nihaocloud.sesamedisk.ui.activity.BrowserActivity;
 import com.nihaocloud.sesamedisk.util.Utils;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.NoSuchAlgorithmException;
+
+import okio.Okio;
+import okio.Sink;
+import okio.Source;
 
 /**
  * Upload task
  */
-public class UploadTask extends TransferTask {
+public class CopyAndUploadTask extends TransferTask {
     public static final String DEBUG_TAG = "UploadTask";
     private final String dir;   // parent dir
     private final boolean isUpdate;  // true if update an existing file
@@ -28,26 +41,33 @@ public class UploadTask extends TransferTask {
     private UploadStateListener uploadStateListener;
     private DataManager dataManager;
     public static final int HTTP_ABOVE_QUOTA = 443;
+    private final Uri uri;
+    @SuppressLint("StaticFieldLeak")
+    private final Context context;
+    private final String fileName;
 
-    public UploadTask(int taskID, Account account, String repoID, String repoName,
-                      String dir, String relativePath, String filePath, boolean isUpdate, boolean isCopyToLocal, boolean byBlock,
-                      UploadStateListener uploadStateListener) {
-        super(taskID, account, repoName, repoID, relativePath, filePath);
+    public CopyAndUploadTask(Context context, int taskID, Account account, String repoID, String repoName,
+                             String dir, String relativePath, Uri uri, String fileName, Long fileSize, boolean isUpdate, boolean isCopyToLocal, boolean byBlock,
+                             UploadStateListener uploadStateListener) {
+
+        super(taskID, account, repoName, repoID, relativePath, fileName);
+        this.context = context.getApplicationContext();
         this.dir = dir;
         this.isUpdate = isUpdate;
         this.isCopyToLocal = isCopyToLocal;
         this.byBlock = byBlock;
         this.uploadStateListener = uploadStateListener;
-        this.totalSize = new File(filePath).length();
+        this.totalSize =fileSize;
         this.finished = 0;
         this.dataManager = new DataManager(account);
+        this.uri = uri;
+        this.fileName= fileName;
     }
 
     public UploadTaskInfo getTaskInfo() {
-        UploadTaskInfo info = new UploadTaskInfo(account, taskID, state, repoID,
+        return new UploadTaskInfo(account, taskID, state, repoID,
                 repoName, dir, relativePath, path, isUpdate, isCopyToLocal,
                 finished, totalSize, err);
-        return info;
     }
 
     public void cancelUpload() {
@@ -66,7 +86,6 @@ public class UploadTask extends TransferTask {
     @Override
     protected void onProgressUpdate(Long... values) {
         long uploaded = values[0];
-        // Log.d(DEBUG_TAG, "Uploaded " + uploaded);
         this.finished = uploaded;
         uploadStateListener.onFileUploadProgress(taskID);
     }
@@ -74,7 +93,7 @@ public class UploadTask extends TransferTask {
     @Override
     protected File doInBackground(Void... params) {
         try {
-            ProgressMonitor monitor = new ProgressMonitor() {
+            final ProgressMonitor monitor = new ProgressMonitor() {
                 @Override
                 public void onProgressNotify(long uploaded, boolean updateTotal) {
                     publishProgress(uploaded);
@@ -82,14 +101,14 @@ public class UploadTask extends TransferTask {
 
                 @Override
                 public boolean isCancelled() {
-                    return UploadTask.this.isCancelled();
+                    return CopyAndUploadTask.this.isCancelled();
                 }
             };
 
             if (byBlock) {
                 dataManager.uploadByBlocks(repoName, repoID, dir, relativePath, path, monitor, isUpdate, isCopyToLocal);
             } else {
-                dataManager.uploadFile(repoName, repoID, dir, relativePath, path, monitor, isUpdate, isCopyToLocal);
+                dataManager.uploadFile(context, repoName, repoID, dir, relativePath, uri,fileName, monitor, isUpdate, isCopyToLocal);
             }
 
         } catch (SeafException e) {
@@ -139,4 +158,38 @@ public class UploadTask extends TransferTask {
     public boolean isUpdate() {
         return isUpdate;
     }
+
+    private void copyFile() {
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+            File tempDir = DataManager.createTempDir();
+            File tempFile = new File(tempDir, Utils.getFilenamefromUri(context, uri));
+            if (!tempFile.createNewFile()) {
+                throw new RuntimeException("could not create temporary file");
+            }
+            in = context.getContentResolver().openInputStream(uri);
+
+            Source source = Okio.source(in);
+
+            out = new FileOutputStream(tempFile);
+            Sink sink = Okio.sink(out);
+
+            IOUtils.copy(in, out);
+
+            setPath(tempFile.getAbsolutePath());
+            if(getTotalSize()==-1) {
+                setTotalSize(tempDir.length());
+            }
+        } catch (IOException e) {
+            Log.d(DEBUG_TAG, "Could not open requested document", e);
+        } catch (RuntimeException e) {
+            Log.d(DEBUG_TAG, "Could not open requested document", e);
+        } finally {
+            IOUtils.closeQuietly(in);
+            IOUtils.closeQuietly(out);
+        }
+    }
+
+
 }

@@ -48,7 +48,6 @@ public abstract class TransferTask extends AsyncTask<Void, Long, File> {
         this.taskID = taskID;
     }
 
-
     protected void cancel() {
         if (state != TaskState.INIT && state != TaskState.TRANSFERRING) {
             return;
@@ -93,6 +92,14 @@ public abstract class TransferTask extends AsyncTask<Void, Long, File> {
 
     public String getPath() {
         return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public void setTotalSize(long totalSize) {
+        this.totalSize = totalSize;
     }
 
     @Override

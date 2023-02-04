@@ -33,6 +33,7 @@ public class TransferActivity extends BaseActivity implements Toolbar.OnMenuItem
 
     @Override
     protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
         Bundle extras = intent.getExtras();
         if (extras != null) {
             if (extras.containsKey(BaseNotificationProvider.NOTIFICATION_MESSAGE_KEY)) {
@@ -249,7 +250,5 @@ public class TransferActivity extends BaseActivity implements Toolbar.OnMenuItem
         public int getCount() {
             return 2;
         }
-
     }
-
 }

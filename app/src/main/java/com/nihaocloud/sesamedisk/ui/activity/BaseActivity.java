@@ -214,7 +214,7 @@ public class BaseActivity extends AppCompatActivity {
      * @param activity
      * @param message
      */
-    public void showShortToast(final Activity activity, final String message) {
+    public  static void showShortToast(final Activity activity, final String message) {
         if (activity == null)
             return;
         Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
@@ -228,7 +228,7 @@ public class BaseActivity extends AppCompatActivity {
      * @param activity
      * @param resId
      */
-    public void showShortToast(final Activity activity, final int resId) {
+    public static void showShortToast(final Activity activity, final int resId) {
         if (activity == null)
             return;
 

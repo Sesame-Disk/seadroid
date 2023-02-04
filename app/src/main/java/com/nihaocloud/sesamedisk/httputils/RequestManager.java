@@ -1,10 +1,14 @@
 package com.nihaocloud.sesamedisk.httputils;
 
+import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import com.nihaocloud.sesamedisk.account.Account;
 import com.nihaocloud.sesamedisk.data.ProgressMonitor;
 import com.nihaocloud.sesamedisk.ssl.SSLTrustManager;
+import com.nihaocloud.sesamedisk.transfer.MirroredSource;
+import com.nihaocloud.sesamedisk.util.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +25,7 @@ import okhttp3.Response;
 import okio.Buffer;
 import okio.BufferedSink;
 import okio.Okio;
+import okio.Sink;
 import okio.Source;
 
 
@@ -114,6 +119,51 @@ public class RequestManager {
                         current += readCount;
                         long nowt = System.currentTimeMillis();
                         // 1s refresh progress
+                        if (nowt - temp >= 1000) {
+                            temp = nowt;
+                            monitor.onProgressNotify(current, false);
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+    }
+
+
+    public <T> RequestBody createProgressRequestBody(Context context, ProgressMonitor monitor, final Uri uri, final File cacheFile) {
+        return new RequestBody() {
+
+            public long temp = System.currentTimeMillis();
+
+            @Override
+            public MediaType contentType() {
+                return MediaType.parse("application/octet-stream");
+            }
+
+            @Override
+            public long contentLength() {
+                return Utils.getFilSizeFromUri(context, uri);
+            }
+
+            @Override
+            public void writeTo(BufferedSink sink) throws IOException {
+                try {
+                    final Sink sinkFile = Okio.sink(cacheFile);
+                    final Source source = Okio.source(context.getContentResolver().openInputStream(uri));
+                    final MirroredSource mirroredSource = new MirroredSource(source);
+                    final Source httpSource = mirroredSource.original();
+                    final Source fileSource = mirroredSource.mirror();
+                    Buffer httpBuffer = new Buffer();
+                    Buffer fileBuffer = new Buffer();
+                    long current = 0;
+                    for (long readCount; (readCount = httpSource.read(httpBuffer, 2048)) != -1; ) {
+                        sink.write(httpBuffer, readCount);
+                        current += readCount;
+                        long nowt = System.currentTimeMillis();
+                        long fileCount = fileSource.read(fileBuffer, readCount);
+                        sinkFile.write(fileBuffer, fileCount);
                         if (nowt - temp >= 1000) {
                             temp = nowt;
                             monitor.onProgressNotify(current, false);

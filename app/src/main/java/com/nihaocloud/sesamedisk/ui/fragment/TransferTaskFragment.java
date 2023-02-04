@@ -106,9 +106,7 @@ public abstract class TransferTaskFragment extends ListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         showLoading(true);
-
     }
 
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -168,7 +166,6 @@ public abstract class TransferTaskFragment extends ListFragment {
     private void startTimer() {
         Log.d(DEBUG_TAG, "timer started");
         mTimer.postDelayed(new Runnable() {
-
             @Override
             public void run() {
                 adapter.setTransferTaskInfos(getTransferTaskInfos());

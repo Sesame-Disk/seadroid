@@ -76,7 +76,6 @@ public class TransferTaskAdapter extends BaseAdapter {
             case FINISHED:
                 return 4;
             }
-
             return 0;
         }
 
@@ -291,7 +290,8 @@ public class TransferTaskAdapter extends BaseAdapter {
                 }
             });
             updateTaskView(taskInfo, viewHolder);
-        } else if (mTransferTaskType.equals(TaskType.UPLOAD_TASK)) {
+        }
+        else if (mTransferTaskType.equals(TaskType.UPLOAD_TASK)) {
             UploadTaskInfo taskInfo = (UploadTaskInfo) mTransferTaskInfos.get(position);
             iconID = Utils.getFileIcon(taskInfo.localFilePath);
             String fullpath = Utils.pathJoin(taskInfo.repoName, taskInfo.parentDir);

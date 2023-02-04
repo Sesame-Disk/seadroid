@@ -22,6 +22,8 @@ import com.nihaocloud.sesamedisk.data.CreateRepo;
 import com.nihaocloud.sesamedisk.data.DataManager;
 import com.nihaocloud.sesamedisk.data.UploadFolder;
 
+import java.util.List;
+
 class NewUploadFolderRepoTask extends TaskDialog.Task {
     private final DocumentFile documentFile;
     private final String mPassword;
@@ -43,12 +45,12 @@ class NewUploadFolderRepoTask extends TaskDialog.Task {
     @Override
     protected void runTask() {
         try {
-            final DocumentFile[] files = documentFile.listFiles();
-            if (files == null || files.length == 0) {
-                throw new SeafException(1011, context.getString(R.string.empty_folder));
-            }
-            final UploadFolder[] uploadCashFiles = UploadFolder.getUploadCashFiles(context, files);
-            if (uploadCashFiles.length == 0) {
+//            final DocumentFile[] files = documentFile.listFiles();
+//            if (files == null || files.length == 0) {
+//                throw new SeafException(1011, context.getString(R.string.empty_folder));
+//            }
+            final List<UploadFolder> uploadCashFiles = UploadFolder.getUploadCashFiles(context, documentFile, false);
+            if (uploadCashFiles.size() == 0) {
                 throw new SeafException(1011, context.getString(R.string.empty_folder));
             }
             final CreateRepo repo = mDataManager.createNewRepoWithResponse(documentFile.getName(), mPassword);
@@ -64,7 +66,7 @@ class NewUploadFolderRepoTask extends TaskDialog.Task {
 public class UploadFolderRepoDialog extends TaskDialog {
 
     public static abstract class UploadDialogListener {
-        public void onUploadFolder(CreateRepo repo, UploadFolder[] uploadCashFiles) {
+        public void onUploadFolder(CreateRepo repo, List<UploadFolder> uploadCashFiles) {
         }
     }
 

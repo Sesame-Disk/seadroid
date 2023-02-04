@@ -19,9 +19,7 @@ public class UploadTaskFragment extends TransferTaskFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         emptyView.setText(getString(R.string.no_upload_tasks));
-
     }
 
     @Override
@@ -41,7 +39,6 @@ public class UploadTaskFragment extends TransferTaskFragment {
     protected boolean isNeedUpdateProgress() {
         return !txService.getAllUploadTaskInfos().isEmpty();
     }
-
 
     /**
      * retry all failed tasks

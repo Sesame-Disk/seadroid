@@ -2,6 +2,7 @@ package com.nihaocloud.sesamedisk.transfer;
 
 import android.app.Service;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
@@ -14,9 +15,7 @@ import java.util.List;
 
 public class TransferService extends Service {
     private static final String DEBUG_TAG = "TransferService";
-
     private final IBinder mBinder = new TransferBinder();
-
     public DownloadTaskManager getDownloadTaskManager() {
         return downloadTaskManager;
     }
@@ -31,7 +30,7 @@ public class TransferService extends Service {
     @Override
     public void onCreate() {
         downloadTaskManager = new DownloadTaskManager();
-        uploadTaskManager = new UploadTaskManager();
+        uploadTaskManager = new UploadTaskManager(this);
     }
 
     @Override
@@ -95,6 +94,11 @@ public class TransferService extends Service {
         return uploadTaskManager.addTaskToQue(account, repoID, repoName, dir, relativePath, filePath, isUpdate, isCopyToLocal, false);
     }
 
+
+    public int addTaskToUploadQue(Account account, String repoID, String repoName, String dir, String relativePath, Uri uri, String fileName, Long fileSize, boolean isUpdate, boolean isCopyToLocal) {
+        return uploadTaskManager.addTaskToQue(account, repoID, repoName, dir, relativePath, uri, fileName, fileSize,isUpdate, isCopyToLocal, false);
+    }
+
     /**
      * Call this method to handle upload request, like file upload or camera upload.
      * Uploading tasks are managed in a queue.
@@ -108,12 +112,16 @@ public class TransferService extends Service {
      * @param filePath
      * @param isUpdate
      * @param isCopyToLocal
-     * @param version
      * @return
      */
     public int addTaskToUploadQueBlock(Account account, String repoID, String repoName, String dir, String relativePath,
                                        String filePath, boolean isUpdate, boolean isCopyToLocal) {
         return uploadTaskManager.addTaskToQue(account, repoID, repoName, dir, relativePath, filePath, isUpdate, isCopyToLocal, true);
+    }
+
+    public int addTaskToUploadQueBlock(Account account, String repoID, String repoName, String dir, String relativePath,
+                                       Uri uri,  String fileName, Long fileSize,boolean isUpdate, boolean isCopyToLocal) {
+        return uploadTaskManager.addTaskToQue(account, repoID, repoName, dir, relativePath, uri, fileName, fileSize, isUpdate, isCopyToLocal, true);
     }
 
     /**
@@ -318,7 +326,6 @@ public class TransferService extends Service {
     }
 
     // -------------------------- download notification --------------------//
-
     public void saveDownloadNotifProvider(DownloadNotificationProvider provider) {
         downloadTaskManager.saveNotifProvider(provider);
     }
@@ -330,5 +337,4 @@ public class TransferService extends Service {
     public DownloadNotificationProvider getDownloadNotifProvider() {
         return downloadTaskManager.getNotifProvider();
     }
-
 }

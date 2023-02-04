@@ -23,22 +23,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.provider.MediaStore;
-
-import com.google.android.material.tabs.TabLayout;
-
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.core.content.FileProvider;
-import androidx.documentfile.provider.DocumentFile;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
-
 import android.util.Log;
-import android.util.Pair;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,6 +31,17 @@ import android.view.View;
 import android.view.Window;
 import android.widget.FrameLayout;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
 import com.google.common.collect.Lists;
 import com.nihaocloud.sesamedisk.R;
 import com.nihaocloud.sesamedisk.SeafConnection;
@@ -106,21 +102,19 @@ import com.nihaocloud.sesamedisk.util.Utils;
 import com.nihaocloud.sesamedisk.util.UtilsJellyBean;
 import com.viewpagerindicator.IconPagerAdapter;
 
-import org.apache.commons.io.IOUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class BrowserActivity extends BaseActivity
         implements ReposFragment.OnFileSelectedListener, StarredFragment.OnStarredFileSelectedListener,
@@ -174,47 +168,28 @@ public class BrowserActivity extends BaseActivity
     private Intent copyMoveIntent;
     private Account account;
     private Intent mediaObserver;
+    private ExecutorService executorService = Executors.newCachedThreadPool();
 
     public DataManager getDataManager() {
         return dataManager;
     }
 
     public void addUpdateTask(String repoID, String repoName, String targetDir, String localFilePath) {
-        if (txService != null) {
-            txService.addTaskToUploadQue(account, repoID, repoName, targetDir, null, localFilePath, true, true);
-        } else {
-            PendingUploadInfo info = new PendingUploadInfo(repoID, repoName, targetDir, null, localFilePath, true, true);
-            pendingUploads.add(info);
-        }
-    }
-
-    public void addUpdateBlocksTask(String repoID, String repoName, String targetDir, String localFilePath) {
-        if (txService != null) {
-            txService.addTaskToUploadQueBlock(account, repoID, repoName, targetDir, null, localFilePath, true, true);
-        } else {
-            PendingUploadInfo info = new PendingUploadInfo(repoID, repoName, targetDir, null, localFilePath, true, true);
-            pendingUploads.add(info);
-        }
-    }
-
-    private int addUploadTask(String repoID, String repoName, String targetDir, String relativePath, String localFilePath) {
-        if (txService != null) {
-            return txService.addTaskToUploadQue(account, repoID, repoName, targetDir, relativePath, localFilePath, false, true);
-        } else {
-            PendingUploadInfo info = new PendingUploadInfo(repoID, repoName, targetDir, relativePath, localFilePath, false, true);
-            pendingUploads.add(info);
-            return 0;
-        }
-    }
-
-    private int addUploadBlocksTask(String repoID, String repoName, String targetDir, String relativePath, String localFilePath) {
-        if (txService != null) {
-            return txService.addTaskToUploadQueBlock(account, repoID, repoName, targetDir, relativePath, localFilePath, false, true);
-        } else {
-            PendingUploadInfo info = new PendingUploadInfo(repoID, repoName, targetDir, relativePath, localFilePath, false, true);
-            pendingUploads.add(info);
-            return 0;
-        }
+        Uri uri = Uri.fromFile(new File(localFilePath));
+        ArrayList<Uri> uriList = new ArrayList<>();
+        uriList.add(uri);
+        NavContext tempNav = new NavContext();
+        tempNav.setRepoID(repoID);
+        tempNav.setRepoName(repoName);
+        tempNav.setDir(targetDir, "");
+        ProcessFileUploadTaskHandler handler = new ProcessFileUploadTaskHandler(this,
+                dataManager,
+                tempNav,
+                txService,
+                account,
+                pendingUploads,
+                uriList);
+        executorService.execute(handler);
     }
 
     private ArrayList<PendingUploadInfo> pendingUploads = Lists.newArrayList();
@@ -773,18 +748,26 @@ public class BrowserActivity extends BaseActivity
             Log.d(DEBUG_TAG, "bind TransferService");
 
             for (PendingUploadInfo info : pendingUploads) {
-                txService.addTaskToUploadQue(account,
-                        info.repoID,
-                        info.repoName,
-                        info.targetDir,
-                        info.relativePath,
-                        info.localFilePath,
-                        info.isUpdate,
-                        info.isCopyToLocal);
+                if (info.byBlock) {
+                    txService.addTaskToUploadQueBlock(account, info.repoID,
+                            info.repoName, info.targetDir, info.relativePath, info.uri,
+                            info.fileName, info.fileSize, info.isUpdate, info.isCopyToLocal);
+
+                } else {
+                    txService.addTaskToUploadQue(account, info.repoID,
+                            info.repoName, info.targetDir, info.relativePath,
+                            info.uri, info.fileName, info.fileSize, info.isUpdate, info.isCopyToLocal);
+                }
+            }
+
+            if (!txService.hasUploadNotifProvider()) {
+                UploadNotificationProvider provider = new UploadNotificationProvider(
+                        txService.getUploadTaskManager(),
+                        txService);
+                txService.saveUploadNotifProvider(provider);
             }
             pendingUploads.clear();
         }
-
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
             txService = null;
@@ -795,16 +778,13 @@ public class BrowserActivity extends BaseActivity
     public void onStart() {
         Log.d(DEBUG_TAG, "onStart");
         super.onStart();
-        if (SDK_INT < 14
-                && SettingsManager.instance().isGestureLockRequired()) {
+        if (SDK_INT < 14 && SettingsManager.instance().isGestureLockRequired()) {
             Intent intent = new Intent(this, UnlockGesturePasswordActivity.class);
             startActivity(intent);
         }
-
         if (mTransferReceiver == null) {
             mTransferReceiver = new TransferReceiver();
         }
-
         IntentFilter filter = new IntentFilter(TransferManager.BROADCAST_ACTION);
         registerReceiver(mTransferReceiver, filter);
     }
@@ -1054,35 +1034,22 @@ public class BrowserActivity extends BaseActivity
 
         dialog.setListener(new UploadFolderRepoDialog.UploadDialogListener() {
             @Override
-            public void onUploadFolder(CreateRepo repo, UploadFolder[] uploadCashFiles) {
+            public void onUploadFolder(CreateRepo repo, List<UploadFolder> uploadCashFiles) {
                 Handler handler = new Handler(Looper.getMainLooper());
                 handler.post(() -> {
                     showShortToast(BrowserActivity.this,
-                            String.format(getResources().getString(R.string.create_new_repo_success),
-                                    dialog.getRepoName()));
+                            String.format(getResources().getString(R.string.create_new_repo_success), dialog.getRepoName()));
                     ReposFragment reposFragment = getReposFragment();
                     if (currentPosition == INDEX_LIBRARY_TAB && reposFragment != null) {
                         reposFragment.refreshView(true, true);
                     }
-                    showShortToast(BrowserActivity.this, getString(R.string.added_to_upload_tasks));
-                    for (final UploadFolder file : uploadCashFiles) {
-                        if (file == null) {
-                            showShortToast(BrowserActivity.this, R.string.saf_upload_path_not_available);
-                        } else {
-                            if (repo != null && repo.canLocalDecrypt()) {
-                                addUploadBlocksTask(repo.getRepoId(), repo.getRepoName(), "/", file.getRelativePath(), file.getFile().getAbsolutePath());
-                            } else {
-                                addUploadTask(repo.getRepoId(), repo.getRepoName(), "/", file.getRelativePath(), file.getFile().getAbsolutePath());
-                            }
-                        }
-                    }
-
-                    if (!txService.hasUploadNotifProvider()) {
-                        UploadNotificationProvider provider = new UploadNotificationProvider(
-                                txService.getUploadTaskManager(),
-                                txService);
-                        txService.saveUploadNotifProvider(provider);
-                    }
+                    ProcessRepoFolderUploadTaskHandler task = new ProcessRepoFolderUploadTaskHandler(BrowserActivity.this,
+                            repo,
+                            txService,
+                            account,
+                            pendingUploads,
+                            uploadCashFiles);
+                    executorService.execute(task);
                 });
             }
         });
@@ -1161,7 +1128,7 @@ public class BrowserActivity extends BaseActivity
         setSupportProgressBarIndeterminateVisibility(Boolean.FALSE);
     }
 
-    private File takeCameraPhotoTempFile;
+    private Uri photoUri;
 
     private void CameraTakePhoto() {
         Intent imageCaptureIntent = new Intent("android.media.action.IMAGE_CAPTURE");
@@ -1169,14 +1136,13 @@ public class BrowserActivity extends BaseActivity
         try {
             File ImgDir = DataManager.createTempDir();
             String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".jpg";
-            takeCameraPhotoTempFile = new File(ImgDir, fileName);
-            Uri photo = null;
+            File takeCameraPhotoTempFile = new File(ImgDir, fileName);
             if (SDK_INT > 23) {
-                photo = FileProvider.getUriForFile(this, getApplicationContext().getPackageName(), takeCameraPhotoTempFile);
+                photoUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName(), takeCameraPhotoTempFile);
             } else {
-                photo = Uri.fromFile(takeCameraPhotoTempFile);
+                photoUri = Uri.fromFile(takeCameraPhotoTempFile);
             }
-            imageCaptureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photo);
+            imageCaptureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
             startActivityForResult(imageCaptureIntent, TAKE_PHOTO_REQUEST);
 
         } catch (IOException e) {
@@ -1245,7 +1211,7 @@ public class BrowserActivity extends BaseActivity
     /***********  Start other activity  ***************/
 
     public static final int PICK_FILES_REQUEST = 1;
-    public static final int PICK_PHOTOS_VIDEOS_REQUEST = 2;
+    //    public static final int PICK_PHOTOS_VIDEOS_REQUEST = 2;
     public static final int PICK_FILE_REQUEST = 3;
     public static final int PICK_LIBRARY_FOLDER_REQUEST = 13463;
     public static final int PICK_FOLDER_REQUEST = 14179;
@@ -1303,90 +1269,88 @@ public class BrowserActivity extends BaseActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(resultCode, resultCode, data);
         switch (requestCode) {
-            case PICK_FILES_REQUEST:
-                if (resultCode == RESULT_OK) {
-                    String[] paths = data.getStringArrayExtra(MULTI_FILES_PATHS);
-                    if (paths == null)
-                        return;
-                    showShortToast(this, getString(R.string.added_to_upload_tasks));
-
-                    List<SeafDirent> list = dataManager.getCachedDirents(navContext.getRepoID(), navContext.getDirPath());
-                    if (list == null) return;
-
-                    for (String path : paths) {
-                        boolean duplicate = false;
-                        for (SeafDirent dirent : list) {
-                            if (dirent.name.equals(Utils.fileNameFromPath(path))) {
-                                duplicate = true;
-                                break;
-                            }
-                        }
-                        if (!duplicate) {
-                            showShortToast(BrowserActivity.this, getString(R.string.added_to_upload_tasks));
-                            final SeafRepo repo = dataManager.getCachedRepoByID(navContext.getRepoID());
-                            if (repo != null && repo.canLocalDecrypt()) {
-                                addUploadBlocksTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), null, path);
-                            } else {
-                                addUploadTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), null, path);
-                            }
-                        } else {
-                            showFileExistDialog(path);
-                        }
-                    }
-                }
-                break;
-            case PICK_PHOTOS_VIDEOS_REQUEST:
-                if (resultCode == RESULT_OK) {
-                    ArrayList<String> paths = data.getStringArrayListExtra("photos");
-                    if (paths == null)
-                        return;
-                    showShortToast(this, getString(R.string.added_to_upload_tasks));
-
-                    List<SeafDirent> list = dataManager.getCachedDirents(navContext.getRepoID(), navContext.getDirPath());
-                    if (list == null) return;
-
-                    for (String path : paths) {
-                        boolean duplicate = false;
-                        for (SeafDirent dirent : list) {
-                            if (dirent.name.equals(Utils.fileNameFromPath(path))) {
-                                duplicate = true;
-                                break;
-                            }
-                        }
-                        if (!duplicate) {
-                            showShortToast(BrowserActivity.this, getString(R.string.added_to_upload_tasks));
-                            final SeafRepo repo = dataManager.getCachedRepoByID(navContext.getRepoID());
-                            if (repo != null && repo.canLocalDecrypt()) {
-                                addUploadBlocksTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), null, path);
-                            } else {
-                                addUploadTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), null, path);
-                            }
-                        } else {
-                            showFileExistDialog(path);
-                        }
-                    }
-                }
-                break;
+//            case PICK_FILES_REQUEST:
+//                if (resultCode == RESULT_OK) {
+//                    String[] paths = data.getStringArrayExtra(MULTI_FILES_PATHS);
+//                    if (paths == null)
+//                        return;
+//                    showShortToast(this, getString(R.string.added_to_upload_tasks));
+//
+//                    List<SeafDirent> list = dataManager.getCachedDirents(navContext.getRepoID(), navContext.getDirPath());
+//                    if (list == null) return;
+//
+//                    for (String path : paths) {
+//                        boolean duplicate = false;
+//                        for (SeafDirent dirent : list) {
+//                            if (dirent.name.equals(Utils.fileNameFromPath(path))) {
+//                                duplicate = true;
+//                                break;
+//                            }
+//                        }
+//                        if (!duplicate) {
+//                            showShortToast(BrowserActivity.this, getString(R.string.added_to_upload_tasks));
+//                            final SeafRepo repo = dataManager.getCachedRepoByID(navContext.getRepoID());
+//                            if (repo != null && repo.canLocalDecrypt()) {
+//                                addUploadBlocksTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), null, path);
+//                            } else {
+//                                addUploadTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), null, path);
+//                            }
+//                        } else {
+//                            showFileExistDialog(path);
+//                        }
+//                    }
+//                }
+//                break;
+//            case PICK_PHOTOS_VIDEOS_REQUEST:
+//                if (resultCode == RESULT_OK) {
+//                    ArrayList<String> paths = data.getStringArrayListExtra("photos");
+//                    if (paths == null)
+//                        return;
+//                    showShortToast(this, getString(R.string.added_to_upload_tasks));
+//
+//                    List<SeafDirent> list = dataManager.getCachedDirents(navContext.getRepoID(), navContext.getDirPath());
+//                    if (list == null) return;
+//
+//                    for (String path : paths) {
+//                        boolean duplicate = false;
+//                        for (SeafDirent dirent : list) {
+//                            if (dirent.name.equals(Utils.fileNameFromPath(path))) {
+//                                duplicate = true;
+//                                break;
+//                            }
+//                        }
+//                        if (!duplicate) {
+//                            showShortToast(BrowserActivity.this, getString(R.string.added_to_upload_tasks));
+//                            final SeafRepo repo = dataManager.getCachedRepoByID(navContext.getRepoID());
+//                            if (repo != null && repo.canLocalDecrypt()) {
+//                                addUploadBlocksTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), null, path);
+//                            } else {
+//                                addUploadTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), null, path);
+//                            }
+//                        } else {
+//                            showFileExistDialog(path);
+//                        }
+//                    }
+//                }
+//                break;
             case PICK_FILE_REQUEST:
                 if (resultCode == RESULT_OK) {
                     if (!Utils.isNetworkOn()) {
                         showShortToast(this, R.string.network_down);
                         return;
                     }
-                    if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        List<Uri> uriList = UtilsJellyBean.extractUriListFromIntent(data);
-                        if (uriList.size() > 0) {
-                            ConcurrentAsyncTask.execute(new SAFLoadRemoteFileTask(), uriList.toArray(new Uri[]{}));
-                        } else {
-                            showShortToast(BrowserActivity.this, R.string.saf_upload_path_not_available);
-                        }
+                    List<Uri> uriList = UtilsJellyBean.extractUriListFromIntent(data);
+                    if (uriList.size() > 0) {
+                        ProcessFileUploadTaskHandler handler = new ProcessFileUploadTaskHandler(this,
+                                dataManager,
+                                navContext,
+                                txService,
+                                account,
+                                pendingUploads,
+                                uriList);
+                        executorService.execute(handler);
                     } else {
-                        Uri uri = data.getData();
-                        if (uri != null) {
-                            ConcurrentAsyncTask.execute(new SAFLoadRemoteFileTask(), uri);
-                        } else {
-                            showShortToast(BrowserActivity.this, R.string.saf_upload_path_not_available);
-                        }
+                        showShortToast(BrowserActivity.this, R.string.saf_upload_path_not_available);
                     }
                 }
                 break;
@@ -1400,7 +1364,14 @@ public class BrowserActivity extends BaseActivity
                     final Uri uri = data.getData();
                     if (uri != null) {
                         getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                        ConcurrentAsyncTask.execute(new SAFLoadRemoteFolderTask(), uri);
+                        ProcessFolderUploadTaskHandler handler = new ProcessFolderUploadTaskHandler(this,
+                                dataManager,
+                                navContext,
+                                txService,
+                                account,
+                                pendingUploads,
+                                uri);
+                        executorService.execute(handler);
                     } else {
                         showShortToast(BrowserActivity.this, R.string.saf_upload_path_not_available);
                     }
@@ -1439,20 +1410,21 @@ public class BrowserActivity extends BaseActivity
                         showShortToast(this, R.string.network_down);
                         return;
                     }
-
-                    if (takeCameraPhotoTempFile == null) {
+                    if (photoUri == null) {
                         showShortToast(this, getString(R.string.saf_upload_path_not_available));
                         Log.i(DEBUG_TAG, "Pick file request did not return a path");
                         return;
                     }
-                    showShortToast(this, getString(R.string.added_to_upload_tasks));
-                    final SeafRepo repo = dataManager.getCachedRepoByID(navContext.getRepoID());
-                    if (repo != null && repo.canLocalDecrypt()) {
-                        addUploadBlocksTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), null, takeCameraPhotoTempFile.getAbsolutePath());
-                    } else {
-                        addUploadTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), null, takeCameraPhotoTempFile.getAbsolutePath());
-                    }
-
+                    ArrayList<Uri> uriList = new ArrayList();
+                    uriList.add(photoUri);
+                    ProcessFileUploadTaskHandler handler = new ProcessFileUploadTaskHandler(this,
+                            dataManager,
+                            navContext,
+                            txService,
+                            account,
+                            pendingUploads,
+                            uriList);
+                    executorService.execute(handler);
                 }
                 break;
             case DOWNLOAD_FILE_REQUEST:
@@ -1472,212 +1444,6 @@ public class BrowserActivity extends BaseActivity
             default:
                 break;
         }
-    }
-
-    class SAFLoadRemoteFileTask extends AsyncTask<Uri, Void, File[]> {
-
-        @Override
-        protected File[] doInBackground(Uri... uriList) {
-            if (uriList == null)
-                return null;
-
-            List<File> fileList = new ArrayList<File>();
-            for (Uri uri : uriList) {
-                // Log.d(DEBUG_TAG, "Uploading file from uri: " + uri);
-                InputStream in = null;
-                OutputStream out = null;
-
-                try {
-                    File tempDir = DataManager.createTempDir();
-                    File tempFile = new File(tempDir, Utils.getFilenamefromUri(BrowserActivity.this, uri));
-                    if (!tempFile.createNewFile()) {
-                        throw new RuntimeException("could not create temporary file");
-                    }
-
-                    in = getContentResolver().openInputStream(uri);
-                    out = new FileOutputStream(tempFile);
-                    IOUtils.copy(in, out);
-                    fileList.add(tempFile);
-                } catch (IOException e) {
-                    Log.d(DEBUG_TAG, "Could not open requested document", e);
-                } catch (RuntimeException e) {
-                    Log.d(DEBUG_TAG, "Could not open requested document", e);
-                } finally {
-                    IOUtils.closeQuietly(in);
-                    IOUtils.closeQuietly(out);
-                }
-            }
-            return fileList.toArray(new File[]{});
-        }
-
-        @Override
-        protected void onPostExecute(File... fileList) {
-            if (fileList == null) return;
-
-            List<SeafDirent> list = dataManager.getCachedDirents(navContext.getRepoID(), navContext.getDirPath());
-
-            for (final File file : fileList) {
-                if (file == null) {
-                    showShortToast(BrowserActivity.this, R.string.saf_upload_path_not_available);
-                } else {
-                    if (list == null) {
-                        Log.e(DEBUG_TAG, "Seadroid dirent cache is empty in uploadFile. Should not happen, aborting.");
-                        return;
-                    }
-
-                    boolean duplicate = false;
-                    for (SeafDirent dirent : list) {
-                        if (dirent.name.equals(file.getName())) {
-                            duplicate = true;
-                            break;
-                        }
-                    }
-
-                    if (!duplicate) {
-                        final SeafRepo repo = dataManager.getCachedRepoByID(navContext.getRepoID());
-                        showShortToast(BrowserActivity.this, getString(R.string.added_to_upload_tasks));
-                        if (repo != null && repo.canLocalDecrypt()) {
-                            addUploadBlocksTask(repo.id, repo.name, navContext.getDirPath(), null, file.getAbsolutePath());
-                        } else {
-                            addUploadTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), null, file.getAbsolutePath());
-                        }
-                    } else {
-                        showFileExistDialog(file);
-                    }
-                }
-            }
-
-            if (txService == null)
-                return;
-
-            if (!txService.hasUploadNotifProvider()) {
-                UploadNotificationProvider provider = new UploadNotificationProvider(
-                        txService.getUploadTaskManager(),
-                        txService);
-                txService.saveUploadNotifProvider(provider);
-            }
-        }
-    }
-
-    private void showFileExistDialog(final String filePath) {
-        showFileExistDialog(new File(filePath));
-    }
-
-    private void showFileExistDialog(final File file) {
-        final SeafRepo repo = dataManager.getCachedRepoByID(navContext.getRepoID());
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.upload_file_exist));
-        builder.setMessage(String.format(getString(R.string.upload_duplicate_found), file.getName()));
-        builder.setPositiveButton(getString(R.string.upload_replace), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                showShortToast(BrowserActivity.this, getString(R.string.added_to_upload_tasks));
-                if (repo != null && repo.canLocalDecrypt()) {
-                    addUpdateBlocksTask(repo.id, repo.name, navContext.getDirPath(), file.getAbsolutePath());
-                } else {
-                    addUpdateTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), file.getAbsolutePath());
-                }
-            }
-        });
-        builder.setNeutralButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
-        });
-        builder.setNegativeButton(getString(R.string.upload_keep_both), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (repo != null && repo.canLocalDecrypt()) {
-                    addUploadBlocksTask(repo.id, repo.name, navContext.getDirPath(), null, file.getAbsolutePath());
-                } else {
-                    addUploadTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), null, file.getAbsolutePath());
-                }
-            }
-        });
-        builder.show();
-    }
-
-    class SAFLoadRemoteFolderTask extends AsyncTask<Uri, Void, Pair<DocumentFile, UploadFolder[]>> {
-
-        @Override
-        protected Pair<DocumentFile, UploadFolder[]> doInBackground(Uri... uriList) {
-
-            if (uriList == null || uriList.length != 1)
-                return null;
-
-            final Uri dir = uriList[0];
-            final DocumentFile documentsTree = DocumentFile.fromTreeUri(getApplication(), dir);
-            if (!documentsTree.isDirectory()) {
-                return null;
-            }
-            final UploadFolder[] uploadCashFiles = UploadFolder.getUploadCashFiles(BrowserActivity.this, documentsTree);
-            return new Pair<>(documentsTree, uploadCashFiles);
-        }
-
-        @Override
-        protected void onPostExecute(Pair<DocumentFile, UploadFolder[]> result) {
-            if (result == null) return;
-            List<SeafDirent> list = dataManager.getCachedDirents(navContext.getRepoID(), navContext.getDirPath());
-            if (list == null) {
-                Log.e(DEBUG_TAG, "Seadroid dirent cache is empty in uploadFile. Should not happen, aborting.");
-                return;
-            }
-            final DocumentFile documentsTree = result.first;
-            final String dirName = documentsTree.getName();
-            for (SeafDirent seafDirent : list) {
-                if (seafDirent.isDir() && seafDirent.name != null && seafDirent.name.equals(dirName)) {
-                    showFolderExistDialog(dirName);
-                    return;
-                }
-            }
-            UploadFolder[] files = result.second;
-            if (files == null) return;
-            if (files.length == 0) {
-                showFolderEmptyDialog(dirName);
-                return;
-            }
-            for (final UploadFolder file : files) {
-                if (file == null) {
-                    showShortToast(BrowserActivity.this, R.string.saf_upload_path_not_available);
-                } else {
-                    final SeafRepo repo = dataManager.getCachedRepoByID(navContext.getRepoID());
-                    showShortToast(BrowserActivity.this, getString(R.string.added_to_upload_tasks));
-                    if (repo != null && repo.canLocalDecrypt()) {
-                        addUploadBlocksTask(repo.id, repo.name, navContext.getDirPath(), file.getRelativePath(), file.getFile().getAbsolutePath());
-                    } else {
-                        addUploadTask(navContext.getRepoID(), navContext.getRepoName(), navContext.getDirPath(), file.getRelativePath(), file.getFile().getAbsolutePath());
-                    }
-                }
-            }
-
-            if (txService == null)
-                return;
-
-            if (!txService.hasUploadNotifProvider()) {
-                UploadNotificationProvider provider = new UploadNotificationProvider(
-                        txService.getUploadTaskManager(),
-                        txService);
-                txService.saveUploadNotifProvider(provider);
-            }
-        }
-    }
-
-    private void showFolderExistDialog(final String name) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        //builder.setTitle(getString(R.string.unknow_error));
-        builder.setMessage(getString(R.string.upload_folder_exist));
-        builder.setPositiveButton(getString(R.string.ok), (dialog, which) -> {
-        });
-        builder.show();
-    }
-
-    private void showFolderEmptyDialog(final String name) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        //builder.setTitle(getString(R.string.unknow_error));
-        builder.setMessage(getString(R.string.empty_folder));
-        builder.setPositiveButton(getString(R.string.ok), (dialog, which) -> {
-        });
-        builder.show();
     }
 
     public void onItemSelected() {
@@ -2616,3 +2382,4 @@ public class BrowserActivity extends BaseActivity
         }
     }
 }
+

@@ -88,6 +88,8 @@ public abstract class BaseNotificationProvider {
             notifyCompletedWithErrors(notifId, notifTitle, progressInfo, progress);
         } else if (getState().equals(NotificationState.NOTIFICATION_STATE_COMPLETED)) {
             notifyCompleted(notifId, notifTitle, progressInfo);
+        }else if (getState().equals(NotificationState.NOTIFICATION_STATE_COMPLETED)) {
+            notifyCompleted(notifId, notifTitle, progressInfo);
         }
     }
 

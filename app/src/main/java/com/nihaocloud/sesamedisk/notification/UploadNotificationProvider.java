@@ -19,10 +19,8 @@ import java.util.List;
  */
 public class UploadNotificationProvider extends BaseNotificationProvider {
 
-    public UploadNotificationProvider(UploadTaskManager uploadTaskManager,
-                                      TransferService transferService) {
+    public UploadNotificationProvider(UploadTaskManager uploadTaskManager, TransferService transferService) {
         super(uploadTaskManager, transferService);
-
     }
 
     @Override
@@ -42,8 +40,7 @@ public class UploadNotificationProvider extends BaseNotificationProvider {
             int uploadingCount = 0;
             List<UploadTaskInfo> infos = txService.getNoneCameraUploadTaskInfos();
             for (UploadTaskInfo info : infos) {
-                if (info.state.equals(TaskState.INIT)
-                        || info.state.equals(TaskState.TRANSFERRING))
+                if (info.state.equals(TaskState.INIT) || info.state.equals(TaskState.TRANSFERRING))
                     uploadingCount++;
             }
 
@@ -66,7 +63,7 @@ public class UploadNotificationProvider extends BaseNotificationProvider {
         PendingIntent uPendingIntent = PendingIntent.getActivity(NihaoApplication.getAppContext(),
                 (int) System.currentTimeMillis(),
                 dIntent,
-                0);
+                PendingIntent.FLAG_MUTABLE);
         mNotifBuilder = CustomNotificationBuilder.getNotificationBuilder(NihaoApplication.getAppContext(),
                 CustomNotificationBuilder.CHANNEL_ID_UPLOAD)
                 .setSmallIcon(R.drawable.ic_nihao_notification)
@@ -116,11 +113,9 @@ public class UploadNotificationProvider extends BaseNotificationProvider {
         for (UploadTaskInfo info : infos) {
             if (info == null)
                 continue;
-            if (info.state.equals(TaskState.INIT)
-                    || info.state.equals(TaskState.TRANSFERRING))
+            if (info.state.equals(TaskState.INIT) || info.state.equals(TaskState.TRANSFERRING))
                 progressCount++;
-            else if (info.state.equals(TaskState.FAILED)
-                    || info.state.equals(TaskState.CANCELLED))
+            else if (info.state.equals(TaskState.FAILED) || info.state.equals(TaskState.CANCELLED))
                 errorCount++;
         }
 

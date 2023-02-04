@@ -235,7 +235,6 @@ public class Utils {
     public static int getResIdforMimetype(String mimetype) {
         if (mimetype == null)
             return R.drawable.file;
-
         if (mimetype.contains("pdf")) {
             return R.drawable.file_pdf;
         } else if (mimetype.contains("image/")) {
@@ -267,14 +266,12 @@ public class Utils {
             // } else if (mimetype.contains("application")) {
             //     return R.drawable.file_binary;
         }
-
         return R.drawable.file;
     }
 
     private static synchronized HashMap<String, Integer> getSuffixIconMap() {
         if (suffixIconMap != null)
             return suffixIconMap;
-
         suffixIconMap = Maps.newHashMap();
         suffixIconMap.put("pdf", R.drawable.file_pdf);
         suffixIconMap.put("doc", R.drawable.file_ms_word);
@@ -467,7 +464,6 @@ public class Utils {
         return fmt.format(d);
     }
 
-
     public static long now() {
         return Calendar.getInstance().getTimeInMillis();
     }
@@ -553,6 +549,29 @@ public class Utils {
             displayName = uri.getPath().replaceAll(".*/", "");
         } else displayName = "unknown filename";
         return displayName;
+    }
+
+
+    @SuppressLint("Range")
+    public static long getFilSizeFromUri(Context context, Uri uri) {
+        long fileSize = -1;
+        Cursor cursor = context.getContentResolver().query(uri, null, null, null, null, null);
+        try {
+            if (cursor != null && cursor.moveToFirst()) {
+                int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
+                if (!cursor.isNull(sizeIndex)) {
+                    String size = cursor.getString(sizeIndex);
+                    fileSize=Integer.parseInt(size);
+                }
+            }
+        }catch (Exception e){
+        } finally {
+           try {
+             if(cursor!=null)
+               cursor.close();
+           }catch (Exception e){}
+        }
+        return fileSize;
     }
 
     public static String getPath(Context context, Uri uri) throws URISyntaxException {

@@ -1,5 +1,7 @@
 package com.nihaocloud.sesamedisk.data;
 
+import android.content.Context;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
@@ -331,11 +333,11 @@ public class DataManager {
             JSONObject jsonObject = Utils.parseJsonObject(json);
             return CreateRepo.fromJson(jsonObject);
         } catch (JSONException e) {
-            Log.e(DEBUG_TAG, "parse json error" +e.getMessage());
+            Log.e(DEBUG_TAG, "parse json error" + e.getMessage());
             return null;
         } catch (Exception e) {
             // other exception, for example ClassCastException
-            Log.e(DEBUG_TAG, "parseRepos exception" +e.getMessage());
+            Log.e(DEBUG_TAG, "parseRepos exception" + e.getMessage());
             return null;
         }
     }
@@ -742,6 +744,49 @@ public class DataManager {
                     return;
                 }
             }
+        }
+        // Update file cache entry
+        addCachedFile(repoName, repoID, relativePath, path, newFileID, fileInRepo);
+    }
+
+    public void uploadFile(Context context, String repoName, String repoID, String dir, String relativePath, Uri uri, String cacheFileName,
+                           ProgressMonitor monitor, boolean isUpdate, boolean isCopyToLocal) throws SeafException, IOException {
+        uploadFileCommon(context, repoName, repoID, dir, relativePath, uri, cacheFileName, monitor, isUpdate, isCopyToLocal);
+    }
+
+    private void uploadFileCommon(Context context, String repoName, String repoID, String dir,
+                                  String relativePath, Uri uri, String cacheFileName, ProgressMonitor monitor,
+                                  boolean isUpdate, boolean isCopyToLocal) throws SeafException, IOException {
+
+        String path ;
+        if(relativePath==null){
+             path = Utils.pathJoin(dir, cacheFileName);
+        }else  {
+            path = Utils.pathJoin(dir,relativePath, cacheFileName);
+        }
+
+        File fileInRepo = null;
+        try {
+            fileInRepo = getLocalRepoFile(repoName, repoID, path);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            throw new SeafException(SeafException.OTHER_EXCEPTION, e.getMessage());
+        }
+
+//        if (isCopyToLocal) {
+//            if (!isUpdate) {
+//                // Copy the uploaded file to local repo cache
+//                try {
+//                    Utils.copyFile(srcFile, fileInRepo);
+//                } catch (IOException e) {
+//                    return;
+//                }
+//            }
+//        }
+
+        String newFileID = sc.uploadFile(context, repoID, dir, relativePath, uri, fileInRepo, monitor, isUpdate);
+        if (newFileID == null || newFileID.length() == 0) {
+            return;
         }
         // Update file cache entry
         addCachedFile(repoName, repoID, relativePath, path, newFileID, fileInRepo);

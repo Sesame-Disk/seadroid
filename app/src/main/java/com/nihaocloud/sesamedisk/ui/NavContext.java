@@ -1,5 +1,7 @@
 package com.nihaocloud.sesamedisk.ui;
 
+import com.google.gson.Gson;
+
 public class NavContext {
     String repoID = null;
     String repoName = null;     // for display
@@ -70,5 +72,8 @@ public class NavContext {
         this.dirPermission = dirPermission;
     }
 
-
+    public NavContext copy() {
+        Gson gson = new Gson();
+        return gson.fromJson(gson.toJson(this), NavContext.class);
+    }
 }

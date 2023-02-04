@@ -3,100 +3,98 @@ package com.nihaocloud.sesamedisk.data;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
+
 import androidx.documentfile.provider.DocumentFile;
-import android.util.Log;
 
 import com.nihaocloud.sesamedisk.util.Utils;
 
-import org.apache.commons.io.IOUtils;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class UploadFolder {
     private final String relativePath;
-    private final File file;
+    private final Uri uri;
+    private final String fileName;
+    private final Long fileSize;
 
-    public UploadFolder(String relativePath, File file) {
+    public UploadFolder(String relativePath, Uri uri, String fileName, Long fileSize) {
         this.relativePath = relativePath;
-        this.file = file;
+        this.uri = uri;
+        this.fileName = fileName;
+        this.fileSize = fileSize;
     }
 
     public String getRelativePath() {
         return relativePath;
     }
 
-    public File getFile() {
-        return file;
+    public Uri getUri() {
+        return uri;
     }
 
-    public static UploadFolder[] getUploadCashFiles(final Context context, final DocumentFile[] documentFiles) {
+    public String getFileName() {
+        return fileName;
+    }
+
+    public Long getFileSize() {
+        return fileSize;
+    }
+
+    public static List<UploadFolder> getUploadCashFiles(final Context context, final DocumentFile[] documentFiles) {
         final List<UploadFolder> uploadFolders = new ArrayList<UploadFolder>();
         for (DocumentFile file : documentFiles) {
-            UploadFolder[] uploadCashFiles = getUploadCashFiles(context, file);
-            uploadFolders.addAll(Arrays.asList(uploadCashFiles));
+            List<UploadFolder> uploadCashFiles = getUploadCashFiles(context, file);
+            uploadFolders.addAll(uploadCashFiles);
         }
-        return uploadFolders.toArray(new UploadFolder[]{});
+        return uploadFolders;
     }
 
-    public static UploadFolder[] getUploadCashFiles(final Context context, final DocumentFile documentFile) {
+    public static List<UploadFolder> getUploadCashFiles(final Context context, final DocumentFile documentFile) {
+        return getUploadCashFiles(context, documentFile, true);
+    }
+
+    public static List<UploadFolder> getUploadCashFiles(final Context context, final DocumentFile documentFile, boolean inClaudeParent) {
         final String parentFolderPath = documentFile.getUri().getPath();
         final String parentDirName = documentFile.getName();
-        final Context applicationContext = context.getApplicationContext();
-        final ContentResolver resolver = applicationContext.getContentResolver();
         final List<DocumentFile> documentFiles = getUploadFilesRecursively(documentFile, new ArrayList<>());
         final List<UploadFolder> uploadFolders = new ArrayList<UploadFolder>();
 
         for (DocumentFile file : documentFiles) {
-            InputStream in = null;
-            OutputStream out = null;
-            try {
-                final File tempDir = DataManager.createTempDir();
-                final Uri uri = file.getUri();
-                final String name = file.getName();
-                final String path = uri.getPath();
-
-                final File tempFile = new File(tempDir, Utils.getFilenamefromUri(applicationContext, uri));
-                if (!tempFile.createNewFile()) {
-                    throw new RuntimeException("could not create temporary file");
-                }
-                in = resolver.openInputStream(uri);
-                out = new FileOutputStream(tempFile);
-                IOUtils.copy(in, out);
-
-                final StringBuilder pathBuilder = new StringBuilder(path);
-                int start = pathBuilder.indexOf(parentFolderPath);
-                if (start >= 0) {
-                    int end = start + parentFolderPath.length();
-                    pathBuilder.delete(start, end);
-                }
-                start = pathBuilder.lastIndexOf(name);
-                if (start >= 0) {
-                    int end = start + parentFolderPath.length();
-                    pathBuilder.delete(start, end);
-                }
-                if (!pathBuilder.toString().startsWith("/")) {
-                    pathBuilder.insert(0, "/");
-                }
-                pathBuilder.insert(0, parentDirName);
-                uploadFolders.add(new UploadFolder(pathBuilder.toString(), tempFile));
-
-            } catch (IOException e) {
-                Log.d("UploadFolder", "Could not open requested document", e);
-            } catch (RuntimeException e) {
-                Log.d("UploadFolder", "Could not open requested document", e);
-            } finally {
-                IOUtils.closeQuietly(in);
-                IOUtils.closeQuietly(out);
+            final Uri uri = file.getUri();
+            final String name = Utils.getFilenamefromUri(context, uri);
+            final Long size = Utils.getFilSizeFromUri(context, uri);
+            final String path = uri.getPath();
+            final StringBuilder pathBuilder = new StringBuilder(path);
+            int start = pathBuilder.indexOf(parentFolderPath);
+            if (start >= 0) {
+                int end = start + parentFolderPath.length();
+                pathBuilder.delete(start, end);
             }
+            start = pathBuilder.lastIndexOf(name);
+            if (start >= 0) {
+                int end = start + parentFolderPath.length();
+                pathBuilder.delete(start, end);
+            }
+            if (!pathBuilder.toString().startsWith("/")) {
+                pathBuilder.insert(0, "/");
+            }
+            if (inClaudeParent) {
+                pathBuilder.insert(0, parentDirName);
+            }else  {
+                String trim = pathBuilder.toString().trim();
+               if(trim.startsWith("/")){
+                   int end=pathBuilder.indexOf("/");
+                   pathBuilder.delete(0,end+1);
+               }
+            }
+            String relativePath=null;
+            if(pathBuilder.length()>0){
+                relativePath=pathBuilder.toString();
+            }
+            uploadFolders.add(new UploadFolder(relativePath, uri, name, size));
         }
-        return uploadFolders.toArray(new UploadFolder[]{});
+        return uploadFolders;
     }
 
     public static List<DocumentFile> getUploadFilesRecursively(final DocumentFile file, final List<DocumentFile> files) {
