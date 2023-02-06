@@ -220,7 +220,7 @@ public class WidgetUtils {
         String mime = activity.getContentResolver().getType(uri);
         open.setDataAndType(uri, mime);
         try {
-            activity.startActivity(Intent.createChooser(open, null));
+            activity.startActivity(open);
         } catch (ActivityNotFoundException e) {
             e.printStackTrace();
             String message = String.format(activity.getString(R.string.op_exception_suitable_app_not_found), mime);

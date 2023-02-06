@@ -502,6 +502,18 @@ public class Utils {
     }
 
 
+    public static void copyFile(Context context, Uri src, File dst) throws IOException {
+        InputStream in = context.getContentResolver().openInputStream(src);
+        OutputStream out = new BufferedOutputStream(new FileOutputStream(dst));
+        // Transfer bytes from in to out
+        byte[] buf = new byte[1024];
+        int len;
+        while ((len = in.read(buf)) > 0) {
+            out.write(buf, 0, len);
+        }
+        in.close();
+        out.close();
+    }
 
     private static FileFilter mFileFilter = file -> {
         final String fileName = file.getName();
@@ -561,7 +573,7 @@ public class Utils {
                 int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
                 if (!cursor.isNull(sizeIndex)) {
                     String size = cursor.getString(sizeIndex);
-                    fileSize=Integer.parseInt(size);
+                    fileSize=Long.parseLong(size);
                 }
             }
         }catch (Exception e){

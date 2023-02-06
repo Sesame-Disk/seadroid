@@ -45,7 +45,6 @@ class ProcessRepoFolderUploadTaskHandler implements Runnable {
         this.uploadCashFiles = uploadCashFiles;
     }
 
-    @SuppressLint("LongLogTag")
     public void run() {
         Activity activity = activityWeakReference.get();
         handler.post(() -> showShortToast(activity, R.string.added_to_upload_tasks));
@@ -73,7 +72,7 @@ class ProcessRepoFolderUploadTaskHandler implements Runnable {
         }
     }
 
-    private int addUploadBlocksTask(String repoID, String repoName, String targetDir, String relativePath, Uri uri, String fileName, Long fileSize) {
+    private int addUploadBlocksTask(String repoID, String repoName, String targetDir, String relativePath, Uri uri, String fileName, long fileSize) {
         TransferService txService = txServiceWeakReference.get();
         if (txService != null) {
             int i = txService.addTaskToUploadQueBlock(account, repoID, repoName, targetDir, relativePath, uri, fileName, fileSize, false, true);
@@ -86,7 +85,7 @@ class ProcessRepoFolderUploadTaskHandler implements Runnable {
         }
     }
 
-    private int addUploadTask(String repoID, String repoName, String targetDir, String relativePath, Uri uri, String fileName, Long fileSize) {
+    private int addUploadTask(String repoID, String repoName, String targetDir, String relativePath, Uri uri, String fileName, long fileSize) {
         TransferService txService = txServiceWeakReference.get();
         if (txService != null) {
             int i = txService.addTaskToUploadQue(account, repoID, repoName, targetDir, relativePath, uri, fileName, fileSize, false, true);

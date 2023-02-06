@@ -63,7 +63,7 @@ class ProcessFileUploadTaskHandler implements Runnable {
                         return;
                     }
                     String fileName = Utils.getFilenamefromUri(activity, uri);
-                    Long size = Utils.getFilSizeFromUri(activity, uri);
+                    long size = Utils.getFilSizeFromUri(activity, uri);
                     boolean duplicate = false;
                     for (SeafDirent dirent : list) {
                         if (dirent.name.equals(fileName)) {
@@ -90,7 +90,7 @@ class ProcessFileUploadTaskHandler implements Runnable {
         }
     }
 
-    private int addUpload(SeafRepo repo, Uri uri, String fileName, Long fileSize) {
+    private int addUpload(SeafRepo repo, Uri uri, String fileName, long fileSize) {
         if (repo != null && repo.canLocalDecrypt()) {
            return addUploadBlocksTask(repo.id, repo.name, navContext.getDirPath(), null, uri, fileName, fileSize);
         } else {
@@ -98,7 +98,7 @@ class ProcessFileUploadTaskHandler implements Runnable {
         }
     }
 
-    private void showFileExistDialog(final SeafRepo repo, Uri uri, String fileName, Long fileSize) {
+    private void showFileExistDialog(final SeafRepo repo, Uri uri, String fileName, long fileSize) {
         Activity activity = activityWeakReference.get();
         if (activity != null) {
             activity.runOnUiThread(() -> {
@@ -128,7 +128,7 @@ class ProcessFileUploadTaskHandler implements Runnable {
         }
     }
 
-    private int addUploadBlocksTask(String repoID, String repoName, String targetDir, String relativePath, Uri uri, String fileName, Long fileSize) {
+    private int addUploadBlocksTask(String repoID, String repoName, String targetDir, String relativePath, Uri uri, String fileName, long fileSize) {
         TransferService txService = txServiceWeakReference.get();
         if (txService != null) {
             int i = txService.addTaskToUploadQueBlock(account, repoID, repoName, targetDir, relativePath, uri, fileName, fileSize, false, true);
@@ -141,7 +141,7 @@ class ProcessFileUploadTaskHandler implements Runnable {
         }
     }
 
-    private int addUploadTask(String repoID, String repoName, String targetDir, String relativePath, Uri uri, String fileName, Long fileSize) {
+    private int addUploadTask(String repoID, String repoName, String targetDir, String relativePath, Uri uri, String fileName, long fileSize) {
         TransferService txService = txServiceWeakReference.get();
         if (txService != null) {
             int i = txService.addTaskToUploadQue(account, repoID, repoName, targetDir, relativePath, uri, fileName, fileSize, false, true);
@@ -154,7 +154,7 @@ class ProcessFileUploadTaskHandler implements Runnable {
         }
     }
 
-    public void addUpdateTask(String repoID, String repoName, String targetDir, Uri uri, String fileName, Long fileSize) {
+    public void addUpdateTask(String repoID, String repoName, String targetDir, Uri uri, String fileName, long fileSize) {
         TransferService txService = txServiceWeakReference.get();
         if (txService != null) {
             txService.addTaskToUploadQue(account, repoID, repoName, targetDir, null, uri, fileName, fileSize, true, true);
@@ -165,7 +165,7 @@ class ProcessFileUploadTaskHandler implements Runnable {
         }
     }
 
-    public void addUpdateBlocksTask(String repoID, String repoName, String targetDir, Uri uri, String fileName, Long fileSize) {
+    public void addUpdateBlocksTask(String repoID, String repoName, String targetDir, Uri uri, String fileName, long fileSize) {
         TransferService txService = txServiceWeakReference.get();
         if (txService != null) {
             txService.addTaskToUploadQueBlock(account, repoID, repoName, targetDir, null, uri, fileName, fileSize, true, true);

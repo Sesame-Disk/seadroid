@@ -599,6 +599,27 @@ public class SeafConnection {
         return null;
     }
 
+
+    public String uploadByBlocks(String repoID, String dir, String relativePath, Uri uri,
+                                 String fileName, long fileSize, List<Block> blocks,
+                                 boolean update, ProgressMonitor monitor) throws IOException, SeafException {
+        try {
+            LinkedList<String> blkListId = new LinkedList<>();
+            for (Block block : blocks) {
+                blkListId.addLast(block.getBlockId());
+            }
+            String json = getBlockUploadLink(repoID, blkListId);
+            BlockInfoBean infoBean = BlockInfoBean.fromJson(json);
+            if (infoBean.blkIds.size() > 0) {
+                uploadBlocksCommon(infoBean.rawblksurl, infoBean.blkIds, dir, uri, fileName, blocks, monitor, update);
+            }
+            commitUpload(infoBean.commiturl, blkListId, dir, relativePath, fileName, fileSize, update);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private File getFileFromLink(String dlink, String path, String localPath,
                                  String oid, ProgressMonitor monitor)
             throws SeafException {
@@ -908,6 +929,39 @@ public class SeafConnection {
     }
 
 
+    private String commitUpload(String link, List<String> blkIds, String dir, String relativePath,
+                                String fileName, long fileSize, boolean update)
+            throws SeafException, IOException {
+
+
+        MultipartBody.Builder builder = new MultipartBody.Builder();
+        //set type
+        builder.setType(MultipartBody.FORM);
+        //set header ,to replace file
+        if (update) {
+            builder.addFormDataPart("replace", "1");
+        } else {
+            builder.addFormDataPart("replace", "0");
+        }
+        builder.addFormDataPart("parent_dir", dir);
+        builder.addFormDataPart("file_size", fileSize + "");
+        builder.addFormDataPart("file_name", fileName);
+
+        if (relativePath != null && !relativePath.isEmpty()) {
+            builder.addFormDataPart("relative_path", relativePath);
+        }
+
+        JSONArray jsonArray = new JSONArray(blkIds);
+        builder.addFormDataPart("blockids", jsonArray.toString());
+        RequestBody body = builder.build();
+        Request request = new Request.Builder().url(link).post(body).build();
+        Response response = RequestManager.getInstance(account).getClient().newCall(request).execute();
+        if (response.isSuccessful()) {
+            return response.body().string();
+        }
+        throw new SeafException(SeafException.OTHER_EXCEPTION, "File upload failed");
+    }
+
     /**
      * Upload or update a file
      *
@@ -997,7 +1051,8 @@ public class SeafConnection {
             builder.addFormDataPart("relative_path", relativePath);
         }
 
-        builder.addFormDataPart("file", fileName, RequestManager.getInstance(account).createProgressRequestBody(context, monitor, uri, cacheFile));
+        builder.addFormDataPart("file", fileName, RequestManager.getInstance(account)
+                .createProgressRequestBody(context, monitor, uri, cacheFile));
         //create RequestBody
         RequestBody body = builder.build();
         //create Request
@@ -1036,6 +1091,37 @@ public class SeafConnection {
                 if (s.equals(block.getBlockId())) {
                     File blk = new File(block.path);
                     builder.addFormDataPart("file", blk.getName(), RequestManager.getInstance(account).createProgressRequestBody(monitor, blk));
+                    break;
+                }
+            }
+        }
+
+        RequestBody body = builder.build();
+        final Request request = new Request.Builder().url(link).post(body).header("Authorization", "Token " + account.token).build();
+        Response response = RequestManager.getInstance(account).getClient().newCall(request).execute();
+        if (response.isSuccessful()) {
+            return response.body().string();
+        }
+        throw new SeafException(SeafException.OTHER_EXCEPTION, "File upload failed");
+    }
+
+
+    private String uploadBlocksCommon(String link, List<String> needUploadId, String dir,
+                                      Uri uri, String fileName, List<Block> blocks,
+                                      ProgressMonitor monitor, boolean update)
+            throws SeafException, IOException {
+        MultipartBody.Builder builder = new MultipartBody.Builder();
+        //set type
+        builder.setType(MultipartBody.FORM);
+        builder.addFormDataPart("filename", fileName);
+
+        for (int i = 0; i < blocks.size(); i++) {
+            Block block = blocks.get(i);
+            for (String s : needUploadId) {
+                if (s.equals(block.getBlockId())) {
+                    File blk = new File(block.path);
+                    builder.addFormDataPart("file", blk.getName(),
+                            RequestManager.getInstance(account).createProgressRequestBody(monitor, blk));
                     break;
                 }
             }

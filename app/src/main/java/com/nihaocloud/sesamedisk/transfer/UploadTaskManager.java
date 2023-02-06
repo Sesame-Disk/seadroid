@@ -43,7 +43,7 @@ public class UploadTaskManager extends TransferManager implements UploadStateLis
     }
 
     public int addTaskToQue(Account account, String repoID, String repoName, String dir, String relativePath,
-                            Uri uri, String fileName, Long fileSize, boolean isUpdate, boolean isCopyToLocal, boolean byBlock) {
+                            Uri uri, String fileName, long fileSize, boolean isUpdate, boolean isCopyToLocal, boolean byBlock) {
         if (repoID == null || repoName == null)
             return 0;
         // create a new one to avoid IllegalStateException

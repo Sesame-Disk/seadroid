@@ -110,8 +110,7 @@ public class DataManager {
 
         SeafRepo seafRepo = getCachedRepoByID(repoID);
         // encrypted repo doesn\`t support thumbnails
-        if (seafRepo != null && seafRepo.encrypted)
-            return null;
+        if (seafRepo != null && seafRepo.encrypted) return null;
 
         // use locally cached file if available
         if (file.exists()) {
@@ -138,10 +137,8 @@ public class DataManager {
 
     public String getThumbnailLink(String repoID, String filePath, int size) {
         SeafRepo repo = getCachedRepoByID(repoID);
-        if (repo != null)
-            return getThumbnailLink(repo.getName(), repoID, filePath, size);
-        else
-            return null;
+        if (repo != null) return getThumbnailLink(repo.getName(), repoID, filePath, size);
+        else return null;
     }
 
     public AccountInfo getAccountInfo() throws SeafException, JSONException {
@@ -151,8 +148,7 @@ public class DataManager {
 
     private AccountInfo parseAccountInfo(String json) throws JSONException {
         JSONObject object = Utils.parseJsonObject(json);
-        if (object == null)
-            return null;
+        if (object == null) return null;
 
         return AccountInfo.fromJson(object, account.getServer());
     }
@@ -164,8 +160,7 @@ public class DataManager {
 
     private ServerInfo parseServerInfo(String json) throws JSONException {
         JSONObject object = Utils.parseJsonObject(json);
-        if (object == null)
-            return null;
+        if (object == null) return null;
 
         return ServerInfo.fromJson(object, account.getServer());
     }
@@ -222,8 +217,7 @@ public class DataManager {
         String username = account.getEmail();
         String server = Utils.stripSlashes(account.getServerHost());
         // strip port, like :8000 in 192.168.1.116:8000
-        if (server.indexOf(":") != -1)
-            server = server.substring(0, server.indexOf(':'));
+        if (server.indexOf(":") != -1) server = server.substring(0, server.indexOf(':'));
         String p = String.format("%s (%s)", username, server);
         p = p.replaceAll("[^\\w\\d\\.@\\(\\) ]", "_");
         String accountDir = Utils.pathJoin(storageManager.getMediaDir().getAbsolutePath(), p);
@@ -270,8 +264,7 @@ public class DataManager {
         }
 
         if (!repoDir.mkdirs()) {
-            throw new RuntimeException("Could not create repo directory " + uniqueRepoName
-                    + "Phone storage space is insufficient or too many " + uniqueRepoName + " directory in phone");
+            throw new RuntimeException("Could not create repo directory " + uniqueRepoName + "Phone storage space is insufficient or too many " + uniqueRepoName + " directory in phone");
         }
 
         // Save the new mapping in database
@@ -307,15 +300,13 @@ public class DataManager {
         try {
             // may throw ClassCastException
             JSONArray array = Utils.parseJsonArray(json);
-            if (array.length() == 0)
-                return Lists.newArrayListWithCapacity(0);
+            if (array.length() == 0) return Lists.newArrayListWithCapacity(0);
 
             ArrayList<SeafRepo> repos = Lists.newArrayList();
             for (int i = 0; i < array.length(); i++) {
                 JSONObject obj = array.getJSONObject(i);
                 SeafRepo repo = SeafRepo.fromJson(obj);
-                if (repo != null)
-                    repos.add(repo);
+                if (repo != null) repos.add(repo);
             }
             return repos;
         } catch (JSONException e) {
@@ -388,8 +379,7 @@ public class DataManager {
 
 
     public List<SeafRepo> getReposFromCache() {
-        if (reposCache != null)
-            return reposCache;
+        if (reposCache != null) return reposCache;
 
         File cache = getFileForReposCache();
         if (cache.exists()) {
@@ -411,8 +401,7 @@ public class DataManager {
 
         String json = sc.getRepos();
         //Log.d(DEBUG_TAG, "get repos from server " + json);
-        if (json == null)
-            return null;
+        if (json == null) return null;
 
         reposCache = parseRepos(json);
 
@@ -470,8 +459,7 @@ public class DataManager {
         dbHelper.removeCachedDirents(repoID, dir);
     }
 
-    public synchronized File getFile(String repoName, String repoID, String path,
-                                     ProgressMonitor monitor) throws SeafException {
+    public synchronized File getFile(String repoName, String repoID, String path, ProgressMonitor monitor) throws SeafException {
 
         String cachedFileID = null;
         SeafCachedFile cf = getCachedFile(repoName, repoID, path);
@@ -496,8 +484,7 @@ public class DataManager {
         }
     }
 
-    public synchronized File getFileByBlocks(String repoName, String repoID, String path, long fileSize,
-                                             ProgressMonitor monitor) throws SeafException, IOException, JSONException, NoSuchAlgorithmException {
+    public synchronized File getFileByBlocks(String repoName, String repoID, String path, long fileSize, ProgressMonitor monitor) throws SeafException, IOException, JSONException, NoSuchAlgorithmException {
 
         String cachedFileID = null;
         SeafCachedFile cf = getCachedFile(repoName, repoID, path);
@@ -555,15 +542,13 @@ public class DataManager {
     private List<SeafDirent> parseDirents(String json) {
         try {
             JSONArray array = Utils.parseJsonArray(json);
-            if (array == null)
-                return null;
+            if (array == null) return null;
 
             ArrayList<SeafDirent> dirents = Lists.newArrayList();
             for (int i = 0; i < array.length(); i++) {
                 JSONObject obj = array.getJSONObject(i);
                 SeafDirent de = SeafDirent.fromJson(obj);
-                if (de != null)
-                    dirents.add(de);
+                if (de != null) dirents.add(de);
             }
             return dirents;
         } catch (JSONException e) {
@@ -577,15 +562,13 @@ public class DataManager {
             JSONObject jsonObject = new JSONObject(json);
             JSONArray array = (JSONArray) jsonObject.opt("starred_item_list");
 //            JSONArray array = Utils.parseJsonArray(json);
-            if (array == null)
-                return null;
+            if (array == null) return null;
 
             ArrayList<SeafStarredFile> starredFiles = Lists.newArrayList();
             for (int i = 0; i < array.length(); i++) {
                 JSONObject obj = array.getJSONObject(i);
                 SeafStarredFile sf = SeafStarredFile.fromJson(obj);
-                if (sf != null)
-                    starredFiles.add(sf);
+                if (sf != null) starredFiles.add(sf);
             }
             return starredFiles;
         } catch (JSONException e) {
@@ -712,14 +695,11 @@ public class DataManager {
         }
     }
 
-    public void uploadFile(String repoName, String repoID, String dir, String relativePath, String filePath,
-                           ProgressMonitor monitor, boolean isUpdate, boolean isCopyToLocal) throws SeafException, IOException {
+    public void uploadFile(String repoName, String repoID, String dir, String relativePath, String filePath, ProgressMonitor monitor, boolean isUpdate, boolean isCopyToLocal) throws SeafException, IOException {
         uploadFileCommon(repoName, repoID, dir, relativePath, filePath, monitor, isUpdate, isCopyToLocal);
     }
 
-    private void uploadFileCommon(String repoName, String repoID, String dir,
-                                  String relativePath, String filePath, ProgressMonitor monitor,
-                                  boolean isUpdate, boolean isCopyToLocal) throws SeafException, IOException {
+    private void uploadFileCommon(String repoName, String repoID, String dir, String relativePath, String filePath, ProgressMonitor monitor, boolean isUpdate, boolean isCopyToLocal) throws SeafException, IOException {
         String newFileID = sc.uploadFile(repoID, dir, relativePath, filePath, monitor, isUpdate);
         if (newFileID == null || newFileID.length() == 0) {
             return;
@@ -749,46 +729,29 @@ public class DataManager {
         addCachedFile(repoName, repoID, relativePath, path, newFileID, fileInRepo);
     }
 
-    public void uploadFile(Context context, String repoName, String repoID, String dir, String relativePath, Uri uri, String cacheFileName,
-                           ProgressMonitor monitor, boolean isUpdate, boolean isCopyToLocal) throws SeafException, IOException {
+    public void uploadFile(Context context, String repoName, String repoID, String dir, String relativePath, Uri uri, String cacheFileName, ProgressMonitor monitor, boolean isUpdate, boolean isCopyToLocal) throws SeafException, IOException {
         uploadFileCommon(context, repoName, repoID, dir, relativePath, uri, cacheFileName, monitor, isUpdate, isCopyToLocal);
     }
 
-    private void uploadFileCommon(Context context, String repoName, String repoID, String dir,
-                                  String relativePath, Uri uri, String cacheFileName, ProgressMonitor monitor,
-                                  boolean isUpdate, boolean isCopyToLocal) throws SeafException, IOException {
-
-        String path ;
-        if(relativePath==null){
-             path = Utils.pathJoin(dir, cacheFileName);
-        }else  {
-            path = Utils.pathJoin(dir,relativePath, cacheFileName);
+    private void uploadFileCommon(Context context, String repoName, String repoID, String dir, String relativePath, Uri uri, String cacheFileName, ProgressMonitor monitor, boolean isUpdate, boolean isCopyToLocal) throws SeafException, IOException {
+        String path;
+        if (relativePath == null) {
+            path = Utils.pathJoin(dir, cacheFileName);
+        } else {
+            path = Utils.pathJoin(dir, relativePath, cacheFileName);
         }
 
-        File fileInRepo = null;
+        File fileInRepo;
         try {
             fileInRepo = getLocalRepoFile(repoName, repoID, path);
         } catch (RuntimeException e) {
             e.printStackTrace();
             throw new SeafException(SeafException.OTHER_EXCEPTION, e.getMessage());
         }
-
-//        if (isCopyToLocal) {
-//            if (!isUpdate) {
-//                // Copy the uploaded file to local repo cache
-//                try {
-//                    Utils.copyFile(srcFile, fileInRepo);
-//                } catch (IOException e) {
-//                    return;
-//                }
-//            }
-//        }
-
         String newFileID = sc.uploadFile(context, repoID, dir, relativePath, uri, fileInRepo, monitor, isUpdate);
         if (newFileID == null || newFileID.length() == 0) {
             return;
         }
-        // Update file cache entry
         addCachedFile(repoName, repoID, relativePath, path, newFileID, fileInRepo);
     }
 
@@ -936,16 +899,14 @@ public class DataManager {
 
     }
 
-    public void copy(String srcRepoId, String srcDir, String srcFn,
-                     String dstRepoId, String dstDir) throws SeafException {
+    public void copy(String srcRepoId, String srcDir, String srcFn, String dstRepoId, String dstDir) throws SeafException {
         sc.copy(srcRepoId, srcDir, srcFn, dstRepoId, dstDir);
 
         // After copying, we need to refresh the destination list
         getDirentsFromServer(dstRepoId, dstDir);
     }
 
-    public void move(String srcRepoId, String srcDir, String srcFn, String dstRepoId, String dstDir,
-                     boolean batch) throws SeafException {
+    public void move(String srcRepoId, String srcDir, String srcFn, String dstRepoId, String dstDir, boolean batch) throws SeafException {
         Pair<String, String> ret = null;
         if (batch) {
             sc.move(srcRepoId, srcDir, srcFn, dstRepoId, dstDir);
@@ -1010,15 +971,13 @@ public class DataManager {
         try {
             // may throw ClassCastException
             JSONArray array = Utils.parseJsonArrayByKey(json, "events");
-            if (array.length() == 0)
-                return Lists.newArrayListWithCapacity(0);
+            if (array.length() == 0) return Lists.newArrayListWithCapacity(0);
 
             ArrayList<SeafEvent> events = Lists.newArrayList();
             for (int i = 0; i < array.length(); i++) {
                 JSONObject obj = array.getJSONObject(i);
                 SeafEvent event = SeafEvent.fromJson(obj);
-                if (event != null)
-                    events.add(event);
+                if (event != null) events.add(event);
             }
             return events;
         } catch (JSONException e) {
@@ -1053,9 +1012,7 @@ public class DataManager {
         final SeafRepoEncrypt seafRepo = getCachedRepoEncryptByID(repoID);
         if (seafRepo != null && seafRepo.canLocalDecrypt()) {
             Pair<String, String> info = dbHelper.getEnckey(repoID);
-            return info != null
-                    && !TextUtils.isEmpty(info.first)
-                    && !TextUtils.isEmpty(info.second);
+            return info != null && !TextUtils.isEmpty(info.first) && !TextUtils.isEmpty(info.second);
         }
 
         PasswordInfo passwordInfo = passwords.get(repoID);
@@ -1071,9 +1028,7 @@ public class DataManager {
     }
 
     public void setRepoPasswordSet(String repoID, String key, String iv) {
-        if (!TextUtils.isEmpty(repoID)
-                && !TextUtils.isEmpty(key)
-                && !TextUtils.isEmpty(iv)) {
+        if (!TextUtils.isEmpty(repoID) && !TextUtils.isEmpty(key) && !TextUtils.isEmpty(iv)) {
             dbHelper.saveEncKey(key, iv, repoID);
         }
     }
@@ -1090,10 +1045,8 @@ public class DataManager {
         final SeafRepoEncrypt seafRepo = getCachedRepoEncryptByID(repoID);
         if (seafRepo != null && seafRepo.canLocalDecrypt()) {
             final Pair<String, String> pair = dbHelper.getEnckey(repoID);
-            if (pair == null)
-                return null;
-            else
-                return pair.first;
+            if (pair == null) return null;
+            else return pair.first;
         }
 
         PasswordInfo info = passwords.get(repoID);
@@ -1215,20 +1168,17 @@ public class DataManager {
     }
 
     public ArrayList<SearchedFile> parseSearchResult(String json) {
-        if (json == null)
-            return null;
+        if (json == null) return null;
 
         try {
             JSONArray array = Utils.parseJsonArrayByKey(json, "results");
-            if (array == null)
-                return null;
+            if (array == null) return null;
 
             ArrayList<SearchedFile> searchedFiles = Lists.newArrayList();
             for (int i = 0; i < array.length(); i++) {
                 JSONObject obj = array.getJSONObject(i);
                 SearchedFile sf = SearchedFile.fromJson(obj);
-                if (sf != null)
-                    searchedFiles.add(sf);
+                if (sf != null) searchedFiles.add(sf);
             }
             return searchedFiles;
         } catch (JSONException e) {
@@ -1246,15 +1196,13 @@ public class DataManager {
         try {
             in = new FileInputStream(file);
             dis = new DataInputStream(in);
-
             // Log.d(DEBUG_TAG, "file size " + file.length());
             int byteRead;
             while ((byteRead = dis.read(buffer, 0, BUFFER_SIZE)) != -1) {
                 byte[] cipher;
                 if (byteRead < BUFFER_SIZE)
                     cipher = Crypto.encrypt(buffer, byteRead, encKey, enkIv);
-                else
-                    cipher = Crypto.encrypt(buffer, encKey, enkIv);
+                else cipher = Crypto.encrypt(buffer, encKey, enkIv);
 
                 final String blkid = Crypto.sha1(cipher);
                 File blk = new File(storageManager.getTempDir(), blkid);
@@ -1264,7 +1212,6 @@ public class DataManager {
                 out.write(cipher);
                 out.close();
             }
-
             in.close();
 
             return seafBlock;
@@ -1283,17 +1230,54 @@ public class DataManager {
         }
     }
 
-    public void uploadByBlocks(String repoName, String repoId, String dir,
-                               String relativePath, String filePath, ProgressMonitor monitor,
-                               boolean isUpdate, boolean isCopyToLocal) throws NoSuchAlgorithmException, IOException, SeafException {
+
+    private FileBlocks chunkFile(Context context, String encKey, String enkIv, Uri filePath) throws IOException {
+        InputStream in = null;
+        DataInputStream dis;
+        OutputStream out = null;
+        byte[] buffer = new byte[BUFFER_SIZE];
+        FileBlocks seafBlock = new FileBlocks();
+        try {
+            in = context.getContentResolver().openInputStream(filePath);
+            dis = new DataInputStream(in);
+            // Log.d(DEBUG_TAG, "file size " + file.length());
+            int byteRead;
+            while ((byteRead = dis.read(buffer, 0, BUFFER_SIZE)) != -1) {
+                byte[] cipher;
+                if (byteRead < BUFFER_SIZE)
+                    cipher = Crypto.encrypt(buffer, byteRead, encKey, enkIv);
+                else cipher = Crypto.encrypt(buffer, encKey, enkIv);
+                final String blkid = Crypto.sha1(cipher);
+                File blk = new File(storageManager.getTempDir(), blkid);
+                Block block = new Block(blkid, blk.getAbsolutePath(), blk.length(), 0L);
+                seafBlock.blocks.add(block);
+                out = new FileOutputStream(blk);
+                out.write(cipher);
+                out.close();
+            }
+            in.close();
+
+            return seafBlock;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            if (out != null) out.close();
+            if (in != null) in.close();
+        }
+    }
+
+    public void uploadByBlocks(String repoName, String repoId, String dir, String relativePath, String filePath, ProgressMonitor monitor, boolean isUpdate, boolean isCopyToLocal) throws NoSuchAlgorithmException, IOException, SeafException {
         uploadByBlocksCommon(repoName, repoId, dir, relativePath, filePath, monitor, isUpdate, isCopyToLocal);
     }
 
-    private void uploadByBlocksCommon(String repoName, String repoID, String dir,
-                                      String relativePath, String filePath,
-                                      ProgressMonitor monitor, boolean isUpdate,
-                                      boolean isCopyToLocal)
-            throws NoSuchAlgorithmException, IOException, SeafException {
+    private void uploadByBlocksCommon(String repoName, String repoID, String dir, String relativePath, String filePath, ProgressMonitor monitor, boolean isUpdate, boolean isCopyToLocal) throws NoSuchAlgorithmException, IOException, SeafException {
 
         final Pair<String, String> pair = getRepoEncKey(repoID);
         if (pair == null) return;
@@ -1330,6 +1314,49 @@ public class DataManager {
                     return;
                 }
             }
+        }
+        // Update file cache entry
+        addCachedFile(repoName, repoID, relativePath, path, newFileID, fileInRepo);
+    }
+
+    public void uploadByBlocks(Context context, String repoName, String repoId, String dir, String relativePath, Uri filePath,
+                               String fileName,long fileSize,ProgressMonitor monitor, boolean isUpdate, boolean isCopyToLocal) throws NoSuchAlgorithmException, IOException, SeafException {
+        uploadByBlocksCommon(context, repoName, repoId, dir, relativePath, filePath, fileName,fileSize, monitor, isUpdate, isCopyToLocal);
+    }
+
+    private void uploadByBlocksCommon(Context context, String repoName, String repoID, String dir, String relativePath,
+                                      Uri uri, String fileName, long fileSize, ProgressMonitor monitor,
+                                      boolean isUpdate, boolean isCopyToLocal)
+            throws NoSuchAlgorithmException, IOException, SeafException {
+        final Pair<String, String> pair = getRepoEncKey(repoID);
+        if (pair == null) return;
+        final String encKey = pair.first;
+        final String encIv = pair.second;
+        // Log.d(DEBUG_TAG, "encKey " + encKey + " encIv " + encIv);
+        if (TextUtils.isEmpty(encKey) || TextUtils.isEmpty(encIv)) {
+            // TODO calculate them and continue
+            throw SeafException.encryptException;
+        }
+
+        final FileBlocks chunkFile = chunkFile(context, encKey, encIv, uri);
+        if (chunkFile.blocks.isEmpty()) {
+            throw SeafException.blockListNullPointerException;
+        }
+
+        String newFileID = sc.uploadByBlocks(repoID, dir, relativePath, uri,fileName, fileSize, chunkFile.blocks, isUpdate, monitor);
+        // Log.d(DEBUG_TAG, "uploadByBlocks " + newFileID);
+
+        if (newFileID == null || newFileID.length() == 0) {
+            return;
+        }
+        String path = Utils.pathJoin(dir, fileName);
+        File fileInRepo;
+        try {
+            fileInRepo =getLocalRepoFile(repoName, repoID, path);
+            Utils.copyFile(context, uri, fileInRepo);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            throw new SeafException(SeafException.OTHER_EXCEPTION, e.getMessage());
         }
         // Update file cache entry
         addCachedFile(repoName, repoID, relativePath, path, newFileID, fileInRepo);

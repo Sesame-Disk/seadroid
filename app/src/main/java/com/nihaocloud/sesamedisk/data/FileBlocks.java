@@ -18,9 +18,7 @@ import java.util.List;
  */
 public class FileBlocks implements Serializable {
     public static final String DEBUG_TAG = "FileBlocks";
-
     public ArrayList<Block> blocks;
-
     public int encVersion;
     public String blklist;
     public String fileID;
@@ -78,5 +76,4 @@ public class FileBlocks implements Serializable {
 
         return ids;
     }
-
 }

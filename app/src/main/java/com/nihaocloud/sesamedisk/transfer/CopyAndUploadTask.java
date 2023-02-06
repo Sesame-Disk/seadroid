@@ -47,7 +47,7 @@ public class CopyAndUploadTask extends TransferTask {
     private final String fileName;
 
     public CopyAndUploadTask(Context context, int taskID, Account account, String repoID, String repoName,
-                             String dir, String relativePath, Uri uri, String fileName, Long fileSize, boolean isUpdate, boolean isCopyToLocal, boolean byBlock,
+                             String dir, String relativePath, Uri uri, String fileName, long fileSize, boolean isUpdate, boolean isCopyToLocal, boolean byBlock,
                              UploadStateListener uploadStateListener) {
 
         super(taskID, account, repoName, repoID, relativePath, fileName);
@@ -57,11 +57,11 @@ public class CopyAndUploadTask extends TransferTask {
         this.isCopyToLocal = isCopyToLocal;
         this.byBlock = byBlock;
         this.uploadStateListener = uploadStateListener;
-        this.totalSize =fileSize;
+        this.totalSize = fileSize;
         this.finished = 0;
         this.dataManager = new DataManager(account);
         this.uri = uri;
-        this.fileName= fileName;
+        this.fileName = fileName;
     }
 
     public UploadTaskInfo getTaskInfo() {
@@ -106,9 +106,9 @@ public class CopyAndUploadTask extends TransferTask {
             };
 
             if (byBlock) {
-                dataManager.uploadByBlocks(repoName, repoID, dir, relativePath, path, monitor, isUpdate, isCopyToLocal);
+                dataManager.uploadByBlocks(context, repoName, repoID, dir, relativePath, uri, fileName, totalSize, monitor, isUpdate, isCopyToLocal);
             } else {
-                dataManager.uploadFile(context, repoName, repoID, dir, relativePath, uri,fileName, monitor, isUpdate, isCopyToLocal);
+                dataManager.uploadFile(context, repoName, repoID, dir, relativePath, uri, fileName, monitor, isUpdate, isCopyToLocal);
             }
 
         } catch (SeafException e) {
@@ -158,38 +158,4 @@ public class CopyAndUploadTask extends TransferTask {
     public boolean isUpdate() {
         return isUpdate;
     }
-
-    private void copyFile() {
-        InputStream in = null;
-        OutputStream out = null;
-        try {
-            File tempDir = DataManager.createTempDir();
-            File tempFile = new File(tempDir, Utils.getFilenamefromUri(context, uri));
-            if (!tempFile.createNewFile()) {
-                throw new RuntimeException("could not create temporary file");
-            }
-            in = context.getContentResolver().openInputStream(uri);
-
-            Source source = Okio.source(in);
-
-            out = new FileOutputStream(tempFile);
-            Sink sink = Okio.sink(out);
-
-            IOUtils.copy(in, out);
-
-            setPath(tempFile.getAbsolutePath());
-            if(getTotalSize()==-1) {
-                setTotalSize(tempDir.length());
-            }
-        } catch (IOException e) {
-            Log.d(DEBUG_TAG, "Could not open requested document", e);
-        } catch (RuntimeException e) {
-            Log.d(DEBUG_TAG, "Could not open requested document", e);
-        } finally {
-            IOUtils.closeQuietly(in);
-            IOUtils.closeQuietly(out);
-        }
-    }
-
-
 }

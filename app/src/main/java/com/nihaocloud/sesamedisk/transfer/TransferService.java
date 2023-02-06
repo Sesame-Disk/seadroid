@@ -95,7 +95,7 @@ public class TransferService extends Service {
     }
 
 
-    public int addTaskToUploadQue(Account account, String repoID, String repoName, String dir, String relativePath, Uri uri, String fileName, Long fileSize, boolean isUpdate, boolean isCopyToLocal) {
+    public int addTaskToUploadQue(Account account, String repoID, String repoName, String dir, String relativePath, Uri uri, String fileName, long fileSize, boolean isUpdate, boolean isCopyToLocal) {
         return uploadTaskManager.addTaskToQue(account, repoID, repoName, dir, relativePath, uri, fileName, fileSize,isUpdate, isCopyToLocal, false);
     }
 
@@ -120,7 +120,7 @@ public class TransferService extends Service {
     }
 
     public int addTaskToUploadQueBlock(Account account, String repoID, String repoName, String dir, String relativePath,
-                                       Uri uri,  String fileName, Long fileSize,boolean isUpdate, boolean isCopyToLocal) {
+                                       Uri uri,  String fileName, long fileSize,boolean isUpdate, boolean isCopyToLocal) {
         return uploadTaskManager.addTaskToQue(account, repoID, repoName, dir, relativePath, uri, fileName, fileSize, isUpdate, isCopyToLocal, true);
     }
 
